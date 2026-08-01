@@ -133,7 +133,7 @@
     right: 0;
     width: clamp(260px, 15vw, 420px);
     height: 100%;
-    background: white;
+    background: rgba(255, 255, 255, 0);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     display: flex;
@@ -143,6 +143,7 @@
     z-index: 10;
     pointer-events: auto;
     opacity: 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1);
 }
 
 [data-position='left'] .staggered-menu-panel {
@@ -155,7 +156,7 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: clamp(260px, 15vw, 420px);
+    /* width: clamp(260px, 18.5vw, 420px); */
     pointer-events: none;
     z-index: 5;
     opacity: 0;
@@ -181,7 +182,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    max-height: 88%;
+    max-height: 100%;
 }
 
 .sm-socials {
@@ -196,7 +197,7 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 500;
-    color: var(--sm-accent, #ff0000);
+    color: var(--sm-accent, #ffffff);
 }
 
 .sm-socials-list {
@@ -238,7 +239,7 @@
 .sm-socials-link {
     font-size: 1.2rem;
     font-weight: 500;
-    color: #111;
+    color: #ffffff;
     text-decoration: none;
     position: relative;
     padding: 2px 0;
@@ -271,7 +272,7 @@
 
 .sm-panel-item {
     position: relative;
-    color: #000;
+    color: #ffffff;
     font-weight: 600;
     font-size: 3.5rem;
     cursor: pointer;

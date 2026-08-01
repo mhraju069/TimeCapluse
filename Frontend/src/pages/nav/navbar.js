@@ -2,9 +2,9 @@ import React from 'react';
 import { StaggeredMenu } from './menu';
 
 const menuItems = [
-    { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
+    { label: 'Capsule', ariaLabel: 'Go to home page', link: '/' },
+    { label: 'Legacy', ariaLabel: 'View our services', link: '/' },
     { label: 'About', ariaLabel: 'Learn about us', link: '/about' },
-    { label: 'Services', ariaLabel: 'View our services', link: '/services' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '/contact' }
 ];
 
@@ -16,19 +16,19 @@ const socialItems = [
 
 const Navbar = () => {
     return (
-        <div style={{ height: '100vh', background: '#1a1a1a' }}>
+        <div style={{ height: '86vh', background: '#1a1a1a', position: 'absolute', top: 0, left: 0, right: 0, float: 'left' }}>
             <StaggeredMenu
                 position="right"
                 items={menuItems}
                 socialItems={socialItems}
                 displaySocials
-                displayItemNumbering={false}    
+                displayItemNumbering={false}
                 menuButtonColor="#ffffff"
-                openMenuButtonColor="#050505"
+                openMenuButtonColor="#ffffff"
                 changeMenuColorOnOpen={true}
                 colors={['#B497CF', '#5227FF']}
                 logoUrl="/path-to-your-logo.svg"
-                accentColor="#5227FF"
+                accentColor="rgba(255, 81, 0, 0.99)"
                 onMenuOpen={() => console.log('Menu opened')}
                 onMenuClose={() => console.log('Menu closed')}
             />
