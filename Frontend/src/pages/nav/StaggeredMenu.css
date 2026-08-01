@@ -52,7 +52,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    padding-right:3rem;
+    padding-right: 3rem;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -131,7 +131,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: clamp(260px, 15vw, 420px);
+    width: clamp(260px, 38vw, 420px);
     height: 100%;
     background: rgba(255, 255, 255, 0);
     backdrop-filter: blur(12px);
@@ -156,7 +156,7 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: clamp(260px, 18.5vw, 420px);
+    /* width: clamp(260px, 18.5vw, 420px); */
     pointer-events: none;
     z-index: 5;
     opacity: 0;
