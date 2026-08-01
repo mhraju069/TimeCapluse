@@ -22,9 +22,9 @@ const Navbar = () => {
                 items={menuItems}
                 socialItems={socialItems}
                 displaySocials
-                displayItemNumbering={true}
+                displayItemNumbering={false}    
                 menuButtonColor="#ffffff"
-                openMenuButtonColor="#fff"
+                openMenuButtonColor="#050505"
                 changeMenuColorOnOpen={true}
                 colors={['#B497CF', '#5227FF']}
                 logoUrl="/path-to-your-logo.svg"
