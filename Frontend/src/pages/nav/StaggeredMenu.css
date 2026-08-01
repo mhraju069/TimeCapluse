@@ -156,7 +156,7 @@
     top: 0;
     right: 0;
     bottom: 0;
-    /* width: clamp(260px, 18.5vw, 420px); */
+    width: clamp(260px, 18.5vw, 420px);
     pointer-events: none;
     z-index: 5;
     opacity: 0;
@@ -356,4 +356,25 @@
     .staggered-menu-wrapper[data-open] .sm-logo-img {
         filter: invert(100%);
     }
+}
+
+.sm-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    pointer-events: none;
+    z-index: 3;
+    transition: background 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease;
+}
+
+.sm-backdrop.active {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    pointer-events: auto;
 }

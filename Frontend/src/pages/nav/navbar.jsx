@@ -1,9 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { StaggeredMenu } from './menu';
+import logo from '../../logo.svg';
 
 const menuItems = [
-    { label: 'Capsule', ariaLabel: 'Go to home page', link: '/' },
-    { label: 'Legacy', ariaLabel: 'View our services', link: '/' },
+    { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
+    { label: 'Capsule', ariaLabel: 'Open the capsule page', link: '/capsule' },
     { label: 'About', ariaLabel: 'Learn about us', link: '/about' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '/contact' }
 ];
@@ -16,7 +18,8 @@ const socialItems = [
 
 const Navbar = () => {
     return (
-        <div style={{ height: '86vh', background: '#1a1a1a', position: 'absolute', top: 0, left: 0, right: 0, float: 'left' }}>
+        <div style={{ height: '100vh', position: 'fixed', top: 0, left: 0, right: 0, pointerEvents: 'none', zIndex: 200 }}>
+            {/* Small interactive area in top-right; rest of header passes pointer events through */}
             <StaggeredMenu
                 position="right"
                 items={menuItems}
@@ -27,7 +30,7 @@ const Navbar = () => {
                 openMenuButtonColor="#ffffff"
                 changeMenuColorOnOpen={true}
                 colors={['#B497CF', '#5227FF']}
-                logoUrl="/path-to-your-logo.svg"
+                logoUrl={logo}
                 accentColor="rgba(255, 81, 0, 0.99)"
                 onMenuOpen={() => console.log('Menu opened')}
                 onMenuClose={() => console.log('Menu closed')}

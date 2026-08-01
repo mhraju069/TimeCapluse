@@ -1,0 +1,22 @@
+export const galleryData = [
+  { id: 1, thumb_src: 'https://picsum.photos/seed/1011/1200/900', full_src: 'https://picsum.photos/seed/1011/2000/1400', title: 'Forest Lake' },
+  { id: 2, thumb_src: 'https://picsum.photos/seed/1025/1200/900', full_src: 'https://picsum.photos/seed/1025/2000/1400', title: 'Mountain Wolf' },
+  { id: 3, thumb_src: 'https://picsum.photos/seed/1035/1200/900', full_src: 'https://picsum.photos/seed/1035/2000/1400', title: 'Ocean Cliff' },
+  { id: 4, thumb_src: 'https://picsum.photos/seed/1039/1200/900', full_src: 'https://picsum.photos/seed/1039/2000/1400', title: 'City Reflection' },
+  { id: 5, thumb_src: 'https://picsum.photos/seed/1043/1200/900', full_src: 'https://picsum.photos/seed/1043/2000/1400', title: 'Misty Forest' },
+  { id: 6, thumb_src: 'https://picsum.photos/seed/1050/1200/900', full_src: 'https://picsum.photos/seed/1050/2000/1400', title: 'Sunrise Beach' },
+  { id: 7, thumb_src: 'https://picsum.photos/seed/1065/1200/900', full_src: 'https://picsum.photos/seed/1065/2000/1400', title: 'Desert Road' },
+  { id: 8, thumb_src: 'https://picsum.photos/seed/1074/1200/900', full_src: 'https://picsum.photos/seed/1074/2000/1400', title: 'Winter Pines' },
+  { id: 9, thumb_src: 'https://picsum.photos/seed/1082/1200/900', full_src: 'https://picsum.photos/seed/1082/2000/1400', title: 'City Skyline' },
+  { id: 10, thumb_src: 'https://picsum.photos/seed/1084/1200/900', full_src: 'https://picsum.photos/seed/1084/2000/1400', title: 'Sunset Hills' },
+  { id: 11, thumb_src: 'https://picsum.photos/seed/1080/1200/900', full_src: 'https://picsum.photos/seed/1080/2000/1400', title: 'Snow Peak' },
+  { id: 12, thumb_src: 'https://picsum.photos/seed/1081/1200/900', full_src: 'https://picsum.photos/seed/1081/2000/1400', title: 'Coastal Light' },
+  { id: 13, thumb_src: 'https://picsum.photos/seed/1083/1200/900', full_src: 'https://picsum.photos/seed/1083/2000/1400', title: 'Quiet Lake' },
+  { id: 14, thumb_src: 'https://picsum.photos/seed/1085/1200/900', full_src: 'https://picsum.photos/seed/1085/2000/1400', title: 'Golden Field' },
+  { id: 15, thumb_src: 'https://picsum.photos/seed/1086/1200/900', full_src: 'https://picsum.photos/seed/1086/2000/1400', title: 'Foggy Road' },
+  { id: 16, thumb_src: 'https://picsum.photos/seed/1089/1200/900', full_src: 'https://picsum.photos/seed/1089/2000/1400', title: 'Rocky Shore' },
+  { id: 17, thumb_src: 'https://picsum.photos/seed/109/1200/900', full_src: 'https://picsum.photos/seed/109/2000/1400', title: 'City Bridge' },
+  { id: 18, thumb_src: 'https://picsum.photos/seed/110/1200/900', full_src: 'https://picsum.photos/seed/110/2000/1400', title: 'Mountain Path' },
+  { id: 19, thumb_src: 'https://picsum.photos/seed/111/1200/900', full_src: 'https://picsum.photos/seed/111/2000/1400', title: 'Blue Waters' },
+  { id: 20, thumb_src: 'https://picsum.photos/seed/112/1200/900', full_src: 'https://picsum.photos/seed/112/2000/1400', title: 'Night City' }
+];
