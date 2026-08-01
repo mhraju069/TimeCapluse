@@ -1,10 +1,12 @@
 import './App.css';
 import Navbar from './pages/nav/navbar';
+import Home from './pages/home/home';
 
 function App() {
   return (
-    <div style={{ maxWidth: '100vw', background: '#1a1a1a' }}>
+    <div >
       <Navbar />
+      <Home />
     </div>
   );
 }
