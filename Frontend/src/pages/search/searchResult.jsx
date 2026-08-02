@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { galleryData } from "../capsule/galleryData";
-import AdvancedSearchModal from "../capsule/serch";
+import AdvancedSearchModal from "../capsule/search";
 const SearchResult = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [filters, setFilters] = useState({});
