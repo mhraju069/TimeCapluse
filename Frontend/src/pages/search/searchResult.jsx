@@ -97,13 +97,7 @@ const SearchResult = () => {
                             Clear
                         </button>
                     ) : (
-                        <div style={{
-                            background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
-                            borderRadius: '999px', padding: '3px 10px',
-                            color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontWeight: 600, flexShrink: 0,
-                        }}>
-                            Filter
-                        </div>
+                        <div ></div>
                     )}
                 </div>
             </div>
