@@ -1,0 +1,561 @@
+import { useState } from "react";
+
+const Mint = () => {
+    const [formData, setFormData] = useState({
+        name: "",
+        bio: "",
+        dob: "",
+        story: "",
+    });
+    const [coverImage, setCoverImage] = useState(null);
+    const [profileImage, setProfileImage] = useState(null);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleImageUpload = (e, type) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            if (type === "cover") setCoverImage(event.target.result);
+            else setProfileImage(event.target.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("Minting capsule:", { ...formData, coverImage, profileImage });
+        alert("Capsule minted! (demo)");
+    };
+
+    return (
+        <div
+            style={{
+                minHeight: "100vh",
+                background: "radial-gradient(ellipse at 30% 50%, #1a0b2e 0%, #000000 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "20px",
+                fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+            }}
+        >
+            <div
+                style={{
+                    width: "100%",
+                    maxWidth: "100vw",
+                    height: "90vh",
+                    maxHeight: "900px",
+                    // background: "rgba(255,255,255,0.04)",
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                    // border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: "40px",
+                    // boxShadow: "0 30px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05)",
+                    display: "flex",
+                    overflow: "hidden",
+                    transition: "height 0.3s ease",
+                }}
+            >
+                {/* LEFT PANEL — Preview & Visuals */}
+                <div
+                    style={{
+                        flex: "0 0 40%",
+                        padding: "32px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        borderRight: "1px solid rgba(255,255,255,0.06)",
+                        background: "rgba(0,0,0,0.2)",
+                    }}
+                >
+                    <div>
+                        <h2
+                            style={{
+                                color: "#fff",
+                                fontSize: "1.8rem",
+                                fontWeight: 700,
+                                letterSpacing: "-0.02em",
+                                margin: "0 0 4px 0",
+                            }}
+                        >
+                            ✦ New Capsule
+                        </h2>
+                        <p
+                            style={{
+                                color: "rgba(255,255,255,0.4)",
+                                fontSize: "0.9rem",
+                                margin: "0 0 24px 0",
+                            }}
+                        >
+                            Preserve your story forever
+                        </p>
+                    </div>
+
+                    {/* Live preview card */}
+                    <div
+                        style={{
+                            flex: 1,
+                            borderRadius: "4px",
+                            overflow: "hidden",
+                            background: "rgba(255,255,255,0.03)",
+                            border: "1px solid rgba(255,255,255,0.06)",
+                            position: "relative",
+                            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                        }}
+                    >
+                        {/* Cover image */}
+                        <div
+                            style={{
+                                height: "60%",
+                                background: coverImage ? `url(${coverImage}) center/cover` : "linear-gradient(135deg, #2a1a3a, #1a1a2e)",
+                                position: "relative",
+                            }}
+                        >
+                            {/* Profile image overlay */}
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    bottom: "-30px",
+                                    left: "24px",
+                                    width: "64px",
+                                    height: "64px",
+                                    borderRadius: "50%",
+                                    border: "3px solid rgba(255,255,255,0.2)",
+                                    background: profileImage ? `url(${profileImage}) center/cover` : "rgba(255,255,255,0.05)",
+                                    boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+                                }}
+                            />
+                        </div>
+                        {/* Content area */}
+                        <div
+                            style={{
+                                padding: "40px 24px 20px 24px",
+                                color: "#fff",
+                            }}
+                        >
+                            <h3 style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 4px 0" }}>
+                                {formData.name || "Your Name"}
+                            </h3>
+                            <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", margin: "0 0 6px 0", wordWrap: "break-word" }}>
+                                {formData.bio || "A short bio"}
+                            </p>
+                            <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.3)" }}>
+                                {formData.dob ? `Born: ${new Date(formData.dob).toLocaleDateString()}` : "Date of birth"}
+                            </p>
+                            {formData.story && (
+                                <p
+                                    style={{
+                                        fontSize: "0.8rem",
+                                        color: "rgba(255,255,255,0.6)",
+                                        marginTop: "8px",
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: 3,
+                                        WebkitBoxOrient: "vertical",
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    {formData.story}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Decorative hint */}
+                    <div
+                        style={{
+                            marginTop: "16px",
+                            fontSize: "0.7rem",
+                            color: "rgba(255,255,255,0.2)",
+                            textAlign: "center",
+                            letterSpacing: "0.06em",
+                        }}
+                    >
+                        Live preview updates as you type
+                    </div>
+                </div>
+
+                {/* RIGHT PANEL — Form */}
+                <div
+                    style={{
+                        flex: 1,
+                        padding: "40px 36px",
+                        overflowY: "auto",
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                        {/* Two‑column grid for fields */}
+                        <div
+                            style={{
+                                display: "grid",
+                                gridTemplateColumns: "1fr 1fr",
+                                gap: "24px 28px",
+                                flex: 1,
+                                alignContent: "start",
+                            }}
+                        >
+                            {/* Profile Image Upload */}
+                            <div>
+                                <label
+                                    style={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                        fontWeight: 500,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.08em",
+                                        color: "rgba(255,255,255,0.5)",
+                                        marginBottom: "6px",
+                                    }}
+                                >
+                                    Profile Image
+                                </label>
+                                <div
+                                    style={{
+                                        width: "160px",
+                                        height: "160px",
+                                        borderRadius: "50%",
+                                        background: "rgba(255,255,255,0.05)",
+                                        border: "1px dashed rgba(255,255,255,0.2)",
+                                        cursor: "pointer",
+                                        overflow: "hidden",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        transition: "border-color 0.2s",
+                                    }}
+                                    onClick={() => document.getElementById("profileUpload").click()}
+                                >
+                                    {profileImage ? (
+                                        <img src={profileImage} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                    ) : (
+                                        <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.8rem" }}>+</span>
+                                    )}
+                                    <input
+                                        id="profileUpload"
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => handleImageUpload(e, "profile")}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Cover Image Upload */}
+                            <div>
+                                <label
+                                    style={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                        fontWeight: 500,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.08em",
+                                        color: "rgba(255,255,255,0.5)",
+                                        marginBottom: "6px",
+                                    }}
+                                >
+                                    Cover Image
+                                </label>
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        height: "180px",
+                                        borderRadius: "16px",
+                                        background: "rgba(255,255,255,0.05)",
+                                        border: "1px dashed rgba(255,255,255,0.2)",
+                                        cursor: "pointer",
+                                        overflow: "hidden",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        transition: "border-color 0.2s",
+                                    }}
+                                    onClick={() => document.getElementById("coverUpload").click()}
+                                >
+                                    {coverImage ? (
+                                        <img src={coverImage} alt="Cover" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                    ) : (
+                                        <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.8rem" }}>Upload cover</span>
+                                    )}
+                                    <input
+                                        id="coverUpload"
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => handleImageUpload(e, "cover")}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Name */}
+                            <div>
+                                <label
+                                    style={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                        fontWeight: 500,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.08em",
+                                        color: "rgba(255,255,255,0.5)",
+                                        marginBottom: "6px",
+                                    }}
+                                >
+                                    Name
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="Your full name"
+                                    style={{
+                                        width: "100%",
+                                        background: "rgba(255,255,255,0.06)",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        borderRadius: "14px",
+                                        padding: "14px 18px",
+                                        color: "#fff",
+                                        fontSize: "0.95rem",
+                                        outline: "none",
+                                        transition: "border-color 0.2s, box-shadow 0.2s",
+                                        boxSizing: "border-box",
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.3)";
+                                        e.target.style.boxShadow = "0 0 0 3px rgba(255,255,255,0.05)";
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.1)";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                />
+                            </div>
+
+                            {/* Bio */}
+                            <div>
+                                <label
+                                    style={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                        fontWeight: 500,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.08em",
+                                        color: "rgba(255,255,255,0.5)",
+                                        marginBottom: "6px",
+                                    }}
+                                >
+                                    Bio
+                                </label>
+                                <input
+                                    type="text"
+                                    name="bio"
+                                    value={formData.bio}
+                                    onChange={handleChange}
+                                    placeholder="Short bio"
+                                    style={{
+                                        width: "100%",
+                                        background: "rgba(255,255,255,0.06)",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        borderRadius: "14px",
+                                        padding: "14px 18px",
+                                        color: "#fff",
+                                        fontSize: "0.95rem",
+                                        outline: "none",
+                                        transition: "border-color 0.2s, box-shadow 0.2s",
+                                        boxSizing: "border-box",
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.3)";
+                                        e.target.style.boxShadow = "0 0 0 3px rgba(255,255,255,0.05)";
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.1)";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                />
+                            </div>
+
+                            {/* DOB */}
+                            <div>
+                                <label
+                                    style={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                        fontWeight: 500,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.08em",
+                                        color: "rgba(255,255,255,0.5)",
+                                        marginBottom: "6px",
+                                    }}
+                                >
+                                    Date of Birth
+                                </label>
+                                <input
+                                    type="date"
+                                    name="dob"
+                                    value={formData.dob}
+                                    onChange={handleChange}
+                                    style={{
+                                        width: "100%",
+                                        background: "rgba(255,255,255,0.06)",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        borderRadius: "14px",
+                                        padding: "14px 18px",
+                                        color: "#fff",
+                                        fontSize: "0.95rem",
+                                        outline: "none",
+                                        colorScheme: "dark",
+                                        transition: "border-color 0.2s, box-shadow 0.2s",
+                                        boxSizing: "border-box",
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.3)";
+                                        e.target.style.boxShadow = "0 0 0 3px rgba(255,255,255,0.05)";
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.1)";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                />
+                            </div>
+
+                            {/* Story (spans two columns) */}
+                            <div style={{ gridColumn: "1 / -1" }}>
+                                <label
+                                    style={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                        fontWeight: 500,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.08em",
+                                        color: "rgba(255,255,255,0.5)",
+                                        marginBottom: "6px",
+                                    }}
+                                >
+                                    Your Story
+                                </label>
+                                <textarea
+                                    name="story"
+                                    value={formData.story}
+                                    onChange={handleChange}
+                                    placeholder="Tell your story…"
+                                    rows="10"
+                                    style={{
+                                        width: "100%",
+                                        background: "rgba(255,255,255,0.06)",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        borderRadius: "14px",
+                                        padding: "14px 18px",
+                                        color: "#fff",
+                                        fontSize: "0.95rem",
+                                        outline: "none",
+                                        resize: "vertical",
+                                        fontFamily: "inherit",
+                                        transition: "border-color 0.2s, box-shadow 0.2s",
+                                        boxSizing: "border-box",
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.3)";
+                                        e.target.style.boxShadow = "0 0 0 3px rgba(255,255,255,0.05)";
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "rgba(255,255,255,0.1)";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Mint Button */}
+                        <button
+                            type="submit"
+                            style={{
+                                marginTop: "32px",
+                                padding: "16px",
+                                background: "linear-gradient(135deg, #ffffff 0%, #d4d4d4 100%)",
+                                border: "none",
+                                borderRadius: "20px",
+                                color: "#000",
+                                fontSize: "1.1rem",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                                transition: "transform 0.15s ease, box-shadow 0.2s",
+                                boxShadow: "0 4px 24px rgba(255,255,255,0.15)",
+                                letterSpacing: "0.02em",
+                                width: "100%",
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = "scale(1.02)";
+                                e.target.style.boxShadow = "0 8px 40px rgba(255,255,255,0.25)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = "scale(1)";
+                                e.target.style.boxShadow = "0 4px 24px rgba(255,255,255,0.15)";
+                            }}
+                        >
+                            Mint Capsule ✦
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {/* Responsive adjustments via media queries in a style tag */}
+            <style>{`
+        @media (max-width: 1024px) {
+          .mint-container {
+            height: auto !important;
+            max-height: none !important;
+            flex-direction: column !important;
+            border-radius: 28px !important;
+          }
+          .mint-left {
+            flex: 1 !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+            padding: 24px !important;
+          }
+          .mint-right {
+            padding: 28px 20px !important;
+          }
+          .mint-grid {
+            grid-template-columns: 1fr !important;
+            gap: 18px !important;
+          }
+          .mint-story {
+            grid-column: 1 !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .mint-left {
+            display: none !important;
+          }
+          .mint-right {
+            padding: 20px 16px !important;
+          }
+          .mint-container {
+            height: 90vh !important;
+            border-radius: 20px !important;
+          }
+          .mint-grid {
+            gap: 14px !important;
+          }
+          input, textarea {
+            font-size: 0.9rem !important;
+            padding: 12px 14px !important;
+          }
+          button {
+            font-size: 1rem !important;
+            padding: 14px !important;
+          }
+        }
+      `}</style>
+        </div>
+    );
+};
+
+export default Mint;
