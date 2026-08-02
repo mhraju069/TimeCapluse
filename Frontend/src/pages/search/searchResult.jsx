@@ -10,7 +10,7 @@ const MONTHS = [
 ];
 
 const SearchResult = () => {
-    const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(true);
 
     // Use the same robust filter state structure as the grid component
     const EMPTY_FILTERS = { text: '', location: '', year: '', month: '', dateFrom: '', dateTo: '', imageFile: null, imagePreview: '' };
@@ -72,10 +72,11 @@ const SearchResult = () => {
                         left: '50%',
                         transform: 'translateX(-50%)',
                         zIndex: 30,
-                        width: '100%',
-                        maxWidth: '480px',
-                        padding: '0 16px',
+                        width: '50%',               /* Uses 92% of the screen width on smaller devices */
+                        maxWidth: '480px',          /* Caps the width at 480px for larger desktops */
+                        padding: '0 8px',           /* Slightly tighter padding for mobile safety */
                         pointerEvents: 'none',
+                        boxSizing: 'border-box',    /* Ensures padding doesn't push the width out */
                     }}
                 >
                     <div
