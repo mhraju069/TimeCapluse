@@ -1,18 +1,21 @@
 // "use client";
-import { CapsuleDetailModal, Card } from './cardDetails';
-import AdvancedSearchModal from './serch';
-
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { CapsuleDetailModal, Card } from './cardDetails';
+import AdvancedSearchModal from './search';
+
 const CARD_WIDTH = 320;
 const CARD_HEIGHT = 220;
 const NEIGHBOURS = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, 1], [-1, 1], [-1, -1], [1, -1]];
+
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
 const applyDamping = (velocity, deltaTime) => {
   const dampingRate = 0.0028;
   return velocity * Math.exp(-dampingRate * deltaTime);
 };
 
-const smoothStep = (current, target, deltaTime, speed = 0.15) => current + (target - current) * (1 - Math.exp(-speed * deltaTime));
+const smoothStep = (current, target, deltaTime, speed = 0.15) =>
+  current + (target - current) * (1 - Math.exp(-speed * deltaTime));
 
 const useViewportSize = () => {
   const [size, setSize] = useState({
@@ -52,6 +55,10 @@ const useAnimationFrame = callback => {
   }, [animate]);
 };
 
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 
 Card.displayName = 'Card';
 
@@ -120,6 +127,7 @@ export const InfiniteDraggableGrid = ({
     y: 0
   });
   const isFullscreen = true;
+
   useAnimationFrame(useCallback(deltaTime => {
     if (!isDraggingRef.current) {
       momentumRef.current.x = applyDamping(momentumRef.current.x, deltaTime);
@@ -136,6 +144,7 @@ export const InfiniteDraggableGrid = ({
       y: smoothStep(prev.y, targetOffset.y, deltaTime, isDraggingRef.current ? 0.4 : 0.18)
     }));
   }, [targetOffset]));
+
   const handleDragStart = useCallback(e => {
     isDraggingRef.current = true;
     momentumRef.current = {
@@ -150,6 +159,7 @@ export const InfiniteDraggableGrid = ({
     lastTimeRef.current = Date.now();
     if (containerRef.current) containerRef.current.style.cursor = 'grabbing';
   }, []);
+
   const handleDragMove = useCallback(e => {
     if (!isDraggingRef.current) return;
     e.preventDefault();
@@ -176,6 +186,7 @@ export const InfiniteDraggableGrid = ({
       y: prev.y + deltaY
     }));
   }, []);
+
   const handleDragEnd = useCallback(() => {
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
@@ -189,6 +200,7 @@ export const InfiniteDraggableGrid = ({
     });
     if (containerRef.current) containerRef.current.style.cursor = 'grab';
   }, [velocity]);
+
   useEffect(() => {
     const move = e => handleDragMove(e);
     const end = () => handleDragEnd();
@@ -205,6 +217,7 @@ export const InfiniteDraggableGrid = ({
       window.removeEventListener('touchend', end);
     };
   }, [handleDragMove, handleDragEnd]);
+
   const visibleCardsData = useMemo(() => {
     if (!filteredGallery.length || viewportSize.width === 0) return [];
     const getGalleryDescriptor = index => filteredGallery[((index % filteredGallery.length) + filteredGallery.length) % filteredGallery.length];
@@ -269,244 +282,152 @@ export const InfiniteDraggableGrid = ({
     }
     return newVisibleCards;
   }, [filteredGallery, offset, viewportSize]);
+
   useEffect(() => {
     setVisibleCards(visibleCardsData);
   }, [visibleCardsData]);
-  return <div ref={containerRef} className="fixed inset-0 select-none cursor-grab overflow-hidden" onMouseDown={handleDragStart} onTouchStart={handleDragStart} style={{
-    background: 'radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%)',
-    touchAction: 'none',
-    minHeight: '100vh',
-    height: '100vh',
-    width: '100vw',
-    margin: 0,
-    padding: 0,
-    zIndex: 0
-  }}>
-    <div className="absolute inset-0 overflow-hidden" style={{
-      transform: 'translateZ(0)',
-      backfaceVisibility: 'hidden',
-      width: '100%',
-      height: '100%'
-    }}>
-      {visibleCards.map(card => (
-        <Card
-          key={card.key}
-          descriptor={card.descriptor}
-          x={card.x}
-          y={card.y}
-          onOpen={setSelectedCard}
-        />
-      ))}
-    </div>
 
-    {/* ── Search Bar Pill ─────────────────────────────────────────────────── */}
+  return (
     <div
+      ref={containerRef}
+      className="fixed inset-0 select-none cursor-grab overflow-hidden"
+      onMouseDown={handleDragStart}
+      onTouchStart={handleDragStart}
       style={{
-        position: 'absolute', top: '24px',
-        left: '50%', transform: 'translateX(-50%)',
-        zIndex: 30, width: '100%', maxWidth: '480px',
-        padding: '0 16px', pointerEvents: 'none',
+        background: 'radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%)',
+        touchAction: 'none',
+        minHeight: '100vh',
+        height: '100vh',
+        width: '100vw',
+        margin: 0,
+        padding: 0,
+        zIndex: 0
       }}
     >
+      <div className="absolute inset-0 overflow-hidden" style={{
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
+        width: '100%',
+        height: '100%'
+      }}>
+        {visibleCards.map(card => (
+          <Card
+            key={card.key}
+            descriptor={card.descriptor}
+            x={card.x}
+            y={card.y}
+            onOpen={setSelectedCard}
+          />
+        ))}
+      </div>
+
+      {/* ── Search Bar Pill ─────────────────────────────────────────────────── */}
       <div
-        onClick={() => setModalOpen(true)}
-        onMouseDown={e => e.stopPropagation()}
-        onTouchStart={e => e.stopPropagation()}
         style={{
-          pointerEvents: 'auto', display: 'flex', alignItems: 'center',
-          gap: '10px', cursor: 'pointer',
-          background: 'rgba(0,0,0,0)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: hasActive ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.12)',
-          borderRadius: '999px', padding: '10px 18px',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
-          transition: 'border-color 0.2s',
+          position: 'absolute', top: '24px',
+          left: '50%', transform: 'translateX(-50%)',
+          zIndex: 30, width: '100%', maxWidth: '480px',
+          padding: '0 16px', pointerEvents: 'none',
         }}
       >
-        {/* search icon */}
-        <svg width="16" height="16" fill="none" stroke="rgba(255,255,255,0.5)" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
+        <div
+          onClick={() => setModalOpen(true)}
+          onMouseDown={e => e.stopPropagation()}
+          onTouchStart={e => e.stopPropagation()}
+          style={{
+            pointerEvents: 'auto', display: 'flex', alignItems: 'center',
+            gap: '10px', cursor: 'pointer',
+            background: 'rgba(0,0,0,0)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: hasActive ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.12)',
+            borderRadius: '999px', padding: '10px 18px',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+            transition: 'border-color 0.2s',
+          }}
+        >
+          {/* search icon */}
+          <svg width="16" height="16" fill="none" stroke="rgba(255,255,255,0.5)" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
 
-        <span style={{ flex: 1, color: hasActive ? '#fff' : 'rgba(255,255,255,0.4)', fontSize: '0.875rem', fontWeight: 500, userSelect: 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {hasActive
-            ? [
-              activeFilters.text && `"${activeFilters.text}"`,
-              activeFilters.location && `📍 ${activeFilters.location}`,
-              activeFilters.year && `📅 ${activeFilters.year}`,
-              activeFilters.month && `🗓 ${MONTHS[activeFilters.month - 1]}`,
-              (activeFilters.dateFrom || activeFilters.dateTo) && `📆 ${activeFilters.dateFrom || '…'} → ${activeFilters.dateTo || '…'}`,
-              activeFilters.imageFile && `🖼 Image`,
-            ].filter(Boolean).join('  ·  ')
-            : 'Search capsules…'}
-        </span>
+          <span style={{ flex: 1, color: hasActive ? '#fff' : 'rgba(255,255,255,0.4)', fontSize: '0.875rem', fontWeight: 500, userSelect: 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {hasActive
+              ? [
+                activeFilters.text && `"${activeFilters.text}"`,
+                activeFilters.location && `📍 ${activeFilters.location}`,
+                activeFilters.year && `📅 ${activeFilters.year}`,
+                activeFilters.month && `🗓 ${MONTHS[activeFilters.month - 1]}`,
+                (activeFilters.dateFrom || activeFilters.dateTo) && `📆 ${activeFilters.dateFrom || '…'} → ${activeFilters.dateTo || '…'}`,
+                activeFilters.imageFile && `🖼 Image`,
+              ].filter(Boolean).join('  ·  ')
+              : 'Search capsules…'}
+          </span>
 
-        {/* filter badge */}
-        {hasActive ? (
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              const reset = { text: '', location: '', year: '', month: '', dateFrom: '', dateTo: '', imageFile: null, imagePreview: '' };
-              setFilters(reset);
-              setActiveFilters(reset);
-            }}
-            style={{
-              background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: '999px', padding: '3px 8px', cursor: 'pointer',
-              color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem', fontWeight: 600,
-              display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0,
-            }}
-          >
-            <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            Clear
-          </button>
-        ) : (
-          <div style={{
-            background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '999px', padding: '3px 10px',
-            color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontWeight: 600, flexShrink: 0,
-          }}>
-            Filter
-          </div>
-        )}
+          {/* filter badge */}
+          {hasActive ? (
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                const reset = { text: '', location: '', year: '', month: '', dateFrom: '', dateTo: '', imageFile: null, imagePreview: '' };
+                setFilters(reset);
+                setActiveFilters(reset);
+              }}
+              style={{
+                background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)',
+                borderRadius: '999px', padding: '3px 8px', cursor: 'pointer',
+                color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem', fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0,
+              }}
+            >
+              <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Clear
+            </button>
+          ) : (
+            <div style={{
+              background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '999px', padding: '3px 10px',
+              color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontWeight: 600, flexShrink: 0,
+            }}>
+              Filter
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Capsule Detail Modal ────────────────────────────────────────────── */}
+      {selectedCard && (
+        <CapsuleDetailModal
+          descriptor={selectedCard}
+          onClose={() => setSelectedCard(null)}
+        />
+      )}
+
+      {/* ── Advanced Search Modal (navbar-style) ──────────────────────────── */}
+      {modalOpen && (
+        <AdvancedSearchModal
+          filters={filters}
+          onChange={setFilters}
+          onApply={applied => {
+            setFilters(applied);
+            setActiveFilters(applied);
+          }}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
+
+      {/* Drag prompt placeholder */}
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 10 }}>
+        <h1 style={{ color: 'white', fontSize: '3.75rem', fontWeight: 700, letterSpacing: '0.1em', opacity: 0.8, userSelect: 'none' }}>
+          {/* Drag me */}
+        </h1>
       </div>
     </div>
-
-    {/* ── Capsule Detail Modal ────────────────────────────────────────────── */}
-    {selectedCard && (
-      <CapsuleDetailModal
-        descriptor={selectedCard}
-        onClose={() => setSelectedCard(null)}
-      />
-    )}
-
-    {/* ── Advanced Search Modal (navbar-style) ──────────────────────────── */}
-    {modalOpen && (
-      <AdvancedSearchModal
-        filters={filters}
-        onChange={setFilters}
-        onApply={applied => {
-          setFilters(applied);
-          setActiveFilters(applied);
-        }}
-        onClose={() => setModalOpen(false)}
-      />
-    )}
-
-    {/* Drag prompt placeholder */}
-    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 10 }}>
-      <h1 style={{ color: 'white', fontSize: '3.75rem', fontWeight: 700, letterSpacing: '0.1em', opacity: 0.8, userSelect: 'none' }}>
-        {/* Drag me */}
-      </h1>
-    </div>
-  </div>;
+  );
 };
 
 export default function CapsuleGrid({ gallery }) {
   return <InfiniteDraggableGrid gallery={gallery} />;
 }
-
-const FALLBACK_GALLERY = [{
-  id: 0,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/0.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_0.jpg",
-  title: "Gallery Image 0"
-}, {
-  id: 1,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/1.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_1.jpg",
-  title: "Gallery Image 1"
-}, {
-  id: 2,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/2.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_2.jpg",
-  title: "Gallery Image 2"
-}, {
-  id: 3,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/3.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_3.jpg",
-  title: "Gallery Image 3"
-}, {
-  id: 4,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/4.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_4.jpg",
-  title: "Gallery Image 4"
-}, {
-  id: 5,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/5.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_5.jpg",
-  title: "Gallery Image 5"
-}, {
-  id: 6,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/6.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_6.jpg",
-  title: "Gallery Image 6"
-}, {
-  id: 7,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/7.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_7.jpg",
-  title: "Gallery Image 7"
-}, {
-  id: 8,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/8.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_8.jpg",
-  title: "Gallery Image 8"
-}, {
-  id: 9,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/9.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_9.jpg",
-  title: "Gallery Image 9"
-}, {
-  id: 10,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/10.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_10.jpg",
-  title: "Gallery Image 10"
-}, {
-  id: 11,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/11.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_11.jpg",
-  title: "Gallery Image 11"
-}, {
-  id: 12,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/12.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_12.jpg",
-  title: "Gallery Image 12"
-}, {
-  id: 13,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/13.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_13.jpg",
-  title: "Gallery Image 13"
-}, {
-  id: 14,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/14.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_14.jpg",
-  title: "Gallery Image 14"
-}, {
-  id: 15,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/15.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_15.jpg",
-  title: "Gallery Image 15"
-}, {
-  id: 16,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/16.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_16.jpg",
-  title: "Gallery Image 16"
-}, {
-  id: 17,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/17.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_17.jpg",
-  title: "Gallery Image 17"
-}, {
-  id: 18,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/18.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_18.jpg",
-  title: "Gallery Image 18"
-}, {
-  id: 19,
-  full_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/19.jpg",
-  thumb_src: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/204379/thumb_19.jpg",
-  title: "Gallery Image 19"
-}];

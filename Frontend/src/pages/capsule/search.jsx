@@ -1,11 +1,9 @@
-import { useState , useRef} from "react";
-
+import { useState, useRef } from "react";
 
 const MONTHS = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
 ];
-
 
 const FilterSection = ({ label, children, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
@@ -37,7 +35,6 @@ const FilterSection = ({ label, children, defaultOpen = false }) => {
     </div>
   );
 };
-
 
 const AdvancedSearchModal = ({ filters, onChange, onApply, onClose }) => {
   const [localFilters, setLocalFilters] = useState(filters);
@@ -394,5 +391,4 @@ const AdvancedSearchModal = ({ filters, onChange, onApply, onClose }) => {
   );
 };
 
-
-export default AdvancedSearchModal
+export default AdvancedSearchModal;
