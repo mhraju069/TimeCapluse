@@ -6,6 +6,7 @@ import logo from '../../logo.svg';
 const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Capsule', ariaLabel: 'Open the capsule page', link: '/capsule' },
+    { label: 'Mint', ariaLabel: 'Create a new TimeCapsule', link: '/mint' },
     { label: 'About', ariaLabel: 'Learn about us', link: '/about' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '/contact' }
 ];
