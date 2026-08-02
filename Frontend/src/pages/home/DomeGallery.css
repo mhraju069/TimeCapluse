@@ -79,9 +79,7 @@ main.sphere-main {
   transform-origin: 50% 50%;
   backface-visibility: hidden;
   transition: transform 300ms;
-  transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta, 0deg)))
-    rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta, 0deg)))
-    translateZ(var(--radius));
+  transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta, 0deg))) rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta, 0deg))) translateZ(var(--radius));
 }
 
 .item__image {
@@ -195,4 +193,64 @@ main.sphere-main {
 
 .edge-fade--bottom {
   bottom: 0;
+}
+
+
+
+.gallery-hero {
+  max-width: 620px;
+  backdrop-filter: blur(3px);
+  padding: 20px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.4);
+
+  /* Animation properties */
+  animation: scaleUp 0.3s ease-out forwards;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.gallery-hero .curator-tag {
+  font-size: 0.6rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 400;
+  border-left: 3px solid #d4af37;
+  padding-left: 18px;
+  margin-bottom: 14px;
+  opacity: 0.7;
+}
+
+.gallery-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4.2rem;
+  font-weight: 400;
+  color: #f2e8d5;
+  line-height: 1.06;
+}
+
+.gallery-hero h1 .gold {
+  color: #d4af37;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.gallery-hero p {
+  color: #b0a18d;
+  font-size: 1.05rem;
+  font-weight: 300;
+  margin-top: 16px;
+  max-width: 480px;
+  line-height: 1.7;
 }

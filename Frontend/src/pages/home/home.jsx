@@ -20,6 +20,19 @@ export default function Home() {
           justifyContent: 'center'
         }}
       >
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: "white", zIndex: 9, }}>
+          <div class="gallery-hero">
+            <div class="curator-tag">curator's collection</div>
+            <h1>
+              The <span class="gold">millennium</span><br />
+              archive gallery
+            </h1>
+            <p>
+              A curated exhibition of human stories, preserved for future generations.
+              Each capsule holds a life, a moment, a voice from the early 2000s.
+            </p>
+          </div>
+        </div>
         <DomeGallery
           fit={0.8}
           minRadius={420}
