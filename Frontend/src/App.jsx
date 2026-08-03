@@ -4,7 +4,6 @@ import Navbar from './pages/nav/navbar';
 import Home from './pages/home/home';
 import Mint from './pages/mint/mint';
 import Gallery from './pages/capsule/gallery';
-import SearchResult from './pages/search/searchResult';
 import GoogleLogin from './pages/auth.jsx/login.jsx';
 function App() {
   return (
@@ -15,7 +14,6 @@ function App() {
         <Route path="/mint" element={<Mint />} />
         <Route path="/capsule" element={<Gallery />} />
         <Route path="/auth" element={<GoogleLogin />} />
-        <Route path="/capsule/search" element={<SearchResult />} />
       </Routes>
     </div>
   );

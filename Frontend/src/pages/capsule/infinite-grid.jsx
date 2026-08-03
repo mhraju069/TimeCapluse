@@ -321,82 +321,15 @@ export const InfiniteDraggableGrid = ({
         ))}
       </div>
 
-      {/* ── Search Bar Pill ─────────────────────────────────────────────────── */}
-      {/* <div
-        style={{
-          position: 'absolute', top: '24px',
-          left: '50%', transform: 'translateX(-50%)',
-          zIndex: 30, width: '100%', maxWidth: '480px',
-          padding: '0 16px', pointerEvents: 'none',
-        }}
-      >
-        <div
-          onClick={() => setModalOpen(true)}
-          onMouseDown={e => e.stopPropagation()}
-          onTouchStart={e => e.stopPropagation()}
-          style={{
-            pointerEvents: 'auto', display: 'flex', alignItems: 'center',
-            gap: '10px', cursor: 'pointer',
-            background: 'rgba(0,0,0,0)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: hasActive ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.12)',
-            borderRadius: '999px', padding: '10px 18px',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
-            transition: 'border-color 0.2s',
-          }}
-        >
-
-          <svg width="16" height="16" fill="none" stroke="rgba(255,255,255,0.5)" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-
-          <span style={{ flex: 1, color: hasActive ? '#fff' : 'rgba(255,255,255,0.4)', fontSize: '0.875rem', fontWeight: 500, userSelect: 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {hasActive
-              ? [
-                activeFilters.text && `"${activeFilters.text}"`,
-                activeFilters.location && `📍 ${activeFilters.location}`,
-                activeFilters.year && `📅 ${activeFilters.year}`,
-                activeFilters.month && `🗓 ${MONTHS[activeFilters.month - 1]}`,
-                (activeFilters.dateFrom || activeFilters.dateTo) && `📆 ${activeFilters.dateFrom || '…'} → ${activeFilters.dateTo || '…'}`,
-                activeFilters.imageFile && `🖼 Image`,
-              ].filter(Boolean).join('  ·  ')
-              : 'Search capsules…'}
-          </span>
-
-
-          {hasActive ? (
-            <button
-              onClick={e => {
-                e.stopPropagation();
-                const reset = { text: '', location: '', year: '', month: '', dateFrom: '', dateTo: '', imageFile: null, imagePreview: '' };
-                setFilters(reset);
-                setActiveFilters(reset);
-              }}
-              style={{
-                background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)',
-                borderRadius: '999px', padding: '3px 8px', cursor: 'pointer',
-                color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem', fontWeight: 600,
-                display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0,
-              }}
-            >
-              <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Clear
-            </button>
-          ) : (
-            <div></div>
-          )}
-        </div>
-      </div> */}
-      <a
-        href="/capsule/search"
-        style={{ zIndex: "999", position: "absolute", right: "50px", bottom: "50px", borderRadius: "50%", padding: "10px", boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.5)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", cursor: "pointer", display: "flex", alignItems: "center", justifyName: "center" }}>
+      <button
+        onClick={() => setModalOpen(true)}
+        onMouseDown={e => e.stopPropagation()}
+        onTouchStart={e => e.stopPropagation()}
+        style={{ zIndex: "9", position: "absolute", right: "50px", bottom: "50px", borderRadius: "50%", padding: "10px", boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.5)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", cursor: "pointer", display: "flex", alignItems: "center", justifyName: "center" }}>
         <svg style={{ fill: "white" }} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 128 128">
           <path d="M 52.349609 14.400391 C 42.624609 14.400391 32.9 18.1 25.5 25.5 C 10.7 40.3 10.7 64.399219 25.5 79.199219 C 32.9 86.599219 42.600391 90.300781 52.400391 90.300781 C 62.200391 90.300781 71.900781 86.599219 79.300781 79.199219 C 94.000781 64.399219 93.999219 40.3 79.199219 25.5 C 71.799219 18.1 62.074609 14.400391 52.349609 14.400391 z M 52.300781 20.300781 C 60.500781 20.300781 68.700391 23.399219 74.900391 29.699219 C 87.400391 42.199219 87.4 62.5 75 75 C 62.5 87.5 42.199219 87.5 29.699219 75 C 17.199219 62.5 17.199219 42.199219 29.699219 29.699219 C 35.899219 23.499219 44.100781 20.300781 52.300781 20.300781 z M 52.300781 26.300781 C 45.400781 26.300781 38.9 29 34 34 C 29.3 38.7 26.700391 44.800391 26.400391 51.400391 C 26.300391 53.100391 27.600781 54.4 29.300781 54.5 L 29.400391 54.5 C 31.000391 54.5 32.300391 53.199609 32.400391 51.599609 C 32.600391 46.499609 34.699219 41.799219 38.199219 38.199219 C 41.999219 34.399219 47.000781 32.300781 52.300781 32.300781 C 54.000781 32.300781 55.300781 31.000781 55.300781 29.300781 C 55.300781 27.600781 54.000781 26.300781 52.300781 26.300781 z M 35 64 A 3 3 0 0 0 32 67 A 3 3 0 0 0 35 70 A 3 3 0 0 0 38 67 A 3 3 0 0 0 35 64 z M 83.363281 80.5 C 82.600781 80.5 81.850781 80.800391 81.300781 81.400391 C 80.100781 82.600391 80.100781 84.499609 81.300781 85.599609 L 83.800781 88.099609 C 83.200781 89.299609 82.900391 90.6 82.900391 92 C 82.900391 94.4 83.8 96.700391 85.5 98.400391 L 98.300781 111 C 100.10078 112.8 102.39922 113.69922 104.69922 113.69922 C 106.99922 113.69922 109.29961 112.79961 111.09961 111.09961 C 114.59961 107.59961 114.59961 101.90039 111.09961 98.400391 L 98.300781 85.599609 C 96.600781 83.899609 94.300391 83 91.900391 83 C 90.500391 83 89.2 83.300391 88 83.900391 L 85.5 81.400391 C 84.9 80.800391 84.125781 80.5 83.363281 80.5 z M 91.900391 88.900391 C 92.700391 88.900391 93.5 89.200781 94 89.800781 L 106.69922 102.5 C 107.89922 103.7 107.89922 105.59922 106.69922 106.69922 C 105.49922 107.89922 103.6 107.89922 102.5 106.69922 L 89.800781 94.099609 C 89.200781 93.499609 88.900391 92.700391 88.900391 91.900391 C 88.900391 91.100391 89.200781 90.300781 89.800781 89.800781 C 90.400781 89.200781 91.100391 88.900391 91.900391 88.900391 z"></path>
         </svg>
-      </a>
+      </button>
 
       {/* ── Capsule Detail Modal ────────────────────────────────────────────── */}
       {selectedCard && (
