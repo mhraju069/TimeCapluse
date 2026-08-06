@@ -62,6 +62,28 @@ const MONTHS = [
 
 Card.displayName = 'Card';
 
+/* ─── Viewport API Integration ───────────────────────────────────────────── */
+async function fetchViewport(minX, maxX, minY, maxY) {
+  const res = await fetch(
+    `/api/capsules/viewport/?min_x=${minX}&max_x=${maxX}&min_y=${minY}&max_y=${maxY}`
+  );
+  if (!res.ok) {
+    throw new Error(`Viewport fetch failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+// Map backend capsule to frontend descriptor format
+const mapServerCapsule = (capsule) => ({
+  id: capsule.id,
+  thumb_src: capsule.thumbnail,
+  full_src: capsule.thumbnail,
+  title: capsule.title,
+  grid_x: capsule.grid_x,
+  grid_y: capsule.grid_y,
+  isServer: true,
+});
+
 /* ─── Main Grid Component ────────────────────────────────────────────────── */
 export const InfiniteDraggableGrid = ({
   gallery
@@ -85,6 +107,9 @@ export const InfiniteDraggableGrid = ({
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [activeFilters, setActiveFilters] = useState(EMPTY_FILTERS);
   const [selectedCard, setSelectedCard] = useState(null);
+  // Server-fetched capsules keyed by "grid_x:grid_y"
+  const [serverCapsules, setServerCapsules] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const hasActive = activeFilters.text || activeFilters.location || activeFilters.year || activeFilters.month ||
     activeFilters.dateFrom || activeFilters.dateTo || activeFilters.imageFile;
@@ -127,6 +152,13 @@ export const InfiniteDraggableGrid = ({
     y: 0
   });
   const isFullscreen = true;
+  const debounceTimerRef = useRef(null);
+  const serverCapsulesRef = useRef({});
+
+  // Keep ref in sync with state for use in callbacks
+  useEffect(() => {
+    serverCapsulesRef.current = serverCapsules;
+  }, [serverCapsules]);
 
   useAnimationFrame(useCallback(deltaTime => {
     if (!isDraggingRef.current) {
@@ -144,6 +176,54 @@ export const InfiniteDraggableGrid = ({
       y: smoothStep(prev.y, targetOffset.y, deltaTime, isDraggingRef.current ? 0.4 : 0.18)
     }));
   }, [targetOffset]));
+
+  /* ─── Debounced viewport fetch on drag ─────────────────────────────────── */
+  const fetchViewportData = useCallback((bounds) => {
+    clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      setIsLoading(true);
+      fetchViewport(bounds.minX, bounds.maxX, bounds.minY, bounds.maxY)
+        .then(data => {
+          if (Array.isArray(data)) {
+            const capsuleMap = {};
+            data.forEach(capsule => {
+              const key = `${capsule.grid_x}:${capsule.grid_y}`;
+              capsuleMap[key] = mapServerCapsule(capsule);
+            });
+            setServerCapsules(prev => ({ ...prev, ...capsuleMap }));
+          }
+        })
+        .catch(err => console.error('Viewport fetch error:', err))
+        .finally(() => setIsLoading(false));
+    }, 300);
+  }, []);
+
+  // Compute viewport bounds from current offset and fetch
+  const handleViewportChange = useCallback((currentOffset) => {
+    const minX = Math.floor(-currentOffset.x / CARD_WIDTH) - 5;
+    const maxX = Math.floor((-currentOffset.x + viewportSize.width) / CARD_WIDTH) + 5;
+    const minY = Math.floor(-currentOffset.y / CARD_HEIGHT) - 5;
+    const maxY = Math.floor((-currentOffset.y + viewportSize.height) / CARD_HEIGHT) + 5;
+    fetchViewportData({ minX, maxX, minY, maxY });
+  }, [viewportSize, fetchViewportData]);
+
+  // Fetch initial viewport on mount
+  useEffect(() => {
+    handleViewportChange({ x: 0, y: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Fetch when offset changes significantly (after drag/momentum settles)
+  const lastFetchedOffsetRef = useRef({ x: 0, y: 0 });
+  useEffect(() => {
+    const dx = Math.abs(offset.x - lastFetchedOffsetRef.current.x);
+    const dy = Math.abs(offset.y - lastFetchedOffsetRef.current.y);
+    // Only fetch when moved more than one card dimension
+    if (dx > CARD_WIDTH || dy > CARD_HEIGHT) {
+      lastFetchedOffsetRef.current = { x: offset.x, y: offset.y };
+      handleViewportChange(offset);
+    }
+  }, [offset, handleViewportChange]);
 
   const handleDragStart = useCallback(e => {
     isDraggingRef.current = true;
@@ -268,11 +348,14 @@ export const InfiniteDraggableGrid = ({
       for (let col = -3; col < viewCols; col++) {
         const tCol = colOffset + col;
         const tRow = rowOffset + row;
-        const desc = getRandomDescriptor(tCol, tRow);
+        // Check if server has a capsule at this grid position
+        const serverKey = `${tCol}:${tRow}`;
+        const serverCapsule = serverCapsulesRef.current[serverKey];
+        const desc = serverCapsule || getRandomDescriptor(tCol, tRow);
         const [x, y] = getCardPos(col, row);
         if (isVisible(x, y)) {
           newVisibleCards.push({
-            key: `${tCol}:${tRow}`,
+            key: serverCapsule ? `server:${serverKey}` : `${tCol}:${tRow}`,
             descriptor: desc,
             x,
             y
@@ -281,7 +364,7 @@ export const InfiniteDraggableGrid = ({
       }
     }
     return newVisibleCards;
-  }, [filteredGallery, offset, viewportSize]);
+  }, [filteredGallery, offset, viewportSize, serverCapsules]);
 
   useEffect(() => {
     setVisibleCards(visibleCardsData);
@@ -320,6 +403,39 @@ export const InfiniteDraggableGrid = ({
           />
         ))}
       </div>
+
+      {/* Loading indicator */}
+      {isLoading && (
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 20,
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          borderRadius: '999px',
+          padding: '8px 20px',
+          color: 'rgba(255,255,255,0.7)',
+          fontSize: '0.8rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          pointerEvents: 'none',
+        }}>
+          <div style={{
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            border: '2px solid rgba(255,255,255,0.2)',
+            borderTopColor: '#fff',
+            animation: 'spin 0.8s linear infinite',
+          }} />
+          Loading capsules...
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
 
       <button
         onClick={() => setModalOpen(true)}

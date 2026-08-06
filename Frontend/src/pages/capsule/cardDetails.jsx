@@ -28,7 +28,19 @@ const STATIC_CAPSULE = {
 
 
 const CapsuleDetailModal = ({ descriptor, onClose }) => {
-    const data = STATIC_CAPSULE;
+    // Use server capsule data if available, otherwise fall back to static
+    const isServer = descriptor?.isServer;
+    const data = isServer ? {
+        name: descriptor?.title || 'Untitled Capsule',
+        verified: false,
+        bio: 'A time capsule from the grid.',
+        likes: '—',
+        views: '—',
+        rating: 0,
+        reviewCount: 0,
+        skills: [],
+        seeMoreHref: '#',
+    } : STATIC_CAPSULE;
     const cover = data.coverSrc || descriptor?.full_src || descriptor?.thumb_src;
     const avatar = data.avatarSrc || descriptor?.thumb_src;
 
