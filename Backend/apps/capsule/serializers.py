@@ -1,4 +1,6 @@
+from django.db import models
 from rest_framework import serializers
+
 from .models import Capsule
 
 
@@ -7,7 +9,7 @@ class CapsuleGridSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Capsule
-        fields = ['id', 'grid_x', 'grid_y', 'title', 'thumbnail']
+        fields = ['id', 'grid_x', 'grid_y', 'name', 'thumbnail']
 
     def get_thumbnail(self, obj):
         request = self.context.get('request')
@@ -20,12 +22,16 @@ class CapsuleGridSerializer(serializers.ModelSerializer):
 class CapsuleDetailSerializer(serializers.ModelSerializer):
     profile = serializers.SerializerMethodField()
     cover = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()
+    total_reviews = serializers.SerializerMethodField()
 
     class Meta:
         model = Capsule
         fields = [
-            'id', 'title', 'profile', 'cover', 'grid_x', 'grid_y',
-            'views', 'likes', 'is_public', 'created_at', 'user',
+            'id', 'name', 'bio', 'story', 'location', 'dob',
+            'profile', 'cover', 'grid_x', 'grid_y',
+            'views', 'likes', 'is_public', 'created_at',
+            'average_rating', 'total_reviews',
         ]
 
     def get_profile(self, obj):
@@ -35,3 +41,12 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
     def get_cover(self, obj):
         request = self.context.get('request')
         return request.build_absolute_uri(obj.cover.url) if obj.cover else None
+
+    def get_average_rating(self, obj):
+        reviews = obj.review_set.all()
+        if reviews.exists():
+            return round(reviews.aggregate(avg=models.Avg('rating'))['avg'] or 0, 1)
+        return 0
+
+    def get_total_reviews(self, obj):
+        return obj.review_set.count()

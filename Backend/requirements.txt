@@ -1,5 +1,5 @@
 # Core
-Django
+Django == 4.2.8
 django-unfold
 djangorestframework
 djangorestframework-simplejwt

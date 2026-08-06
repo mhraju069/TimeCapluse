@@ -31,7 +31,7 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
     // Use server capsule data if available, otherwise fall back to static
     const isServer = descriptor?.isServer;
     const data = isServer ? {
-        name: descriptor?.title || 'Untitled Capsule',
+        name: descriptor?.name || descriptor?.title || 'Untitled Capsule',
         verified: false,
         bio: 'A time capsule from the grid.',
         likes: '—',
@@ -379,7 +379,7 @@ const Card = React.memo(({
         <img
             ref={imgRef}
             src={descriptor.thumb_src}
-            alt={descriptor.title || 'Gallery image'}
+            alt={descriptor.title || descriptor.name || 'Gallery image'}
             className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none"
             style={{
                 opacity,

@@ -38,7 +38,7 @@ class CapsuleViewportView(APIView):
             grid_x__gte=min_x, grid_x__lte=max_x,
             grid_y__gte=min_y, grid_y__lte=max_y,
             is_public=True
-        ).only('id', 'grid_x', 'grid_y', 'title', 'cover_thumbnail', 'cover')
+        ).only('id', 'grid_x', 'grid_y', 'name', 'cover_thumbnail', 'cover')
 
         serializer = CapsuleGridSerializer(
             capsules, many=True, context={'request': request}
