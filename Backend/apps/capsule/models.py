@@ -1,23 +1,44 @@
-from django.db import models
 import uuid
-from django.cong import settings
+from django.db import models
+from django.conf import settings
 
 User = settings.AUTH_USER_MODEL
 
 # Create your models here.
 
-
 class Capsule(models.Model):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capsules')
     title = models.CharField(max_length=50)
+
     profile = models.ImageField(upload_to='capsule_profiles')
     cover = models.ImageField(upload_to='capsule_covers')
+    cover_thumbnail = models.ImageField(
+        upload_to='capsule_covers/thumbnails', blank=True, null=True
+    )
+
+    grid_x = models.IntegerField()
+    grid_y = models.IntegerField()
+
     views = models.PositiveIntegerField(default=0)
     likes = models.PositiveIntegerField(default=0)
+
     is_public = models.BooleanField(default=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['grid_x', 'grid_y'], name='unique_grid_position'
+            )
+        ]
+        indexes = [
+            models.Index(fields=['grid_x', 'grid_y'], name='idx_grid_position'),
+            models.Index(fields=['is_public', 'grid_x', 'grid_y'], name='idx_public_grid'),
+        ]
+        ordering = ['grid_y', 'grid_x']
 
     def __str__(self):
         return self.title
