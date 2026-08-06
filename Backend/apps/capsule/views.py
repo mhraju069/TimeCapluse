@@ -1,11 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 
 from .models import Capsule
-from .serializers import CapsuleGridSerializer, CapsuleDetailSerializer
+from .serializers import CapsuleGridSerializer, CapsuleDetailSerializer, CapsuleCreateSerializer
 
 
 class CapsuleViewportView(APIView):
@@ -48,7 +49,6 @@ class CapsuleViewportView(APIView):
 
 class CapsuleDetailView(APIView):
 
-
     def get(self, request, capsule_id):
         capsule = get_object_or_404(Capsule, id=capsule_id, is_public=True)
 
@@ -70,3 +70,39 @@ class CapsuleBoundsView(APIView):
             min_y=Min('grid_y'), max_y=Max('grid_y'),
         )
         return Response(bounds, status=status.HTTP_200_OK)
+
+
+class CapsuleCreateView(APIView):
+    """
+    Create a new capsule with compressed images.
+    Requires authentication.
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        serializer = CapsuleCreateSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            capsule = serializer.save()
+            
+            # Return the created capsule data
+            response_serializer = CapsuleDetailSerializer(
+                capsule, 
+                context={'request': request}
+            )
+            
+            return Response(
+                {
+                    'message': 'Capsule created successfully',
+                    'capsule': response_serializer.data
+                },
+                status=status.HTTP_201_CREATED
+            )
+        
+        return Response(
+            {'errors': serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
