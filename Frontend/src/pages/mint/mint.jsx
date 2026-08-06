@@ -36,7 +36,7 @@ const Mint = () => {
         <div
             style={{
                 minHeight: "100vh",
-                background: "radial-gradient(ellipse at 30% 50%, #1a0b2e 0%, #000000 100%)",
+                background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -96,69 +96,119 @@ const Mint = () => {
                         </p>
                     </div>
 
-                    {/* Live preview card */}
+                    {/* Live preview card — same design as capsule card details */}
                     <div
                         style={{
                             flex: 1,
-                            borderRadius: "4px",
                             overflow: "hidden",
-                            background: "rgba(255,255,255,0.03)",
-                            border: "1px solid rgba(255,255,255,0.06)",
                             position: "relative",
                             boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
                         }}
                     >
-                        {/* Cover image */}
+                        {/* Background — blurred cover */}
                         <div
                             style={{
-                                height: "60%",
-                                background: coverImage ? `url(${coverImage}) center/cover` : "linear-gradient(135deg, #2a1a3a, #1a1a2e)",
-                                position: "relative",
+                                position: "absolute",
+                                inset: 0,
+                                backgroundImage: coverImage ? `url(${coverImage})` : "linear-gradient(135deg, #2a1a3a, #1a1a2e)",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                zIndex: 0,
                             }}
-                        >
-                            {/* Profile image overlay */}
-                            <div
-                                style={{
-                                    position: "absolute",
-                                    bottom: "-30px",
-                                    left: "24px",
-                                    width: "64px",
-                                    height: "64px",
-                                    borderRadius: "50%",
-                                    border: "3px solid rgba(255,255,255,0.2)",
-                                    background: profileImage ? `url(${profileImage}) center/cover` : "rgba(255,255,255,0.05)",
-                                    boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-                                }}
-                            />
-                        </div>
-                        {/* Content area */}
+                        />
+
+                        {/* Blur overlay */}
                         <div
                             style={{
-                                padding: "40px 24px 20px 24px",
-                                color: "#fff",
+                                position: "absolute",
+                                inset: 0,
+                                backdropFilter: "blur(20px)",
+                                WebkitBackdropFilter: "blur(20px)",
+                                background:
+                                    "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0, 0, 0, 1) 100%)",
+                                maskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
+                                WebkitMaskImage:
+                                    "linear-gradient(to bottom, transparent 0%, black 100%)",
+                                zIndex: 1,
+                                pointerEvents: "none",
                             }}
-                        >
-                            <h3 style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 4px 0" }}>
-                                {formData.name || "Your Name"}
-                            </h3>
-                            <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", margin: "0 0 6px 0", wordWrap: "break-word" }}>
-                                {formData.bio || "A short bio"}
-                            </p>
-                            <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.3)" }}>
-                                {formData.dob ? `Born: ${new Date(formData.dob).toLocaleDateString()}` : "Date of birth"}
-                            </p>
+                        />
+
+                        {/* Content */}
+                        <div style={{ position: "relative", zIndex: 2 }}>
+                            {/* Cover image area */}
+                            <div style={{ position: 'relative', height: '80px', overflowY: 'visible' }}>
+                                <div style={{ position: 'absolute', inset: 0 }} />
+                            </div>
+
+                            {/* Avatar + Like */}
+                            <div style={{
+                                display: 'flex', alignItems: 'flex-end',
+                                justifyContent: 'space-between',
+                                padding: '0 20px',
+                                marginTop: '-36px',
+                                position: 'relative',
+                            }}>
+                                {/* Avatar */}
+                                <div style={{
+                                    width: '72px', height: '72px',
+                                    borderRadius: '50%',
+                                    border: '3px solid #12131f',
+                                    overflow: 'hidden',
+                                    flexShrink: 0,
+                                }}>
+                                    {profileImage ? (
+                                        <img src={profileImage} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    ) : (
+                                        <div style={{ width: '100%', height: '100%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '1.2rem' }}>+</div>
+                                    )}
+                                </div>
+
+                                {/* Like button */}
+                                <button style={{
+                                    display: 'flex', alignItems: 'center', gap: '6px',
+                                    background: 'rgba(255,255,255,0.08)',
+                                    border: '1px solid rgba(255,255,255,0.12)',
+                                    borderRadius: '999px', padding: '7px 14px',
+                                    cursor: 'pointer', color: '#fff', fontSize: '0.82rem', fontWeight: 600,
+                                }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" strokeWidth="0">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                    </svg>
+                                    Like
+                                </button>
+                            </div>
+
+                            {/* Stats row */}
+                            <div style={{
+                                display: 'flex', justifyContent: 'flex-end', gap: '18px',
+                                padding: '15px 20px 0',
+                                color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem',
+                            }}>
+                                <span><strong style={{ color: '#fff' }}>—</strong> likes</span>
+                                <span><strong style={{ color: '#fff' }}>—</strong> views</span>
+                            </div>
+
+                            {/* Name + bio */}
+                            <div style={{ padding: '0px 20px 0' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem' }}>{formData.name || "Your Name"}</span>
+                                </div>
+                                <p style={{ margin: 0, color: 'rgba(255,255,255,0.75)', fontSize: '0.875rem', lineHeight: 1.55 }}>{formData.bio || "A short bio"}</p>
+                            </div>
+
+                            {/* DOB */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px 0' }}>
+                                <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem' }}>{formData.dob ? `Born: ${new Date(formData.dob).toLocaleDateString()}` : "Date of birth"}</span>
+                            </div>
+
+                            {/* Story */}
                             {formData.story && (
-                                <p
-                                    style={{
-                                        fontSize: "0.8rem",
-                                        color: "rgba(255,255,255,0.6)",
-                                        marginTop: "8px",
-                                        display: "-webkit-box",
-                                        WebkitLineClamp: 3,
-                                        WebkitBoxOrient: "vertical",
-                                        overflow: "hidden",
-                                    }}
-                                >
+                                <p style={{
+                                    padding: '8px 20px 0', color: 'rgba(255,255,255,0.6)',
+                                    fontSize: '0.8rem', margin: 0,
+                                    display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                                }}>
                                     {formData.story}
                                 </p>
                             )}
