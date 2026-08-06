@@ -1,18 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const GoogleLogin = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleGoogleLogin = () => {
+    useEffect(() => {
+        // Load Google API client
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
+    const handleGoogleLogin = async () => {
         setIsLoading(true);
-        // Simulate Google login flow
-        setTimeout(() => {
+        setError("");
+
+        try {
+            // Google OAuth 2.0 configuration
+            const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID';
+            const redirectUri = `${window.location.origin}/auth/callback`;
+            
+            // Generate random state for CSRF protection
+            const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('google_oauth_state', state);
+
+            // Request scopes for user info
+            const scope = 'openid profile email https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read';
+            
+            // Build Google OAuth URL
+            const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+            googleAuthUrl.searchParams.append('client_id', clientId);
+            googleAuthUrl.searchParams.append('redirect_uri', redirectUri);
+            googleAuthUrl.searchParams.append('response_type', 'token');
+            googleAuthUrl.searchParams.append('scope', scope);
+            googleAuthUrl.searchParams.append('state', state);
+            googleAuthUrl.searchParams.append('include_granted_scopes', 'true');
+
+            // Open popup
+            const width = 500;
+            const height = 700;
+            const left = window.screenX + (window.outerWidth - width) / 2;
+            const top = window.screenY + (window.outerHeight - height) / 2;
+            
+            const popup = window.open(
+                googleAuthUrl.toString(),
+                'Google Login',
+                `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+            );
+
+            if (!popup) {
+                throw new Error('Popup blocked. Please allow popups for this site.');
+            }
+
+            // Listen for the popup to close
+            const checkInterval = setInterval(() => {
+                if (popup.closed) {
+                    clearInterval(checkInterval);
+                    setIsLoading(false);
+                }
+            }, 500);
+
+        } catch (err) {
+            console.error("Login error:", err);
+            setError(err.message || "Failed to initiate login. Please try again.");
             setIsLoading(false);
-            // Redirect or handle login logic here
-            alert("Google login successful! (demo)");
-        }, 1500);
+        }
     };
 
     return (
@@ -22,60 +84,19 @@ const GoogleLogin = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "radial-gradient(ellipse at 20% 50%, #1a0b2e 0%, #0a0a0a 100%)",
+                background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
                 fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
                 position: "relative",
                 overflow: "hidden",
+                padding: "20px",
             }}
         >
-            {/* Animated background particles */}
+            {/* Subtle background pattern */}
             <div
                 style={{
                     position: "absolute",
                     inset: 0,
-                    overflow: "hidden",
-                    pointerEvents: "none",
-                }}
-            >
-                {[...Array(20)].map((_, i) => (
-                    <div
-                        key={i}
-                        style={{
-                            position: "absolute",
-                            width: `${Math.random() * 4 + 2}px`,
-                            height: `${Math.random() * 4 + 2}px`,
-                            background: "rgba(255,255,255,0.08)",
-                            borderRadius: "50%",
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animation: `float ${Math.random() * 20 + 10}s infinite ease-in-out ${Math.random() * 5}s`,
-                        }}
-                    />
-                ))}
-            </div>
-
-            {/* Glow orbs */}
-            <div
-                style={{
-                    position: "absolute",
-                    top: "-20%",
-                    right: "-10%",
-                    width: "500px",
-                    height: "500px",
-                    background: "radial-gradient(circle, rgba(100,80,255,0.15) 0%, transparent 70%)",
-                    borderRadius: "50%",
-                    pointerEvents: "none",
-                }}
-            />
-            <div
-                style={{
-                    position: "absolute",
-                    bottom: "-20%",
-                    left: "-10%",
-                    width: "500px",
-                    height: "500px",
-                    background: "radial-gradient(circle, rgba(255,80,150,0.1) 0%, transparent 70%)",
-                    borderRadius: "50%",
+                    backgroundImage: "radial-gradient(circle at 20% 50%, rgba(212, 165, 116, 0.03) 0%, transparent 50%)",
                     pointerEvents: "none",
                 }}
             />
@@ -86,23 +107,14 @@ const GoogleLogin = () => {
                     width: "100%",
                     maxWidth: "440px",
                     padding: "48px 40px",
-                    background: "rgba(255,255,255,0.04)",
+                    background: "rgba(0, 0, 0, 0.3)",
                     backdropFilter: "blur(24px)",
                     WebkitBackdropFilter: "blur(24px)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(212, 165, 116, 0.15)",
                     borderRadius: "32px",
-                    boxShadow: "0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)",
+                    boxShadow: "0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(212, 165, 116, 0.1)",
                     position: "relative",
                     zIndex: 10,
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                }}
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 40px 100px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.08)";
-                }}
-                onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)";
                 }}
             >
                 {/* Logo/Icon */}
@@ -118,13 +130,15 @@ const GoogleLogin = () => {
                             width: "64px",
                             height: "64px",
                             borderRadius: "50%",
-                            background: "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02))",
-                            border: "1px solid rgba(255,255,255,0.08)",
+                            background: "linear-gradient(135deg, rgba(212, 165, 116, 0.15), rgba(212, 165, 116, 0.05))",
+                            border: "1px solid rgba(212, 165, 116, 0.3)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             fontSize: "32px",
                             boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+                            color: "#d4a574",
+                            fontFamily: "'Georgia', serif",
                         }}
                     >
                         ✦
@@ -134,26 +148,47 @@ const GoogleLogin = () => {
                 {/* Title */}
                 <h1
                     style={{
-                        color: "#fff",
-                        fontSize: "2rem",
-                        fontWeight: 700,
+                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                        color: "#f5f0e8",
+                        fontSize: "2.4rem",
+                        fontWeight: 400,
                         textAlign: "center",
                         margin: "0 0 8px 0",
                         letterSpacing: "-0.02em",
                     }}
                 >
-                    Welcome Back
+                    Welcome
                 </h1>
                 <p
                     style={{
-                        color: "rgba(255,255,255,0.4)",
+                        color: "rgba(245, 240, 232, 0.5)",
                         textAlign: "center",
                         fontSize: "0.95rem",
                         margin: "0 0 36px 0",
+                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                        fontStyle: "italic",
                     }}
                 >
-                    Sign in to continue to your capsules
+                    Sign in to preserve your story
                 </p>
+
+                {/* Error Message */}
+                {error && (
+                    <div
+                        style={{
+                            background: "rgba(239, 68, 68, 0.1)",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            borderRadius: "12px",
+                            padding: "12px 16px",
+                            marginBottom: "20px",
+                            color: "#ef4444",
+                            fontSize: "0.9rem",
+                            textAlign: "center",
+                        }}
+                    >
+                        {error}
+                    </div>
+                )}
 
                 {/* Google Login Button */}
                 <button
@@ -162,31 +197,33 @@ const GoogleLogin = () => {
                     style={{
                         width: "100%",
                         padding: "16px 24px",
-                        background: "rgba(255,255,255,0.95)",
-                        border: "none",
+                        background: "rgba(212, 165, 116, 0.1)",
+                        border: "1px solid rgba(212, 165, 116, 0.3)",
                         borderRadius: "16px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         gap: "12px",
                         cursor: isLoading ? "not-allowed" : "pointer",
-                        transition: "all 0.2s ease",
-                        boxShadow: "0 4px 20px rgba(255,255,255,0.15)",
+                        transition: "all 0.3s ease",
+                        boxShadow: "0 4px 20px rgba(212, 165, 116, 0.2)",
                         opacity: isLoading ? 0.6 : 1,
                         position: "relative",
                     }}
                     onMouseEnter={(e) => {
                         if (!isLoading) {
-                            e.currentTarget.style.transform = "scale(1.02)";
-                            e.currentTarget.style.boxShadow = "0 8px 32px rgba(255,255,255,0.25)";
-                            e.currentTarget.style.background = "#ffffff";
+                            e.currentTarget.style.transform = "translateY(-2px)";
+                            e.currentTarget.style.boxShadow = "0 8px 32px rgba(212, 165, 116, 0.35)";
+                            e.currentTarget.style.background = "rgba(212, 165, 116, 0.15)";
+                            e.currentTarget.style.borderColor = "rgba(212, 165, 116, 0.5)";
                         }
                     }}
                     onMouseLeave={(e) => {
                         if (!isLoading) {
-                            e.currentTarget.style.transform = "scale(1)";
-                            e.currentTarget.style.boxShadow = "0 4px 20px rgba(255,255,255,0.15)";
-                            e.currentTarget.style.background = "rgba(255,255,255,0.95)";
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "0 4px 20px rgba(212, 165, 116, 0.2)";
+                            e.currentTarget.style.background = "rgba(212, 165, 116, 0.1)";
+                            e.currentTarget.style.borderColor = "rgba(212, 165, 116, 0.3)";
                         }
                     }}
                 >
@@ -212,10 +249,11 @@ const GoogleLogin = () => {
 
                     <span
                         style={{
-                            color: "#1a1a1a",
+                            color: "#f5f0e8",
                             fontSize: "1rem",
                             fontWeight: 600,
                             letterSpacing: "0.01em",
+                            fontFamily: "'Georgia', 'Times New Roman', serif",
                         }}
                     >
                         {isLoading ? "Signing in..." : "Continue with Google"}
@@ -226,8 +264,8 @@ const GoogleLogin = () => {
                             style={{
                                 width: "20px",
                                 height: "20px",
-                                border: "2px solid rgba(0,0,0,0.1)",
-                                borderTopColor: "#1a1a1a",
+                                border: "2px solid rgba(212, 165, 116, 0.2)",
+                                borderTopColor: "#d4a574",
                                 borderRadius: "50%",
                                 animation: "spin 0.6s linear infinite",
                                 position: "absolute",
@@ -246,11 +284,11 @@ const GoogleLogin = () => {
                         margin: "28px 0 20px 0",
                     }}
                 >
-                    <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.06)" }} />
-                    <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.06em" }}>
-                        SECURE
+                    <div style={{ flex: 1, height: "1px", background: "rgba(212, 165, 116, 0.15)" }} />
+                    <span style={{ color: "rgba(212, 165, 116, 0.4)", fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.1em" }}>
+                        CURATED AUTHENTICATION
                     </span>
-                    <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.06)" }} />
+                    <div style={{ flex: 1, height: "1px", background: "rgba(212, 165, 116, 0.15)" }} />
                 </div>
 
                 {/* Features */}
@@ -260,21 +298,21 @@ const GoogleLogin = () => {
                         justifyContent: "center",
                         gap: "24px",
                         fontSize: "0.75rem",
-                        color: "rgba(255,255,255,0.25)",
+                        color: "rgba(212, 165, 116, 0.4)",
                         letterSpacing: "0.02em",
                     }}
                 >
                     <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <span style={{ color: "rgba(255,255,255,0.15)" }}>●</span>
+                        <span style={{ color: "rgba(212, 165, 116, 0.3)" }}>✦</span>
                         Encrypted
                     </span>
                     <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <span style={{ color: "rgba(255,255,255,0.15)" }}>●</span>
+                        <span style={{ color: "rgba(212, 165, 116, 0.3)" }}>✦</span>
                         Private
                     </span>
                     <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <span style={{ color: "rgba(255,255,255,0.15)" }}>●</span>
-                        Decentralized
+                        <span style={{ color: "rgba(212, 165, 116, 0.3)" }}>✦</span>
+                        Secure
                     </span>
                 </div>
             </div>
@@ -287,13 +325,15 @@ const GoogleLogin = () => {
                     left: 0,
                     right: 0,
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.15)",
+                    color: "rgba(212, 165, 116, 0.3)",
                     fontSize: "0.75rem",
                     letterSpacing: "0.04em",
                     zIndex: 10,
+                    fontFamily: "'Georgia', 'Times New Roman', serif",
+                    fontStyle: "italic",
                 }}
             >
-                <span>✦ Preserving memories on the blockchain</span>
+                <span>✦ Preserving memories for future generations</span>
             </div>
 
             {/* Keyframes for animations */}

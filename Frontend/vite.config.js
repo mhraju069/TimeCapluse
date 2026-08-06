@@ -8,6 +8,10 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    host: "0.0.0.0",
+    allowedHosts: [
+      "ape-in-eft.ngrok-free.app",
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
