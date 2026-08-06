@@ -110,7 +110,8 @@ export const InfiniteDraggableGrid = ({
   const [selectedCard, setSelectedCard] = useState(null);
   // Server-fetched capsules keyed by "grid_x:grid_y"
   const [serverCapsules, setServerCapsules] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  // True until the first backend load completes (prevents static-image flash)
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const hasActive = activeFilters.text || activeFilters.location || activeFilters.year || activeFilters.month ||
     activeFilters.dateFrom || activeFilters.dateTo || activeFilters.imageFile;
@@ -155,6 +156,7 @@ export const InfiniteDraggableGrid = ({
   const isFullscreen = true;
   const debounceTimerRef = useRef(null);
   const serverCapsulesRef = useRef({});
+  const initRef = useRef(false);
 
   // Keep ref in sync with state for use in callbacks
   useEffect(() => {
@@ -182,7 +184,6 @@ export const InfiniteDraggableGrid = ({
   const fetchViewportData = useCallback((bounds) => {
     clearTimeout(debounceTimerRef.current);
     debounceTimerRef.current = setTimeout(() => {
-      setIsLoading(true);
       fetchViewport(bounds.minX, bounds.maxX, bounds.minY, bounds.maxY)
         .then(data => {
           if (Array.isArray(data)) {
@@ -194,8 +195,7 @@ export const InfiniteDraggableGrid = ({
             setServerCapsules(prev => ({ ...prev, ...capsuleMap }));
           }
         })
-        .catch(err => console.error('Viewport fetch error:', err))
-        .finally(() => setIsLoading(false));
+        .catch(err => console.error('Viewport fetch error:', err));
     }, 300);
   }, []);
 
@@ -208,11 +208,77 @@ export const InfiniteDraggableGrid = ({
     fetchViewportData({ minX, maxX, minY, maxY });
   }, [viewportSize, fetchViewportData]);
 
-  // Fetch initial viewport on mount
+  // Center the viewport on the centroid of all public capsules so that
+  // any capsule in the DB (including newly added ones) appears in the middle.
   useEffect(() => {
-    handleViewportChange({ x: 0, y: 0 });
+    if (viewportSize.width === 0 || viewportSize.height === 0) return;
+    if (initRef.current) return;
+    initRef.current = true;
+
+    let cancelled = false;
+    fetch('/api/capsules/bounds/')
+      .then(res => res.json())
+      .then(data => {
+        if (cancelled) return;
+        // Only override the start position if there are public capsules
+        if (data && data.min_x !== null && data.max_x !== null) {
+          // Fetch all capsules in the full bounds so we can compute their centroid
+          const pad = 2;
+          const minX = data.min_x - pad;
+          const maxX = data.max_x + pad;
+          const minY = data.min_y - pad;
+          const maxY = data.max_y + pad;
+          return fetch(
+            `/api/capsules/viewport/?min_x=${minX}&max_x=${maxX}&min_y=${minY}&max_y=${maxY}`
+          )
+            .then(res => res.json())
+            .then(capsules => {
+              if (cancelled) return;
+              const list = Array.isArray(capsules) ? capsules : [];
+              // Populate server capsules immediately so no static flash occurs
+              if (list.length) {
+                const capsuleMap = {};
+                list.forEach(capsule => {
+                  const key = `${capsule.grid_x}:${capsule.grid_y}`;
+                  capsuleMap[key] = mapServerCapsule(capsule);
+                });
+                setServerCapsules(prev => ({ ...prev, ...capsuleMap }));
+              }
+              let centerX, centerY;
+              if (list.length) {
+                // Centroid of actual capsule positions
+                const sumX = list.reduce((s, c) => s + c.grid_x, 0);
+                const sumY = list.reduce((s, c) => s + c.grid_y, 0);
+                centerX = Math.round(sumX / list.length);
+                centerY = Math.round(sumY / list.length);
+              } else {
+                centerX = Math.round((data.min_x + data.max_x) / 2);
+                centerY = Math.round((data.min_y + data.max_y) / 2);
+              }
+              const centerOffset = {
+                x: viewportSize.width / 2 + CARD_WIDTH / 2 - centerX * CARD_WIDTH,
+                y: viewportSize.height / 2 + CARD_HEIGHT / 2 - centerY * CARD_HEIGHT,
+              };
+              setOffset(centerOffset);
+              setTargetOffset(centerOffset);
+              lastFetchedOffsetRef.current = centerOffset;
+              handleViewportChange(centerOffset);
+              setIsInitialLoading(false);
+            });
+        } else {
+          handleViewportChange({ x: 0, y: 0 });
+          setIsInitialLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          handleViewportChange({ x: 0, y: 0 });
+          setIsInitialLoading(false);
+        }
+      });
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [viewportSize, handleViewportChange]);
 
   // Fetch when offset changes significantly (after drag/momentum settles)
   const lastFetchedOffsetRef = useRef({ x: 0, y: 0 });
@@ -300,7 +366,12 @@ export const InfiniteDraggableGrid = ({
   }, [handleDragMove, handleDragEnd]);
 
   const visibleCardsData = useMemo(() => {
-    if (!filteredGallery.length || viewportSize.width === 0) return [];
+    if (viewportSize.width === 0) return [];
+    // Mode: show ONLY DB capsules (looped) if any exist, otherwise ONLY static gallery
+    const serverList = Object.values(serverCapsules);
+    const hasServer = serverList.length > 0;
+    if (!hasServer && !filteredGallery.length) return [];
+
     const getGalleryDescriptor = index => filteredGallery[((index % filteredGallery.length) + filteredGallery.length) % filteredGallery.length];
     const getRandomSafe = (col, row) => {
       let pick;
@@ -329,6 +400,14 @@ export const InfiniteDraggableGrid = ({
       }
       return picksRef.current[key];
     };
+    // Pick a descriptor for a grid cell: loop DB capsules if present, else loop static gallery
+    const getDescriptorForCell = (tCol, tRow) => {
+      if (hasServer) {
+        const index = (((tCol + tRow * 7) % serverList.length) + serverList.length) % serverList.length;
+        return serverList[index];
+      }
+      return getRandomDescriptor(tCol, tRow);
+    };
     const offsetX = ((Math.round(offset.x) % CARD_WIDTH) + CARD_WIDTH) % CARD_WIDTH;
     const offsetY = ((Math.round(offset.y) % CARD_HEIGHT) + CARD_HEIGHT) % CARD_HEIGHT;
     const getCardPos = (col, row) => {
@@ -349,14 +428,11 @@ export const InfiniteDraggableGrid = ({
       for (let col = -3; col < viewCols; col++) {
         const tCol = colOffset + col;
         const tRow = rowOffset + row;
-        // Check if server has a capsule at this grid position
-        const serverKey = `${tCol}:${tRow}`;
-        const serverCapsule = serverCapsulesRef.current[serverKey];
-        const desc = serverCapsule || getRandomDescriptor(tCol, tRow);
+        const desc = getDescriptorForCell(tCol, tRow);
         const [x, y] = getCardPos(col, row);
         if (isVisible(x, y)) {
           newVisibleCards.push({
-            key: serverCapsule ? `server:${serverKey}` : `${tCol}:${tRow}`,
+            key: `${tCol}:${tRow}`,
             descriptor: desc,
             x,
             y
@@ -394,7 +470,7 @@ export const InfiniteDraggableGrid = ({
         width: '100%',
         height: '100%'
       }}>
-        {visibleCards.map(card => (
+        {!isInitialLoading && visibleCards.map(card => (
           <Card
             key={card.key}
             descriptor={card.descriptor}
@@ -404,39 +480,6 @@ export const InfiniteDraggableGrid = ({
           />
         ))}
       </div>
-
-      {/* Loading indicator */}
-      {isLoading && (
-        <div style={{
-          position: 'absolute',
-          top: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 20,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          borderRadius: '999px',
-          padding: '8px 20px',
-          color: 'rgba(255,255,255,0.7)',
-          fontSize: '0.8rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          pointerEvents: 'none',
-        }}>
-          <div style={{
-            width: '12px',
-            height: '12px',
-            borderRadius: '50%',
-            border: '2px solid rgba(255,255,255,0.2)',
-            borderTopColor: '#fff',
-            animation: 'spin 0.8s linear infinite',
-          }} />
-          Loading capsules...
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        </div>
-      )}
 
       <button
         onClick={() => setModalOpen(true)}

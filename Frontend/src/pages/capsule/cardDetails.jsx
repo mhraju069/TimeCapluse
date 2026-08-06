@@ -26,23 +26,43 @@ const STATIC_CAPSULE = {
     seeMoreHref: '#',
 };
 
+// Cache of thumbnails already loaded so cards don't re-flash dark during drag
+const loadedThumbCache = new Set();
+
 
 const CapsuleDetailModal = ({ descriptor, onClose }) => {
     // Use server capsule data if available, otherwise fall back to static
     const isServer = descriptor?.isServer;
+    const [detail, setDetail] = useState(null);
+    useEffect(() => {
+        if (isServer && descriptor?.id) {
+            fetch(`/api/capsules/${descriptor.id}/`)
+                .then(res => res.json())
+                .then(data => setDetail(data))
+                .catch(() => {});
+        }
+    }, [isServer, descriptor?.id]);
+
+    const serverData = detail || {};
     const data = isServer ? {
-        name: descriptor?.name || descriptor?.title || 'Untitled Capsule',
+        name: serverData.name || descriptor?.name || descriptor?.title || 'Untitled Capsule',
         verified: false,
-        bio: 'A time capsule from the grid.',
-        likes: '—',
-        views: '—',
-        rating: 0,
-        reviewCount: 0,
+        bio: serverData.bio || 'A time capsule from the grid.',
+        likes: serverData.likes ?? '—',
+        views: serverData.views ?? '—',
+        rating: serverData.average_rating || 0,
+        reviewCount: serverData.total_reviews || 0,
         skills: [],
         seeMoreHref: '#',
     } : STATIC_CAPSULE;
-    const cover = data.coverSrc || descriptor?.full_src || descriptor?.thumb_src;
-    const avatar = data.avatarSrc || descriptor?.thumb_src;
+    // Cover background uses the real cover image (detail.cover), falling back to the grid thumbnail
+    const cover = isServer
+        ? (serverData.cover || descriptor?.full_src || descriptor?.thumb_src)
+        : (data.coverSrc || descriptor?.full_src || descriptor?.thumb_src);
+    // Avatar uses the real profile image (detail.profile), falling back to the thumbnail
+    const avatar = isServer
+        ? (serverData.profile || descriptor?.thumb_src)
+        : (data.avatarSrc || descriptor?.thumb_src);
 
     return (
         <>
@@ -125,7 +145,7 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
                         {/* Cover image */}
                         <div style={{ position: 'relative', height: '80px', overflowY: 'visible' }}>
                             {/* <img
-                                // src={cover}
+                                src={cover}
                                 alt="cover"
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             /> */}
@@ -312,29 +332,38 @@ const Card = React.memo(({
     y,
     onOpen,
 }) => {
-    const [opacity, setOpacity] = useState(0);
+    // Dark overlay opacity: 1 = fully dark, 0 = image revealed
+    const [darkOpacity, setDarkOpacity] = useState(1);
     const imgRef = useRef(null);
     const startPosRef = useRef({ x: 0, y: 0 });
     const isDraggingRef = useRef(false);
 
     useEffect(() => {
-        setOpacity(0);
+        // If already loaded before, show instantly (no dark flash while dragging)
+        if (loadedThumbCache.has(descriptor.thumb_src)) {
+            setDarkOpacity(0);
+            return;
+        }
+        setDarkOpacity(1);
         const img = new Image();
         img.src = descriptor.thumb_src;
-        const fadeIn = () => {
+        const reveal = () => {
+            loadedThumbCache.add(descriptor.thumb_src);
             let start = null;
             const fade = t => {
                 if (start === null) start = t;
-                const p = Math.min(1, (t - start) / 300);
-                setOpacity(p);
+                // Smooth ease-out: dark -> real image (no blur/scale, GPU friendly)
+                const p = Math.min(1, (t - start) / 400);
+                const eased = 1 - Math.pow(1 - p, 3);
+                setDarkOpacity(1 - eased);
                 if (p < 1) requestAnimationFrame(fade);
             };
             requestAnimationFrame(fade);
         };
         if (img.decode) {
-            img.decode().then(fadeIn).catch(fadeIn);
+            img.decode().then(reveal).catch(reveal);
         } else {
-            img.onload = fadeIn;
+            img.onload = reveal;
         }
     }, [descriptor]);
 
@@ -371,6 +400,8 @@ const Card = React.memo(({
             maxHeight: CARD_HEIGHT,
             contain: 'layout style paint',
             cursor: 'pointer',
+            backfaceVisibility: 'hidden',
+            transformStyle: 'preserve-3d',
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -382,14 +413,21 @@ const Card = React.memo(({
             alt={descriptor.title || descriptor.name || 'Gallery image'}
             className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none"
             style={{
-                opacity,
-                transition: 'opacity 0.3s ease-out',
                 imageRendering: 'crisp-edges',
                 backfaceVisibility: 'hidden',
                 transform: 'translateZ(0)'
             }}
             loading="lazy"
             decoding="async"
+        />
+        {/* Dark overlay that fades out to reveal the real image (dark -> image) */}
+        <div
+            className="absolute inset-0 pointer-events-none select-none"
+            style={{
+                background: '#000',
+                opacity: darkOpacity,
+                willChange: 'opacity'
+            }}
         />
     </div>;
 }, (prevProps, nextProps) =>
