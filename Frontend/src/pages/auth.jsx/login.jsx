@@ -29,14 +29,14 @@ const GoogleLogin = () => {
             // Google OAuth 2.0 configuration
             const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID';
             const redirectUri = `${window.location.origin}/auth/callback`;
-            
+
             // Generate random state for CSRF protection
             const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             localStorage.setItem('google_oauth_state', state);
 
             // Request scopes for user info
             const scope = 'openid profile email https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read';
-            
+
             // Build Google OAuth URL
             const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
             googleAuthUrl.searchParams.append('client_id', clientId);
@@ -51,7 +51,7 @@ const GoogleLogin = () => {
             const height = 700;
             const left = window.screenX + (window.outerWidth - width) / 2;
             const top = window.screenY + (window.outerHeight - height) / 2;
-            
+
             const popup = window.open(
                 googleAuthUrl.toString(),
                 'Google Login',
@@ -65,17 +65,17 @@ const GoogleLogin = () => {
             // Listen for messages from popup
             const messageHandler = (event) => {
                 if (event.origin !== window.location.origin) return;
-                
+
                 if (event.data.type === 'LOGIN_SUCCESS') {
                     // Store tokens from localStorage (already stored in callback)
                     const token = localStorage.getItem('access_token');
                     const userData = localStorage.getItem('user');
-                    
+
                     if (token && userData) {
                         // Redirect to capsule page
                         window.location.href = '/capsule';
                     }
-                    
+
                     clearInterval(checkInterval);
                     window.removeEventListener('message', messageHandler);
                 } else if (event.data.type === 'LOGIN_ERROR') {
@@ -216,52 +216,6 @@ const GoogleLogin = () => {
                         {error}
                     </div>
                 )}
-
-                {/* Test Backend Connection Button */}
-                <button
-                    onClick={async () => {
-                        try {
-                            const testUrl = `${API_BASE_URL}/auth/api/v1/login/`;
-                            console.log('Testing backend connection to:', testUrl);
-                            
-                            const res = await fetch(testUrl, {
-                                method: 'OPTIONS',
-                                mode: 'cors',
-                            });
-                            
-                            console.log('CORS preflight response:', res.status, res.statusText);
-                            const headers = {};
-                            res.headers.forEach((value, key) => {
-                                headers[key] = value;
-                            });
-                            console.log('Response headers:', headers);
-                            
-                            alert(`Backend connection test:\n\nStatus: ${res.status} ${res.statusText}\n\nCORS Headers:\n${JSON.stringify(headers, null, 2)}`);
-                        } catch (err) {
-                            console.error('Backend connection test failed:', err);
-                            alert(`Backend connection test FAILED:\n\n${err.message}\n\nCheck console for details.`);
-                        }
-                    }}
-                    disabled={isLoading}
-                    style={{
-                        width: "100%",
-                        padding: "12px 24px",
-                        background: "rgba(59, 130, 246, 0.1)",
-                        border: "1px solid rgba(59, 130, 246, 0.3)",
-                        borderRadius: "16px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "8px",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease",
-                        marginBottom: "16px",
-                        color: "#60a5fa",
-                        fontSize: "0.9rem",
-                    }}
-                >
-                    🔧 Test Backend Connection
-                </button>
 
                 {/* Google Login Button */}
                 <button
