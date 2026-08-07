@@ -1,7 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 
-from .models import Capsule, Review
+from .models import Capsule, Review, Like
 
 
 class CapsuleGridSerializer(serializers.ModelSerializer):
@@ -24,6 +24,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
     cover = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
     total_reviews = serializers.SerializerMethodField()
+    total_views = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
 
     class Meta:
@@ -32,7 +33,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'bio', 'story', 'location', 'dob',
             'profile', 'cover', 'grid_x', 'grid_y',
             'views', 'likes', 'is_public', 'created_at',
-            'average_rating', 'total_reviews', 'user',
+            'average_rating', 'total_reviews', 'total_views', 'user',
         ]
 
     def get_profile(self, obj):
@@ -51,6 +52,9 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
 
     def get_total_reviews(self, obj):
         return obj.review_set.count()
+
+    def get_total_views(self, obj):
+        return obj.capsule_views.count()
 
     def get_user(self, obj):
         return {
@@ -226,3 +230,30 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
         
         capsule.save()
         return capsule
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    """Serializer for Like model"""
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    
+    class Meta:
+        model = Like
+        fields = ['id', 'user', 'user_name', 'capsule', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating reviews"""
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    user_image = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Review
+        fields = ['id', 'user', 'user_name', 'user_image', 'capsule', 'rating', 'review', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at']
+    
+    def get_user_image(self, obj):
+        request = self.context.get('request')
+        if obj.user.image and request:
+            return request.build_absolute_uri(obj.user.image.url)
+        return None

@@ -68,3 +68,44 @@ class Review(models.Model):
 
     def total_rating(self):
         return self.review_set.count()
+
+
+class Like(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
+    capsule = models.ForeignKey(Capsule, on_delete=models.CASCADE, related_name='capsule_likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'capsule']
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.name} liked {self.capsule.name}"
+
+
+class View(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='views', null=True, blank=True)
+    capsule = models.ForeignKey(Capsule, on_delete=models.CASCADE, related_name='capsule_views')
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'capsule'],
+                name='unique_user_capsule_view',
+                condition=models.Q(user__isnull=False)
+            ),
+            models.UniqueConstraint(
+                fields=['ip_address', 'capsule'],
+                name='unique_ip_capsule_view',
+                condition=models.Q(user__isnull=True)
+            ),
+        ]
+        ordering = ['-created_at']
+
+    def __str__(self):
+        user_info = self.user.name if self.user else f"Anonymous ({self.ip_address})"
+        return f"{user_info} viewed {self.capsule.name}"

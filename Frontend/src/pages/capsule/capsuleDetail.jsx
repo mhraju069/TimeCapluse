@@ -39,6 +39,13 @@ const CapsuleDetail = () => {
     const [reviewsPage, setReviewsPage] = useState(1);
     const [reviewsTotalPages, setReviewsTotalPages] = useState(1);
     const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [liked, setLiked] = useState(false);
+    const [likesCount, setLikesCount] = useState(capsule?.likes || 0);
+    const [likeLoading, setLikeLoading] = useState(false);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [reviewRating, setReviewRating] = useState(0);
+    const [reviewText, setReviewText] = useState('');
+    const [submittingReview, setSubmittingReview] = useState(false);
 
     useEffect(() => {
         // Get current user ID from localStorage
@@ -150,6 +157,73 @@ const CapsuleDetail = () => {
             setError(err.message);
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleLike = async () => {
+        if (!token) {
+            setError('Please login to like');
+            return;
+        }
+        setLikeLoading(true);
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/capsules/${id}/like/`, {
+                method: 'POST',
+                headers: getApiHeaders(token),
+            });
+            if (!res.ok) throw new Error('Failed to like capsule');
+            const data = await res.json();
+            setLiked(data.liked);
+            setLikesCount(data.likes_count);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLikeLoading(false);
+        }
+    };
+
+    const handleSubmitReview = async () => {
+        if (!token) {
+            setError('Please login to review');
+            return;
+        }
+        if (!reviewRating || !reviewText) {
+            setError('Please provide both rating and review');
+            return;
+        }
+        setSubmittingReview(true);
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/capsules/${id}/review/`, {
+                method: 'POST',
+                headers: getApiHeaders(token),
+                body: JSON.stringify({
+                    rating: reviewRating,
+                    review: reviewText
+                }),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to submit review');
+            }
+            const data = await res.json();
+            // Refresh reviews
+            fetchReviews(1);
+            // Reset form
+            setShowReviewForm(false);
+            setReviewRating(0);
+            setReviewText('');
+            // Update capsule stats
+            if (data.review) {
+                setCapsule(prev => ({
+                    ...prev,
+                    total_reviews: (prev.total_reviews || 0) + 1,
+                    average_rating: data.review.rating
+                }));
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setSubmittingReview(false);
         }
     };
 
@@ -265,7 +339,7 @@ const CapsuleDetail = () => {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                                 </svg>
-                                <span>{capsule.likes || 0} likes</span>
+                                <span>{likesCount} likes</span>
                             </div>
                             <div className="capsule-stat">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -280,6 +354,22 @@ const CapsuleDetail = () => {
                                 <span>{capsule.review_count || 0} reviews</span>
                             </div>
                         </div>
+
+                        {/* Like Button - Show only if not the owner */}
+                        {token && currentUserId !== capsule.user?.id && (
+                            <div className="capsule-like-section">
+                                <button 
+                                    className={`like-btn ${liked ? 'liked' : ''}`}
+                                    onClick={handleLike}
+                                    disabled={likeLoading}
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                    </svg>
+                                    <span>{liked ? 'Liked' : 'Like'}</span>
+                                </button>
+                            </div>
+                        )}
 
                         <div className="capsule-detail-info">
                             <h1 className="capsule-detail-name">{capsule.name}</h1>
@@ -388,6 +478,69 @@ const CapsuleDetail = () => {
                         <div className="reviews-header">
                             <h2 className="reviews-title">Reviews ({capsule.total_reviews || 0})</h2>
                         </div>
+
+                        {/* Add Review Button - Show only if not the owner and logged in */}
+                        {token && currentUserId !== capsule.user?.id && !showReviewForm && (
+                            <button 
+                                className="add-review-btn"
+                                onClick={() => setShowReviewForm(true)}
+                            >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                                Add Review
+                            </button>
+                        )}
+
+                        {/* Review Form */}
+                        {showReviewForm && (
+                            <div className="review-form">
+                                <h3>Write a Review</h3>
+                                <div className="review-form-rating">
+                                    <label>Rating:</label>
+                                    <div className="star-rating">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <button
+                                                key={star}
+                                                type="button"
+                                                className={`star-btn ${star <= reviewRating ? 'active' : ''}`}
+                                                onClick={() => setReviewRating(star)}
+                                            >
+                                                ★
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <textarea
+                                        placeholder="Write your review here..."
+                                        value={reviewText}
+                                        onChange={(e) => setReviewText(e.target.value)}
+                                        rows="4"
+                                    />
+                                </div>
+                                <div className="review-form-actions">
+                                    <button 
+                                        className="submit-review-btn"
+                                        onClick={handleSubmitReview}
+                                        disabled={submittingReview}
+                                    >
+                                        {submittingReview ? 'Submitting...' : 'Submit Review'}
+                                    </button>
+                                    <button 
+                                        className="cancel-review-btn"
+                                        onClick={() => {
+                                            setShowReviewForm(false);
+                                            setReviewRating(0);
+                                            setReviewText('');
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         {reviewsLoading && reviewsPage === 1 ? (
                             <div className="reviews-loading">

@@ -5,10 +5,10 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import F, Avg, Sum
 from django.shortcuts import get_object_or_404
 
-from .models import Capsule, Review
+from .models import Capsule, Review, Like, View
 from .serializers import (
     CapsuleGridSerializer, CapsuleDetailSerializer, CapsuleCreateSerializer,
-    MyCapsuleSerializer, ReviewSerializer
+    MyCapsuleSerializer, ReviewSerializer, LikeSerializer, ReviewCreateSerializer
 )
 
 class CapsuleViewportView(APIView):
@@ -55,12 +55,45 @@ class CapsuleDetailView(APIView):
     def get(self, request, capsule_id):
         capsule = get_object_or_404(Capsule, id=capsule_id, is_public=True)
 
-        # Atomic view count increment (race condition safe)
-        Capsule.objects.filter(id=capsule_id).update(views=F('views') + 1)
-        capsule.refresh_from_db(fields=['views'])
+        # Track view per user/IP
+        user = request.user if request.user.is_authenticated else None
+        
+        # Get IP address from request
+        ip_address = self.get_client_ip(request)
+        
+        # Create view record (unique constraint ensures one record per user/capsule or IP/capsule)
+        view, created = None, False
+        if user:
+            # Authenticated user - create view with user
+            view, created = View.objects.get_or_create(
+                user=user,
+                capsule=capsule,
+                defaults={'ip_address': ip_address}
+            )
+        else:
+            # Anonymous user - create view with IP only
+            view, created = View.objects.get_or_create(
+                user=None,
+                capsule=capsule,
+                ip_address=ip_address
+            )
+        
+        # Only increment the views count if this is a new unique view
+        if created:
+            Capsule.objects.filter(id=capsule_id).update(views=F('views') + 1)
+            capsule.refresh_from_db(fields=['views'])
 
         serializer = CapsuleDetailSerializer(capsule, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def get_client_ip(self, request):
+        """Extract client IP address from request"""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
 
     def patch(self, request, capsule_id):
         """Partial update - only owners can update their capsules"""
@@ -249,3 +282,95 @@ class CapsuleReviewsView(APIView):
             'current_page': page,
             'total_reviews': total_reviews,
         }, status=status.HTTP_200_OK)
+
+
+class CapsuleLikeView(APIView):
+    """
+    Like/Unlike a capsule.
+    Requires authentication.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, capsule_id):
+        capsule = get_object_or_404(Capsule, id=capsule_id)
+        
+        # Check if user already liked this capsule
+        existing_like = Like.objects.filter(user=request.user, capsule=capsule).first()
+        
+        if existing_like:
+            # Unlike - remove the like and decrement count
+            existing_like.delete()
+            Capsule.objects.filter(id=capsule_id).update(likes=F('likes') - 1)
+            capsule.refresh_from_db(fields=['likes'])
+            return Response({
+                'message': 'Unliked successfully',
+                'liked': False,
+                'likes_count': capsule.likes
+            }, status=status.HTTP_200_OK)
+        else:
+            # Like - create new like and increment count
+            Like.objects.create(user=request.user, capsule=capsule)
+            Capsule.objects.filter(id=capsule_id).update(likes=F('likes') + 1)
+            capsule.refresh_from_db(fields=['likes'])
+            
+            serializer = LikeSerializer(Like.objects.filter(user=request.user, capsule=capsule).first(), context={'request': request})
+            return Response({
+                'message': 'Liked successfully',
+                'liked': True,
+                'likes_count': capsule.likes,
+                'like': serializer.data
+            }, status=status.HTTP_201_CREATED)
+
+    def get(self, request, capsule_id):
+        """Check if current user liked this capsule"""
+        capsule = get_object_or_404(Capsule, id=capsule_id)
+        
+        if not request.user.is_authenticated:
+            return Response({
+                'liked': False,
+                'likes_count': capsule.likes
+            }, status=status.HTTP_200_OK)
+        
+        liked = Like.objects.filter(user=request.user, capsule=capsule).exists()
+        
+        return Response({
+            'liked': liked,
+            'likes_count': capsule.likes
+        }, status=status.HTTP_200_OK)
+
+
+class CapsuleReviewCreateView(APIView):
+    """
+    Create a review for a capsule.
+    Requires authentication.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, capsule_id):
+        capsule = get_object_or_404(Capsule, id=capsule_id)
+        
+        # Check if user already reviewed this capsule
+        existing_review = Review.objects.filter(user=request.user, capsule=capsule).first()
+        if existing_review:
+            return Response({
+                'error': 'You have already reviewed this capsule'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Create serializer with request context
+        serializer = ReviewCreateSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            # Save review with user and capsule
+            review = serializer.save(user=request.user, capsule=capsule)
+            
+            # Return the created review
+            response_serializer = ReviewSerializer(review, context={'request': request})
+            return Response({
+                'message': 'Review created successfully',
+                'review': response_serializer.data
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

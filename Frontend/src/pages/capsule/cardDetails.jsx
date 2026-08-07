@@ -35,13 +35,13 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
     const isServer = descriptor?.isServer;
     const [detail, setDetail] = useState(null);
     useEffect(() => {
-        if (isServer && descriptor?.id) {
+        if (isServer && descriptor?.id && !detail) {
             fetch(`/api/capsules/${descriptor.id}/`)
                 .then(res => res.json())
                 .then(data => setDetail(data))
                 .catch(() => {});
         }
-    }, [isServer, descriptor?.id]);
+    }, [isServer, descriptor?.id, detail]);
 
     const serverData = detail || {};
     const data = isServer ? {
