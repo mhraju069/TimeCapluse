@@ -20,6 +20,7 @@ export const StaggeredMenu = ({
     onMenuOpen,
     onMenuClose,
     isLoggedIn = false,
+    user = null,
     onLoginClick,
     onLogoutClick,
     onAuthClick
@@ -361,7 +362,7 @@ export const StaggeredMenu = ({
             data-position={position}
             data-open={open || undefined}
         >
-            <div 
+            <div
                 className={`sm-backdrop ${open ? 'active' : ''}`}
                 onClick={closeMenu}
                 aria-hidden="true"
@@ -446,10 +447,36 @@ export const StaggeredMenu = ({
                             </ul>
                         </div>
                     )}
-                    
+
                     {/* Login/Logout Button */}
                     <div className="sm-auth-section" aria-label="Authentication">
-                        <button 
+                        {isLoggedIn && user && (
+                            <button
+                                className="sm-profile-button"
+                                onClick={() => {
+                                    onAuthClick?.();
+                                    setTimeout(() => closeMenu(), 100);
+                                    window.location.href = '/dashboard';
+                                }}
+                                type="button"
+                                aria-label="Go to dashboard"
+                                title="View Dashboard"
+                            >
+                                <img
+                                    src={user.image}
+                                    alt={user.name || 'Profile'}
+                                    className="sm-profile-avatar"
+                                    draggable={false}
+                                    referrerPolicy="no-referrer"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                        const fallback = e.currentTarget.nextElementSibling;
+                                        if (fallback) fallback.style.display = 'flex';
+                                    }}
+                                />
+                            </button>
+                        )}
+                        <button
                             className="sm-auth-button"
                             onClick={() => {
                                 if (isLoggedIn) {

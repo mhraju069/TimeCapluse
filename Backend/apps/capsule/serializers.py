@@ -1,7 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 
-from .models import Capsule
+from .models import Capsule, Review
 
 
 class CapsuleGridSerializer(serializers.ModelSerializer):
@@ -66,6 +66,72 @@ class NullableIntegerField(serializers.IntegerField):
         if data is serializers.empty or data == '' or data == 'null' or data is None:
             return serializers.empty
         return super().run_validation(data)
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    """Serializer for capsule reviews"""
+    capsule_name = serializers.CharField(source='capsule.name', read_only=True)
+    capsule_id = serializers.UUIDField(source='capsule.id', read_only=True)
+    capsule_cover = serializers.SerializerMethodField()
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    user_image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Review
+        fields = ['id', 'capsule_id', 'capsule_name', 'capsule_cover', 'user_name', 'user_image', 'rating', 'review', 'created_at']
+
+    def get_capsule_cover(self, obj):
+        request = self.context.get('request')
+        if obj.capsule.cover_thumbnail and request:
+            return request.build_absolute_uri(obj.capsule.cover_thumbnail.url)
+        elif obj.capsule.cover and request:
+            return request.build_absolute_uri(obj.capsule.cover.url)
+        return None
+
+    def get_user_image(self, obj):
+        request = self.context.get('request')
+        if obj.user.image and request:
+            return request.build_absolute_uri(obj.user.image.url)
+        return None
+
+
+class MyCapsuleSerializer(serializers.ModelSerializer):
+    """Serializer for user's own capsules in dashboard"""
+    thumbnail = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
+    review_count = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Capsule
+        fields = [
+            'id', 'name', 'bio', 'location', 'dob',
+            'thumbnail', 'profile', 'grid_x', 'grid_y',
+            'views', 'likes', 'is_public', 'created_at',
+            'review_count', 'average_rating',
+        ]
+
+    def get_thumbnail(self, obj):
+        request = self.context.get('request')
+        image = obj.cover_thumbnail if obj.cover_thumbnail else obj.cover
+        if image and request:
+            return request.build_absolute_uri(image.url)
+        return None
+
+    def get_profile(self, obj):
+        request = self.context.get('request')
+        if obj.profile and request:
+            return request.build_absolute_uri(obj.profile.url)
+        return None
+
+    def get_review_count(self, obj):
+        return obj.review_set.count()
+
+    def get_average_rating(self, obj):
+        reviews = obj.review_set.all()
+        if reviews.exists():
+            return round(reviews.aggregate(avg=models.Avg('rating'))['avg'] or 0, 1)
+        return 0
 
 
 class CapsuleCreateSerializer(serializers.ModelSerializer):

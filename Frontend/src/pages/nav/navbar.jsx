@@ -7,6 +7,7 @@ const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Capsule', ariaLabel: 'Open the capsule page', link: '/capsule' },
     { label: 'Mint', ariaLabel: 'Create a new TimeCapsule', link: '/mint' },
+    { label: 'Dashboard', ariaLabel: 'View your dashboard', link: '/dashboard' },
     { label: 'About', ariaLabel: 'Learn about us', link: '/about' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '/contact' }
 ];
@@ -73,6 +74,7 @@ const Navbar = () => {
                 logoUrl={logo}
                 accentColor="rgba(255, 81, 0, 0.99)"
                 isLoggedIn={isLoggedIn}
+                user={user}
                 onLoginClick={handleLoginClick}
                 onLogoutClick={handleLogoutClick}
                 onAuthClick={handleAuthClick}

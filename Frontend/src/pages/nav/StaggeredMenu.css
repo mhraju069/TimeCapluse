@@ -381,6 +381,11 @@
 
 /* Auth Section Styles */
 .sm-auth-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     margin-top: 2rem;
     padding-top: 1.5rem;
     border-top: 1px solid rgba(212, 165, 116, 0.15);
@@ -408,10 +413,10 @@
 
 .sm-auth-button:hover {
     background: rgba(212, 165, 116, 0.15);
-    border-color: rgba(212, 165, 116, 0.5);
+    border-color: rgba(255, 81, 0, 0.99);
     transform: translateY(-2px);
     box-shadow: 0 8px 32px rgba(212, 165, 116, 0.35);
-    color: #d4a574;
+    color: rgba(255, 81, 0, 0.99);
 }
 
 .sm-auth-button:active {
@@ -425,4 +430,78 @@
 
 .sm-auth-button:hover svg {
     transform: scale(1.1);
+}
+
+/* Profile Button Styles */
+.sm-profile-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 20%;
+    color: #f5f0e8;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.sm-profile-button:hover {
+    border-color: rgba(212, 165, 116, 0.5);
+    transform: translateY(-2px);
+}
+
+.sm-profile-button:active {
+    transform: translateY(0);
+}
+
+.sm-profile-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid rgba(212, 165, 116, 0.4);
+    background: rgba(212, 165, 116, 0.1);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.sm-profile-button:hover .sm-profile-avatar {
+    border-color: rgba(255, 81, 0, 0.99);
+    transform: scale(1.05);
+}
+
+.sm-profile-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #d4a574;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.2), rgba(212, 165, 116, 0.05));
+}
+
+.sm-profile-name {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #f5f0e8;
+    transition: color 0.3s ease;
+}
+
+.sm-profile-button:hover .sm-profile-name {
+    color: #d4a574;
+}
+
+.sm-profile-button .sm-profile-chevron {
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.sm-profile-button:hover .sm-profile-chevron {
+    opacity: 1;
+    transform: translateX(3px);
 }

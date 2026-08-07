@@ -6,6 +6,7 @@ import Mint from './pages/mint/mint';
 import Gallery from './pages/capsule/gallery';
 import GoogleLogin from './pages/auth.jsx/login.jsx';
 import AuthCallback from './pages/auth.jsx/callback.jsx';
+import Dashboard from './pages/dashboard/dashboard';
 function App() {
   return (
     <div style={{ minHeight: '100vh', background: '#0f0f14' }}>
@@ -16,6 +17,7 @@ function App() {
         <Route path="/capsule" element={<Gallery />} />
         <Route path="/auth" element={<GoogleLogin />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>
   );
