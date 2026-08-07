@@ -599,6 +599,54 @@ const Mint = () => {
                                 />
                             </div>
 
+                            {/* Location */}
+                            <div>
+                                <label
+                                    style={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                        fontWeight: 500,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.12em",
+                                        color: "#d4a574",
+                                        marginBottom: "8px",
+                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                    }}
+                                >
+                                    Location
+                                </label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    value={formData.location}
+                                    onChange={handleChange}
+                                    placeholder="City, Country"
+                                    style={{
+                                        width: "100%",
+                                        background: "rgba(212, 165, 116, 0.06)",
+                                        border: "1px solid rgba(212, 165, 116, 0.2)",
+                                        borderRadius: "14px",
+                                        padding: "14px 18px",
+                                        color: "#f5f0e8",
+                                        fontSize: "0.95rem",
+                                        outline: "none",
+                                        transition: "all 0.2s ease",
+                                        boxSizing: "border-box",
+                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
+                                        e.target.style.boxShadow = "0 0 0 3px rgba(212, 165, 116, 0.1)";
+                                        e.target.style.background = "rgba(212, 165, 116, 0.1)";
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.2)";
+                                        e.target.style.boxShadow = "none";
+                                        e.target.style.background = "rgba(212, 165, 116, 0.06)";
+                                    }}
+                                />
+                            </div>
+
                             {/* DOB */}
                             <div>
                                 <label

@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import F, Avg, Sum
 from django.shortcuts import get_object_or_404
 
@@ -185,10 +185,36 @@ class DashboardView(APIView):
                     'engagement_per_capsule': engagement_per_capsule,
                     'total_engagement': engagement_total,
                 },
-                'capsules': capsule_serializer.data,
-                'reviews_received': review_serializer.data,
-                'reviews_written': user_review_serializer.data,
-                'most_viewed': most_viewed_data,
-                'recent_capsules': recent_capsule_serializer.data,
+                'capsules': capsule_serializer.data
             }
+        }, status=status.HTTP_200_OK)
+
+
+class CapsuleReviewsView(APIView):
+    """
+    Get reviews for a specific capsule with pagination.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, capsule_id):
+        capsule = get_object_or_404(Capsule, id=capsule_id)
+        reviews = Review.objects.filter(capsule=capsule).select_related('user').order_by('-created_at')
+        
+        # Simple pagination
+        page = int(request.query_params.get('page', 1))
+        page_size = 10
+        start = (page - 1) * page_size
+        end = start + page_size
+        
+        total_reviews = reviews.count()
+        total_pages = (total_reviews + page_size - 1) // page_size
+        
+        paginated_reviews = reviews[start:end]
+        serializer = ReviewSerializer(paginated_reviews, many=True, context={'request': request})
+        
+        return Response({
+            'results': serializer.data,
+            'total_pages': total_pages,
+            'current_page': page,
+            'total_reviews': total_reviews,
         }, status=status.HTTP_200_OK)

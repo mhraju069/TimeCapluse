@@ -12,6 +12,8 @@ body,
   height: 100%;
   overflow-x: hidden;
   background-color: #0f0f14;
+  scrollbar-color: #d4a574 #0f0e0c;
+  scrollbar-width: thin;
 }
 
 body {
