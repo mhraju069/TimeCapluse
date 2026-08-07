@@ -4,6 +4,18 @@ import { useNavigate, useLocation } from "react-router-dom";
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const AUTH_ENDPOINT = '/auth/api/v1/login/';
 
+// Headers needed for ngrok and Django API
+const getApiHeaders = (token = null) => {
+    const headers = {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
+    };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+};
+
 const AuthCallback = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -43,25 +55,10 @@ const AuthCallback = () => {
                         console.log('window.location.href:', window.location.href);
                         console.log('Access token (first 20 chars):', accessToken.substring(0, 20) + '...');
                         
-                        // Test if we can reach the backend
-                        console.log('Testing backend connectivity...');
-                        try {
-                            const testRes = await fetch(`${API_BASE_URL}${AUTH_ENDPOINT}`, {
-                                method: 'OPTIONS',
-                                mode: 'cors',
-                            });
-                            console.log('CORS preflight status:', testRes.status);
-                        } catch (corsError) {
-                            console.error('CORS preflight failed:', corsError);
-                        }
-                        
                         // Send access token to backend
-                        console.log('Sending POST request to backend...');
                         const res = await fetch(`${API_BASE_URL}${AUTH_ENDPOINT}`, {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: getApiHeaders(),
                             body: JSON.stringify({ access: accessToken }),
                         });
 

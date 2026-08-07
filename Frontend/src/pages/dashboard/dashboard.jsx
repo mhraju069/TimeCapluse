@@ -4,6 +4,18 @@ import './dashboard.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
+// Headers needed for ngrok and Django API
+const getApiHeaders = (token = null) => {
+    const headers = {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
+    };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+};
+
 const Dashboard = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -20,10 +32,7 @@ const Dashboard = () => {
         const fetchDashboard = async () => {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/dashboard/`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
+                    headers: getApiHeaders(token),
                 });
 
                 if (res.status === 401) {
@@ -31,17 +40,14 @@ const Dashboard = () => {
                     if (refreshToken) {
                         const refreshRes = await fetch(`${API_BASE_URL}/token/refresh/`, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: getApiHeaders(),
                             body: JSON.stringify({ refresh: refreshToken }),
                         });
                         if (refreshRes.ok) {
                             const refreshData = await refreshRes.json();
                             localStorage.setItem('access_token', refreshData.access);
                             const retryRes = await fetch(`${API_BASE_URL}/api/dashboard/`, {
-                                headers: {
-                                    'Authorization': `Bearer ${refreshData.access}`,
-                                    'Content-Type': 'application/json',
-                                },
+                                headers: getApiHeaders(refreshData.access),
                             });
                             if (retryRes.ok) {
                                 const retryData = await retryRes.json();
@@ -154,10 +160,7 @@ const Dashboard = () => {
                                 <line x1="12" y1="5" x2="12" y2="19" />
                                 <line x1="5" y1="12" x2="19" y2="12" />
                             </svg>
-                            New Capsule
-                        </button>
-                        <button className="header-btn secondary" onClick={() => navigate('/capsule')}>
-                            View Gallery
+                            Mint Capsule
                         </button>
                     </div>
                 </header>
@@ -353,141 +356,6 @@ const Dashboard = () => {
                             </div>
                         )}
                     </section>
-
-                    {/* Sidebar */}
-                    <aside className="dashboard-sidebar">
-                        {/* Most Viewed */}
-                        {most_viewed && (
-                            <section className="dashboard-section most-viewed-section">
-                                <div className="section-header">
-                                    <h2 className="section-title">Most Viewed</h2>
-                                </div>
-                                <div className="most-viewed-card" onClick={() => navigate(`/capsule/${most_viewed.id}`)}>
-                                    {most_viewed.thumbnail ? (
-                                        <img src={most_viewed.thumbnail} alt={most_viewed.name} className="most-viewed-image" />
-                                    ) : (
-                                        <div className="most-viewed-image most-viewed-placeholder">
-                                            <span>✦</span>
-                                        </div>
-                                    )}
-                                    <div className="most-viewed-info">
-                                        <h3 className="most-viewed-name">{most_viewed.name}</h3>
-                                        <div className="most-viewed-stats">
-                                            <span className="most-viewed-stat">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                    <circle cx="12" cy="12" r="3" />
-                                                </svg>
-                                                {formatNumber(most_viewed.views)} views
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        )}
-
-                        {/* Recent Capsules */}
-                        {recent_capsules && recent_capsules.length > 0 && (
-                            <section className="dashboard-section recent-section">
-                                <div className="section-header">
-                                    <h2 className="section-title">Recent</h2>
-                                </div>
-                                <div className="recent-list">
-                                    {recent_capsules.map((capsule) => (
-                                        <div key={capsule.id} className="recent-item" onClick={() => navigate(`/capsule/${capsule.id}`)}>
-                                            {capsule.thumbnail ? (
-                                                <img src={capsule.thumbnail} alt={capsule.name} className="recent-thumb" />
-                                            ) : (
-                                                <div className="recent-thumb recent-thumb-placeholder">
-                                                    <span>✦</span>
-                                                </div>
-                                            )}
-                                            <div className="recent-info">
-                                                <span className="recent-name">{capsule.name}</span>
-                                                <span className="recent-date">{formatDate(capsule.created_at)}</span>
-                                            </div>
-                                            <span className="recent-arrow">→</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
-
-                        {/* Reviews Received */}
-                        <section className="dashboard-section reviews-section">
-                            <div className="section-header">
-                                <h2 className="section-title">Reviews Received</h2>
-                                <span className="section-count">{reviews_received.length}</span>
-                            </div>
-                            {reviews_received.length === 0 ? (
-                                <div className="mini-empty">
-                                    <p>No reviews yet</p>
-                                </div>
-                            ) : (
-                                <div className="reviews-list">
-                                    {reviews_received.slice(0, 5).map((review) => (
-                                        <div key={review.id} className="review-item">
-                                            <div className="review-avatar-wrap">
-                                                {review.user_image ? (
-                                                    <img src={review.user_image} alt={review.user_name} className="review-avatar" referrerPolicy="no-referrer" />
-                                                ) : (
-                                                    <div className="review-avatar review-avatar-fallback">
-                                                        {review.user_name ? review.user_name.charAt(0).toUpperCase() : 'U'}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="review-content">
-                                                <div className="review-header">
-                                                    <span className="review-author">{review.user_name || 'Anonymous'}</span>
-                                                    <span className="review-capsule">on {review.capsule_name}</span>
-                                                </div>
-                                                <div className="review-stars">{renderStars(review.rating)}</div>
-                                                <p className="review-text">{review.review}</p>
-                                                <span className="review-date">{formatDate(review.created_at)}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </section>
-
-                        {/* Reviews Written */}
-                        <section className="dashboard-section reviews-section">
-                            <div className="section-header">
-                                <h2 className="section-title">Reviews Written</h2>
-                                <span className="section-count">{reviews_written.length}</span>
-                            </div>
-                            {reviews_written.length === 0 ? (
-                                <div className="mini-empty">
-                                    <p>You haven't written any reviews yet</p>
-                                </div>
-                            ) : (
-                                <div className="reviews-list">
-                                    {reviews_written.slice(0, 5).map((review) => (
-                                        <div key={review.id} className="review-item">
-                                            <div className="review-avatar-wrap">
-                                                {review.capsule_cover ? (
-                                                    <img src={review.capsule_cover} alt={review.capsule_name} className="review-avatar" />
-                                                ) : (
-                                                    <div className="review-avatar review-avatar-fallback">
-                                                        <span>✦</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="review-content">
-                                                <div className="review-header">
-                                                    <span className="review-author">{review.capsule_name}</span>
-                                                </div>
-                                                <div className="review-stars">{renderStars(review.rating)}</div>
-                                                <p className="review-text">{review.review}</p>
-                                                <span className="review-date">{formatDate(review.created_at)}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </section>
-                    </aside>
                 </div>
             </div>
         </div>
