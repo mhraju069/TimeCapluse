@@ -378,3 +378,51 @@
     -webkit-backdrop-filter: blur(4px);
     pointer-events: auto;
 }
+
+/* Auth Section Styles */
+.sm-auth-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(212, 165, 116, 0.15);
+}
+
+.sm-auth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    background: rgba(212, 165, 116, 0.1);
+    border: 1px solid rgba(212, 165, 116, 0.3);
+    border-radius: 12px;
+    color: #f5f0e8;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(212, 165, 116, 0.2);
+}
+
+.sm-auth-button:hover {
+    background: rgba(212, 165, 116, 0.15);
+    border-color: rgba(212, 165, 116, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(212, 165, 116, 0.35);
+    color: #d4a574;
+}
+
+.sm-auth-button:active {
+    transform: translateY(0);
+}
+
+.sm-auth-button svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.sm-auth-button:hover svg {
+    transform: scale(1.1);
+}

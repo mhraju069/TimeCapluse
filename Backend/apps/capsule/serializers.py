@@ -52,6 +52,22 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
         return obj.review_set.count()
 
 
+class NullableIntegerField(serializers.IntegerField):
+    """Custom IntegerField that converts empty strings to None"""
+    
+    def __init__(self, **kwargs):
+        # Set default to None if not provided
+        if 'default' not in kwargs:
+            kwargs['default'] = None
+        super().__init__(**kwargs)
+    
+    def run_validation(self, data=serializers.empty):
+        # Handle empty or null values - return empty to use default
+        if data is serializers.empty or data == '' or data == 'null' or data is None:
+            return serializers.empty
+        return super().run_validation(data)
+
+
 class CapsuleCreateSerializer(serializers.ModelSerializer):
     """Serializer for creating new capsules with image compression"""
     
@@ -62,7 +78,7 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
         model = Capsule
         fields = [
             'name', 'bio', 'story', 'location', 'dob',
-            'profile', 'cover', 'grid_x', 'grid_y', 'is_public'
+            'profile', 'cover', 'is_public'
         ]
     
     def validate(self, attrs):
@@ -77,7 +93,7 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         """Create capsule with compressed images"""
-        from .utils import compress_image_to_webp
+        from .utils import compress_image_to_webp, compress_image_to_webp_thumbnail
         from django.db.models import Max
         
         # Extract images from validated data
@@ -88,11 +104,11 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         
         # Auto-generate grid position if not provided
-        grid_x = validated_data.get('grid_x', 0)
-        grid_y = validated_data.get('grid_y', 0)
+        grid_x = validated_data.get('grid_x')
+        grid_y = validated_data.get('grid_y')
         
         # If grid position not provided, find next available position
-        if not validated_data.get('grid_x') and not validated_data.get('grid_y'):
+        if grid_x is None or grid_y is None:
             # Find the maximum grid position and add 1
             max_capsule = Capsule.objects.aggregate(
                 max_x=Max('grid_x'),
@@ -131,7 +147,7 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
         )
         
         # Generate cover thumbnail
-        thumbnail = compress_image_to_webp_thumbnail(cover_image, quality=80, max_width=400)
+        thumbnail = compress_image_to_webp_thumbnail(profile_image, quality=80, max_width=400)
         capsule.cover_thumbnail = thumbnail
         
         capsule.save()

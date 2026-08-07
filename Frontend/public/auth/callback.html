@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completing Authentication...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #07070b 0%, #14121b 100%);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        .container {
+            text-align: center;
+            color: #d4a574;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(212, 165, 116, 0.2);
+            border-top-color: #d4a574;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        .message {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 1.1rem;
+            color: rgba(245, 240, 232, 0.7);
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <p class="message">Completing authentication...</p>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+
+        async function handleCallback() {
+            try {
+                // Extract access token from URL hash
+                const hash = window.location.hash.substring(1);
+                const params = new URLSearchParams(hash);
+                const accessToken = params.get('access_token');
+                const error = params.get('error');
+
+                if (error) {
+                    console.error('OAuth error:', error);
+                    if (window.opener) {
+                        window.opener.postMessage({ type: 'LOGIN_ERROR', error: 'Authentication was denied' }, window.location.origin);
+                        setTimeout(() => window.close(), 100);
+                    } else {
+                        window.location.href = '/login';
+                    }
+                    return;
+                }
+
+                if (!accessToken) {
+                    console.error('No access token found');
+                    if (window.opener) {
+                        window.opener.postMessage({ type: 'LOGIN_ERROR', error: 'No access token received' }, window.location.origin);
+                        setTimeout(() => window.close(), 100);
+                    } else {
+                        window.location.href = '/login';
+                    }
+                    return;
+                }
+
+                // Send access token to backend
+                const res = await fetch(`${API_BASE_URL}/auth/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ access: accessToken }),
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    // Store tokens in localStorage
+                    localStorage.setItem('access_token', data.access);
+                    localStorage.setItem('refresh_token', data.refresh);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Notify parent window and close
+                    if (window.opener) {
+                        window.opener.postMessage({ type: 'LOGIN_SUCCESS' }, window.location.origin);
+                        setTimeout(() => window.close(), 100);
+                    } else {
+                        // If not in popup, redirect to capsule
+                        window.location.href = '/capsule';
+                    }
+                } else {
+                    console.error('Backend error:', data);
+                    if (window.opener) {
+                        window.opener.postMessage({ type: 'LOGIN_ERROR', error: data.error || 'Login failed' }, window.location.origin);
+                        setTimeout(() => window.close(), 100);
+                    } else {
+                        window.location.href = '/login';
+                    }
+                }
+            } catch (err) {
+                console.error("Callback error:", err);
+                if (window.opener) {
+                    window.opener.postMessage({ type: 'LOGIN_ERROR', error: 'Failed to complete authentication' }, window.location.origin);
+                    setTimeout(() => window.close(), 100);
+                } else {
+                    window.location.href = '/login';
+                }
+            }
+        }
+
+        // Handle callback immediately
+        handleCallback();
+    </script>
+</body>
+</html>

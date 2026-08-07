@@ -131,10 +131,10 @@ class GoogleAuthView(generics.GenericAPIView):
 
             # Save DOB or Phone if fetched successfully
             if date_of_birth or phone_number:
-                if not user.date_of_birth:  # only set if not already present
+                if hasattr(user, 'date_of_birth') and not user.date_of_birth:  # only set if not already present
                     user.date_of_birth = date_of_birth
                     user.save(update_fields=["date_of_birth"])
-                elif not user.phone:
+                elif hasattr(user, 'phone') and not user.phone:
                     user.phone = phone_number
                     user.save(update_fields=["phone"])
 
@@ -147,7 +147,7 @@ class GoogleAuthView(generics.GenericAPIView):
 
             # Generate JWT tokens
             refresh = RefreshToken.for_user(user)
-            serializer = UserSerializer(user)
+            serializer = UserProfileSerializer(user,context={"request": request})
 
             return Response({
                 'access': str(refresh.access_token),

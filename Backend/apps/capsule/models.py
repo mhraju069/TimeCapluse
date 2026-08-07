@@ -22,8 +22,8 @@ class Capsule(models.Model):
         upload_to='capsule_covers/thumbnails', blank=True, null=True
     )
 
-    grid_x = models.IntegerField()
-    grid_y = models.IntegerField()
+    grid_x = models.IntegerField(default=0)
+    grid_y = models.IntegerField(default=0)
 
     views = models.PositiveIntegerField(default=0)
     likes = models.PositiveIntegerField(default=0)

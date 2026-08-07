@@ -18,7 +18,11 @@ export const StaggeredMenu = ({
     isFixed = false,
     closeOnClickAway = true,
     onMenuOpen,
-    onMenuClose
+    onMenuClose,
+    isLoggedIn = false,
+    onLoginClick,
+    onLogoutClick,
+    onAuthClick
 }) => {
     const [open, setOpen] = useState(false);
     const openRef = useRef(false);
@@ -442,6 +446,44 @@ export const StaggeredMenu = ({
                             </ul>
                         </div>
                     )}
+                    
+                    {/* Login/Logout Button */}
+                    <div className="sm-auth-section" aria-label="Authentication">
+                        <button 
+                            className="sm-auth-button"
+                            onClick={() => {
+                                if (isLoggedIn) {
+                                    onLogoutClick?.();
+                                } else {
+                                    onLoginClick?.();
+                                }
+                                onAuthClick?.();
+                                // Close menu after clicking auth button
+                                setTimeout(() => closeMenu(), 100);
+                            }}
+                            type="button"
+                        >
+                            {isLoggedIn ? (
+                                <>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        <polyline points="16 17 21 12 16 7" />
+                                        <line x1="21" y1="12" x2="9" y2="12" />
+                                    </svg>
+                                    <span>Logout</span>
+                                </>
+                            ) : (
+                                <>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                        <polyline points="10 17 15 12 10 7" />
+                                        <line x1="15" y1="12" x2="3" y2="12" />
+                                    </svg>
+                                    <span>Login</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </div>
             </aside>
         </div>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { StaggeredMenu } from './menu';
 import logo from '../../logo.svg';
 
@@ -18,6 +18,45 @@ const socialItems = [
 ];
 
 const Navbar = () => {
+    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        // Check if user is logged in
+        const token = localStorage.getItem('access_token');
+        const userData = localStorage.getItem('user');
+        
+        if (token && userData) {
+            setIsLoggedIn(true);
+            setUser(JSON.parse(userData));
+        }
+    }, []);
+
+    const handleLoginClick = () => {
+        // Navigation will be handled by the menu component after closing
+        window.location.href = '/auth';
+    };
+
+    const handleLogoutClick = () => {
+        // Clear authentication data
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        
+        // Update state
+        setIsLoggedIn(false);
+        setUser(null);
+        
+        // Redirect to home
+        window.location.href = '/';
+    };
+    
+    const handleAuthClick = () => {
+        // This will be called after login/logout to close the menu
+        // The menu will handle its own closing via the closeOnClickAway prop
+    };
+
     return (
         <div style={{ height: '100vh', position: 'fixed', top: 0, left: 0, right: 0, pointerEvents: 'none', zIndex: 200 }}>
             {/* Small interactive area in top-right; rest of header passes pointer events through */}
@@ -33,8 +72,13 @@ const Navbar = () => {
                 colors={['#B497CF', '#5227FF']}
                 logoUrl={logo}
                 accentColor="rgba(255, 81, 0, 0.99)"
+                isLoggedIn={isLoggedIn}
+                onLoginClick={handleLoginClick}
+                onLogoutClick={handleLogoutClick}
+                onAuthClick={handleAuthClick}
                 onMenuOpen={() => console.log('Menu opened')}
                 onMenuClose={() => console.log('Menu closed')}
+                closeOnClickAway={true}
             />
         </div>
     );

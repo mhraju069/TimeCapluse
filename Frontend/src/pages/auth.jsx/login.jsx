@@ -62,10 +62,37 @@ const GoogleLogin = () => {
                 throw new Error('Popup blocked. Please allow popups for this site.');
             }
 
+            // Listen for messages from popup
+            const messageHandler = (event) => {
+                if (event.origin !== window.location.origin) return;
+                
+                if (event.data.type === 'LOGIN_SUCCESS') {
+                    // Store tokens from localStorage (already stored in callback)
+                    const token = localStorage.getItem('access_token');
+                    const userData = localStorage.getItem('user');
+                    
+                    if (token && userData) {
+                        // Redirect to capsule page
+                        window.location.href = '/capsule';
+                    }
+                    
+                    clearInterval(checkInterval);
+                    window.removeEventListener('message', messageHandler);
+                } else if (event.data.type === 'LOGIN_ERROR') {
+                    setError(event.data.error || 'Login failed');
+                    clearInterval(checkInterval);
+                    window.removeEventListener('message', messageHandler);
+                    setIsLoading(false);
+                }
+            };
+
+            window.addEventListener('message', messageHandler);
+
             // Listen for the popup to close
             const checkInterval = setInterval(() => {
                 if (popup.closed) {
                     clearInterval(checkInterval);
+                    window.removeEventListener('message', messageHandler);
                     setIsLoading(false);
                 }
             }, 500);
@@ -189,6 +216,52 @@ const GoogleLogin = () => {
                         {error}
                     </div>
                 )}
+
+                {/* Test Backend Connection Button */}
+                <button
+                    onClick={async () => {
+                        try {
+                            const testUrl = `${API_BASE_URL}/auth/api/v1/login/`;
+                            console.log('Testing backend connection to:', testUrl);
+                            
+                            const res = await fetch(testUrl, {
+                                method: 'OPTIONS',
+                                mode: 'cors',
+                            });
+                            
+                            console.log('CORS preflight response:', res.status, res.statusText);
+                            const headers = {};
+                            res.headers.forEach((value, key) => {
+                                headers[key] = value;
+                            });
+                            console.log('Response headers:', headers);
+                            
+                            alert(`Backend connection test:\n\nStatus: ${res.status} ${res.statusText}\n\nCORS Headers:\n${JSON.stringify(headers, null, 2)}`);
+                        } catch (err) {
+                            console.error('Backend connection test failed:', err);
+                            alert(`Backend connection test FAILED:\n\n${err.message}\n\nCheck console for details.`);
+                        }
+                    }}
+                    disabled={isLoading}
+                    style={{
+                        width: "100%",
+                        padding: "12px 24px",
+                        background: "rgba(59, 130, 246, 0.1)",
+                        border: "1px solid rgba(59, 130, 246, 0.3)",
+                        borderRadius: "16px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                        marginBottom: "16px",
+                        color: "#60a5fa",
+                        fontSize: "0.9rem",
+                    }}
+                >
+                    🔧 Test Backend Connection
+                </button>
 
                 {/* Google Login Button */}
                 <button
