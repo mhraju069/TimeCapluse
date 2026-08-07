@@ -75,6 +75,9 @@ const AuthCallback = () => {
                             localStorage.setItem('refresh_token', data.refresh);
                             localStorage.setItem('user', JSON.stringify(data.user));
                             
+                            // Dispatch custom event for same-window listeners
+                            window.dispatchEvent(new Event('loginSuccess'));
+                            
                             // Notify parent window and close
                             window.opener.postMessage({ type: 'LOGIN_SUCCESS' }, window.location.origin);
                             setTimeout(() => window.close(), 100);

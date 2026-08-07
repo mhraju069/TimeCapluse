@@ -224,20 +224,20 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
 
                         {/* Learn More button */}
                         <div style={{ padding: '10px 20px 10px', display: 'flex', justifyContent: 'space-between' }}>
-
-
-                            <a
-                                href={data.seeMoreHref}
-                                style={{ textDecoration: 'none' }}
-                                onClick={e => e.stopPropagation()}
+                            <button 
+                                className="capsule-learn-more"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (descriptor?.id) {
+                                        window.location.href = `/capsule/${descriptor.id}`;
+                                    }
+                                }}
                             >
-                                <button className="capsule-learn-more">
-                                    <span className="capsule-circle" aria-hidden="true">
-                                        <span className="capsule-icon capsule-arrow"></span>
-                                    </span>
-                                    <span className="capsule-button-text">See More</span>
-                                </button>
-                            </a>
+                                <span className="capsule-circle" aria-hidden="true">
+                                    <span className="capsule-icon capsule-arrow"></span>
+                                </span>
+                                <span className="capsule-button-text">See More</span>
+                            </button>
                         </div>
                     </div>
                 </div>

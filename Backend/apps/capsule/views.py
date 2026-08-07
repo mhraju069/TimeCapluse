@@ -51,6 +51,7 @@ class CapsuleViewportView(APIView):
 
 
 class CapsuleDetailView(APIView):
+    permission_classes = [AllowAny]
 
     def get(self, request, capsule_id):
         capsule = get_object_or_404(Capsule, id=capsule_id, is_public=True)
@@ -61,6 +62,37 @@ class CapsuleDetailView(APIView):
 
         serializer = CapsuleDetailSerializer(capsule, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, capsule_id):
+        """Partial update - only owners can update their capsules"""
+        capsule = get_object_or_404(Capsule, id=capsule_id)
+        
+        # Check if user is authenticated and is the owner
+        if not request.user.is_authenticated:
+            return Response(
+                {'error': 'Authentication required'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        if capsule.user != request.user:
+            return Response(
+                {'error': 'You do not have permission to edit this capsule'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Use partial=True to allow partial updates
+        serializer = CapsuleDetailSerializer(
+            capsule, 
+            data=request.data, 
+            partial=True,
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CapsuleBoundsView(APIView):

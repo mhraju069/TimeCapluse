@@ -7,7 +7,7 @@ const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Capsule', ariaLabel: 'Open the capsule page', link: '/capsule' },
     { label: 'Mint', ariaLabel: 'Create a new TimeCapsule', link: '/mint' },
-    { label: 'Dashboard', ariaLabel: 'View your dashboard', link: '/dashboard' },
+    // { label: 'Dashboard', ariaLabel: 'View your dashboard', link: '/dashboard' },
     { label: 'About', ariaLabel: 'Learn about us', link: '/about' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '/contact' }
 ];
@@ -25,13 +25,41 @@ const Navbar = () => {
 
     useEffect(() => {
         // Check if user is logged in
-        const token = localStorage.getItem('access_token');
-        const userData = localStorage.getItem('user');
-        
-        if (token && userData) {
-            setIsLoggedIn(true);
-            setUser(JSON.parse(userData));
-        }
+        const checkAuth = () => {
+            const token = localStorage.getItem('access_token');
+            const userData = localStorage.getItem('user');
+            
+            if (token && userData) {
+                setIsLoggedIn(true);
+                setUser(JSON.parse(userData));
+            } else {
+                setIsLoggedIn(false);
+                setUser(null);
+            }
+        };
+
+        // Initial check
+        checkAuth();
+
+        // Listen for storage changes (e.g., after login from callback)
+        const handleStorageChange = (event) => {
+            if (event.key === 'access_token' || event.key === 'user') {
+                checkAuth();
+            }
+        };
+
+        // Listen for custom login event from popup
+        const handleLoginSuccess = () => {
+            checkAuth();
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('loginSuccess', handleLoginSuccess);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('loginSuccess', handleLoginSuccess);
+        };
     }, []);
 
     const handleLoginClick = () => {

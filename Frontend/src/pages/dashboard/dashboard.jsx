@@ -275,7 +275,6 @@ const Dashboard = () => {
                                 <div className="empty-icon">✦</div>
                                 <h3>No capsules yet</h3>
                                 <p>Create your first time capsule to start preserving memories.</p>
-                                <button className="empty-btn" onClick={() => navigate('/mint')}>Create Capsule</button>
                             </div>
                         ) : (
                             <div className="capsules-grid">

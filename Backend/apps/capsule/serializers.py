@@ -24,6 +24,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
     cover = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
     total_reviews = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Capsule
@@ -31,7 +32,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'bio', 'story', 'location', 'dob',
             'profile', 'cover', 'grid_x', 'grid_y',
             'views', 'likes', 'is_public', 'created_at',
-            'average_rating', 'total_reviews',
+            'average_rating', 'total_reviews', 'user',
         ]
 
     def get_profile(self, obj):
@@ -50,6 +51,13 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
 
     def get_total_reviews(self, obj):
         return obj.review_set.count()
+
+    def get_user(self, obj):
+        return {
+            'id': str(obj.user.id),
+            'name': obj.user.name,
+            'email': obj.user.email,
+        }
 
 
 class NullableIntegerField(serializers.IntegerField):
