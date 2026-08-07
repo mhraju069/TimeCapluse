@@ -11,7 +11,6 @@ from .serializers import (
     MyCapsuleSerializer, ReviewSerializer
 )
 
-
 class CapsuleViewportView(APIView):
     """
     Viewport bounds অনুযায়ী capsules fetch করে।
