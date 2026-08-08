@@ -194,25 +194,36 @@ class CapsuleBoundsView(APIView):
 class CapsuleCreateView(APIView):
     """
     Create a new capsule with compressed images.
-    Requires authentication.
+    Requires authentication. Each user can only have ONE capsule.
     """
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request):
+        # Check if user already has a capsule
+        existing = Capsule.objects.filter(user=request.user).first()
+        if existing:
+            return Response(
+                {
+                    'error': 'You already have a capsule. Each user can only create one.',
+                    'capsule_id': str(existing.id),
+                    'capsule_name': existing.name,
+                },
+                status=status.HTTP_409_CONFLICT
+            )
+
         serializer = CapsuleCreateSerializer(
             data=request.data,
             context={'request': request}
         )
-        
+
         if serializer.is_valid():
             capsule = serializer.save()
-            
-            # Return the created capsule data
+
             response_serializer = CapsuleDetailSerializer(
-                capsule, 
+                capsule,
                 context={'request': request}
             )
-            
+
             return Response(
                 {
                     'message': 'Capsule created successfully',
@@ -220,16 +231,39 @@ class CapsuleCreateView(APIView):
                 },
                 status=status.HTTP_201_CREATED
             )
-        
+
         return Response(
             {'errors': serializer.errors},
             status=status.HTTP_400_BAD_REQUEST
         )
 
 
+class MyCapsuleView(APIView):
+    """
+    Returns the authenticated user's capsule, or 404 if they don't have one.
+    Used by frontend to check capsule ownership status.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            capsule = Capsule.objects.get(user=request.user)
+        except Capsule.DoesNotExist:
+            return Response(
+                {'has_capsule': False, 'capsule': None},
+                status=status.HTTP_200_OK
+            )
+
+        serializer = MyCapsuleSerializer(capsule, context={'request': request})
+        return Response(
+            {'has_capsule': True, 'capsule': serializer.data},
+            status=status.HTTP_200_OK
+        )
+
+
 class DashboardView(APIView):
     """
-    Dashboard endpoint - returns user's capsules, reviews, and stats.
+    Dashboard endpoint - returns user's capsule info, timeline count, reviews, and stats.
     Requires authentication.
     """
     permission_classes = [IsAuthenticated]
@@ -237,48 +271,48 @@ class DashboardView(APIView):
     def get(self, request):
         user = request.user
 
-        # Get user's capsules
-        capsules = Capsule.objects.filter(user=user).prefetch_related('review_set')
-        capsule_serializer = MyCapsuleSerializer(capsules, many=True, context={'request': request})
+        # Get user's capsule (at most one)
+        try:
+            capsule = Capsule.objects.get(user=user)
+            has_capsule = True
+        except Capsule.DoesNotExist:
+            capsule = None
+            has_capsule = False
 
-        # Get reviews received on user's capsules
-        capsule_ids = capsules.values_list('id', flat=True)
-        reviews = Review.objects.filter(capsule_id__in=capsule_ids).select_related('user', 'capsule') if capsule_ids else Review.objects.none()
-        review_serializer = ReviewSerializer(reviews, many=True, context={'request': request})
+        capsule_data = None
+        capsule_id = None
+        timeline_count = 0
+        total_views = 0
+        total_likes = 0
+        total_reviews_received = 0
+        average_rating = 0
+        engagement_total = 0
+        engagement_per_capsule = 0
 
-        # Get reviews written by the user
+        if capsule:
+            capsule_id = str(capsule.id)
+            capsule_data = MyCapsuleSerializer(capsule, context={'request': request}).data
+
+            # Timeline count
+            from apps.timeline.models import TimeLine
+            timeline_count = TimeLine.objects.filter(capsule=capsule).count()
+
+            # Stats
+            total_views = capsule.views
+            total_likes = capsule.likes
+
+            # Reviews on this capsule
+            reviews = Review.objects.filter(capsule=capsule).select_related('user')
+            total_reviews_received = reviews.count()
+            avg_rating_data = reviews.aggregate(avg=Avg('rating'))['avg']
+            average_rating = round(avg_rating_data, 1) if avg_rating_data else 0
+
+            engagement_total = total_views + total_likes + total_reviews_received
+            engagement_per_capsule = engagement_total
+
+        # Reviews written by user
         user_reviews = Review.objects.filter(user=user).select_related('capsule')
-        user_review_serializer = ReviewSerializer(user_reviews, many=True, context={'request': request})
-
-        # Stats
-        total_capsules = capsules.count()
-        total_views = capsules.aggregate(total=Sum('views'))['total'] or 0
-        total_likes = capsules.aggregate(total=Sum('likes'))['total'] or 0
-        total_reviews_received = reviews.count()
         total_reviews_written = user_reviews.count()
-
-        # Average rating across all capsules
-        avg_rating_data = reviews.aggregate(avg=Avg('rating'))['avg']
-        average_rating = round(avg_rating_data, 1) if avg_rating_data else 0
-
-        # Engagement rate (views + likes + reviews per capsule)
-        engagement_total = total_views + total_likes + total_reviews_received
-        engagement_per_capsule = round(engagement_total / total_capsules, 1) if total_capsules > 0 else 0
-
-        # Most viewed capsule
-        most_viewed = capsules.order_by('-views').first()
-        most_viewed_data = None
-        if most_viewed:
-            most_viewed_data = {
-                'id': str(most_viewed.id),
-                'name': most_viewed.name,
-                'views': most_viewed.views,
-                'thumbnail': MyCapsuleSerializer(most_viewed, context={'request': request}).data.get('thumbnail')
-            }
-
-        # Recent capsules
-        recent_capsules = capsules.order_by('-created_at')[:5]
-        recent_capsule_serializer = MyCapsuleSerializer(recent_capsules, many=True, context={'request': request})
 
         return Response({
             'status': 'success',
@@ -291,17 +325,20 @@ class DashboardView(APIView):
                     'is_active': user.is_active,
                     'created_at': user.created_at,
                 },
+                'has_capsule': has_capsule,
+                'capsule_id': capsule_id,
+                'capsule': capsule_data,
                 'stats': {
-                    'total_capsules': total_capsules,
+                    'has_capsule': has_capsule,
+                    'timeline_count': timeline_count,
                     'total_views': total_views,
                     'total_likes': total_likes,
                     'total_reviews_received': total_reviews_received,
                     'total_reviews_written': total_reviews_written,
                     'average_rating': average_rating,
-                    'engagement_per_capsule': engagement_per_capsule,
                     'total_engagement': engagement_total,
+                    'engagement_per_capsule': engagement_per_capsule,
                 },
-                'capsules': capsule_serializer.data
             }
         }, status=status.HTTP_200_OK)
 

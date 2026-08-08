@@ -36,7 +36,10 @@ class Capsule(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['grid_x', 'grid_y'], name='unique_grid_position'
-            )
+            ),
+            models.UniqueConstraint(
+                fields=['user'], name='unique_user_capsule'
+            ),
         ]
         indexes = [
             models.Index(fields=['grid_x', 'grid_y'], name='idx_grid_position'),

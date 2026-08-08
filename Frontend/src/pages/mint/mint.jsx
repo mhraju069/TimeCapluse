@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const Mint = () => {
+    const navigate = useNavigate();
+    const [existingCapsule, setExistingCapsule] = useState(null);
+    const [checkingCapsule, setCheckingCapsule] = useState(true);
     const [formData, setFormData] = useState({
         name: "",
         bio: "",
@@ -16,6 +20,37 @@ const Mint = () => {
     const [profileFile, setProfileFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        const checkUserCapsule = async () => {
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                setCheckingCapsule(false);
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/capsules/mine/`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "ngrok-skip-browser-warning": "true",
+                    },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.has_capsule && data.capsule) {
+                        setExistingCapsule(data.capsule);
+                    }
+                }
+            } catch (err) {
+                console.error("Error checking user capsule status:", err);
+            } finally {
+                setCheckingCapsule(false);
+            }
+        };
+
+        checkUserCapsule();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -111,6 +146,97 @@ const Mint = () => {
             setLoading(false);
         }
     };
+
+    if (checkingCapsule) {
+        return (
+            <div style={{
+                minHeight: "100vh",
+                background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ffffff",
+                fontFamily: "'Verdana', sans-serif"
+            }}>
+                <div style={{ textAlign: "center" }}>
+                    <div className="loading-spinner" style={{ margin: "0 auto 16px" }} />
+                    <p style={{ color: "rgba(255,255,255,0.6)" }}>Checking capsule status...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (existingCapsule) {
+        return (
+            <div
+                style={{
+                    minHeight: "100vh",
+                    background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "20px",
+                    fontFamily: "'Verdana', sans-serif",
+                }}
+            >
+                <div
+                    style={{
+                        maxWidth: "500px",
+                        width: "100%",
+                        padding: "40px",
+                        background: "rgba(20, 18, 27, 0.7)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(212, 165, 116, 0.2)",
+                        borderRadius: "24px",
+                        textAlign: "center",
+                        boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
+                    }}
+                >
+                    <div style={{ fontSize: "3rem", color: "#d4a574", marginBottom: "16px" }}>✦</div>
+                    <h2 style={{ color: "#ffffff", fontSize: "1.8rem", marginBottom: "12px" }}>
+                        Capsule Already Created
+                    </h2>
+                    <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.95rem", lineHeight: "1.6", marginBottom: "28px" }}>
+                        Each account can only create one capsule (profile). You have already created <strong>"{existingCapsule.name}"</strong>.
+                    </p>
+                    <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+                        <button
+                            onClick={() => navigate("/dashboard")}
+                            style={{
+                                padding: "12px 24px",
+                                background: "linear-gradient(135deg, #d4a574 0%, #b8860b 100%)",
+                                color: "#000000",
+                                border: "none",
+                                borderRadius: "12px",
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                fontSize: "0.9rem",
+                                transition: "all 0.2s ease"
+                            }}
+                        >
+                            Go to Dashboard
+                        </button>
+                        <button
+                            onClick={() => navigate(`/capsule/${existingCapsule.id}`)}
+                            style={{
+                                padding: "12px 24px",
+                                background: "rgba(255,255,255,0.08)",
+                                color: "#ffffff",
+                                border: "1px solid rgba(255,255,255,0.15)",
+                                borderRadius: "12px",
+                                fontWeight: "500",
+                                cursor: "pointer",
+                                fontSize: "0.9rem",
+                                transition: "all 0.2s ease"
+                            }}
+                        >
+                            View Capsule
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div

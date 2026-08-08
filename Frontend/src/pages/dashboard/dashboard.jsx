@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Timeline from '../capsule/timeline/Timeline';
 import './dashboard.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -127,7 +128,7 @@ const Dashboard = () => {
 
     if (!data) return null;
 
-    const { user, stats, capsules, reviews_received, reviews_written, most_viewed, recent_capsules } = data;
+    const { user, stats, has_capsule, capsule_id, capsule } = data;
 
     return (
         <div className="dashboard-container">
@@ -155,13 +156,23 @@ const Dashboard = () => {
                         </div>
                     </div>
                     <div className="header-actions">
-                        <button className="header-btn" onClick={() => navigate('/mint')}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                            Mint Capsule
-                        </button>
+                        {has_capsule ? (
+                            <button className="header-btn" onClick={() => navigate(`/capsule/${capsule_id}`)}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                                View Capsule Profile
+                            </button>
+                        ) : (
+                            <button className="header-btn" onClick={() => navigate('/mint')}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                                Mint Capsule
+                            </button>
+                        )}
                     </div>
                 </header>
 
@@ -176,11 +187,11 @@ const Dashboard = () => {
                             </svg>
                         </div>
                         <div className="stat-info">
-                            <span className="stat-label">Total Capsules</span>
-                            <span className="stat-value">{stats.total_capsules}</span>
+                            <span className="stat-label">Timeline Events</span>
+                            <span className="stat-value">{stats.timeline_count || 0}</span>
                         </div>
                         <div className="stat-trend positive">
-                            <span>✦</span> Your collection
+                            <span>✦</span> Memories stored
                         </div>
                     </div>
 
@@ -261,97 +272,26 @@ const Dashboard = () => {
                     </div>
                 </section>
 
-                {/* Main Content Grid */}
+                {/* Main Content Grid — Timeline display */}
                 <div className="dashboard-main-grid">
-                    {/* My Capsules */}
-                    <section className="dashboard-section capsules-section">
-                        <div className="section-header">
-                            <h2 className="section-title">My Capsules</h2>
-                            <span className="section-count">{capsules.length} total</span>
+                    <section className="dashboard-section capsules-section" style={{ padding: '24px 0 0 0' }}>
+                        <div className="section-header" style={{ marginBottom: '24px', padding: '0 24px' }}>
+                            <h2 className="section-title">My Timeline</h2>
+                            <span className="section-count">{stats.timeline_count || 0} events</span>
                         </div>
 
-                        {capsules.length === 0 ? (
-                            <div className="empty-state">
-                                <div className="empty-icon">✦</div>
-                                <h3>No capsules yet</h3>
-                                <p>Create your first time capsule to start preserving memories.</p>
+                        {has_capsule && capsule_id ? (
+                            <div style={{ minHeight: '600px', position: 'relative', borderRadius: '24px', overflow: 'hidden' }}>
+                                <Timeline capsuleId={capsule_id} capsuleName={capsule?.name} isOwner={true} />
                             </div>
                         ) : (
-                            <div className="capsules-grid">
-                                {capsules.map((capsule) => (
-                                    <div key={capsule.id} className="capsule-card" onClick={() => navigate(`/capsule/${capsule.id}`)}>
-                                        <div className="capsule-card-image-wrap">
-                                            {capsule.thumbnail ? (
-                                                <img src={capsule.thumbnail} alt={capsule.name} className="capsule-card-image" />
-                                            ) : (
-                                                <div className="capsule-card-image capsule-card-placeholder">
-                                                    <span>✦</span>
-                                                </div>
-                                            )}
-                                            <div className="capsule-card-overlay">
-                                                <div className="capsule-card-actions">
-                                                    <span className="capsule-action">
-                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                            <circle cx="12" cy="12" r="3" />
-                                                        </svg>
-                                                        {formatNumber(capsule.views)}
-                                                    </span>
-                                                    <span className="capsule-action">
-                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                                                        </svg>
-                                                        {formatNumber(capsule.likes)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            {!capsule.is_public && (
-                                                <span className="capsule-private-badge">
-                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                                                    </svg>
-                                                    Private
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="capsule-card-body">
-                                            <h3 className="capsule-card-title">{capsule.name}</h3>
-                                            <p className="capsule-card-bio">{capsule.bio || 'No bio yet'}</p>
-                                            <div className="capsule-card-meta">
-                                                <span className="capsule-meta-item">
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                                        <circle cx="12" cy="10" r="3" />
-                                                    </svg>
-                                                    {capsule.location || 'Unknown'}
-                                                </span>
-                                                <span className="capsule-meta-item">
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                                                        <line x1="16" y1="2" x2="16" y2="6" />
-                                                        <line x1="8" y1="2" x2="8" y2="6" />
-                                                        <line x1="3" y1="10" x2="21" y2="10" />
-                                                    </svg>
-                                                    {formatDate(capsule.created_at)}
-                                                </span>
-                                            </div>
-                                            <div className="capsule-card-footer">
-                                                <div className="capsule-rating">
-                                                    {renderStars(capsule.average_rating)}
-                                                    <span className="rating-count">({capsule.review_count})</span>
-                                                </div>
-                                                <span className="capsule-view-link">
-                                                    View
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <line x1="5" y1="12" x2="19" y2="12" />
-                                                        <polyline points="12 5 19 12 12 19" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="empty-state">
+                                <div className="empty-icon">✦</div>
+                                <h3>No capsule created yet</h3>
+                                <p>Mint your profile capsule to start adding timeline events.</p>
+                                <button className="retry-btn" style={{ marginTop: '16px' }} onClick={() => navigate('/mint')}>
+                                    Mint Capsule Now
+                                </button>
                             </div>
                         )}
                     </section>

@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import CapsuleViewportView, CapsuleDetailView, CapsuleBoundsView, CapsuleCreateView, DashboardView, CapsuleReviewsView, CapsuleLikeView, CapsuleReviewCreateView
+from .views import CapsuleViewportView, CapsuleDetailView, CapsuleBoundsView, CapsuleCreateView, DashboardView, CapsuleReviewsView, CapsuleLikeView, CapsuleReviewCreateView, MyCapsuleView
 
 urlpatterns = [
     path('api/capsules/viewport/', CapsuleViewportView.as_view(), name='capsule-viewport'),
+    path('api/capsules/mine/', MyCapsuleView.as_view(), name='capsule-mine'),
     path('api/capsules/<uuid:capsule_id>/', CapsuleDetailView.as_view(), name='capsule-detail'),
     path('api/capsules/<uuid:capsule_id>/reviews/', CapsuleReviewsView.as_view(), name='capsule-reviews'),
     path('api/capsules/<uuid:capsule_id>/like/', CapsuleLikeView.as_view(), name='capsule-like'),

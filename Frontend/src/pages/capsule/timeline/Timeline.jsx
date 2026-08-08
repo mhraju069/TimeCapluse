@@ -307,6 +307,8 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                         inset={100}
                         loop={true}
                         draggable={true}
+                        soundUrl="/asset/sounds/click-soft.wav"
+                        soundVolume={0.1}
                         onChange={(index) => {
                             if (index !== currentIndex) {
                                 animateTransition(index);

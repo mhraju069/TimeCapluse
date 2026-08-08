@@ -176,11 +176,20 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
         ]
     
     def validate(self, attrs):
-        """Validate that required fields are present"""
+        """Validate that required fields are present and user doesn't already have a capsule"""
         if not attrs.get('name'):
             raise serializers.ValidationError({'name': 'Name is required'})
         if not attrs.get('bio'):
             raise serializers.ValidationError({'bio': 'Bio is required'})
+
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            if Capsule.objects.filter(user=request.user).exists():
+                existing = Capsule.objects.filter(user=request.user).first()
+                raise serializers.ValidationError({
+                    'error': 'You already have a capsule. Each user can only have one.',
+                    'capsule_id': str(existing.id)
+                })
         return attrs
     
     def create(self, validated_data):

@@ -44,7 +44,7 @@ const OptionWheel = ({
   loop = true,
   draggable = true,
 
-  soundUrl = '',
+  soundUrl = '/asset/sounds/click-soft.wav',
   soundVolume = 0.5,
 
   /*
@@ -158,6 +158,7 @@ const OptionWheel = ({
   const audioUrlRef = useRef('');
 
   const lastTickRef = useRef(0);
+  const lastSoundedIndexRef = useRef(-1);
 
   /*
    * Keep callbacks/config refs updated.
@@ -266,6 +267,41 @@ const OptionWheel = ({
 
   /*
    * --------------------------------------------------
+   * SOUND — preload + cached Audio approach
+   * --------------------------------------------------
+   */
+
+  // Preload the audio file as soon as soundUrl is known
+  useEffect(() => {
+    if (!soundUrl) return;
+    const audio = new Audio(soundUrl);
+    audio.preload = 'auto';
+    audio.volume = Math.min(Math.max(soundVolume, 0), 1);
+    audioRef.current = audio;
+    audioUrlRef.current = soundUrl;
+  }, [soundUrl, soundVolume]);
+
+  const playTick = useCallback(() => {
+    const { soundUrl, soundVolume } = cfgRef.current;
+    if (!soundUrl) return;
+
+    // Re-create cached audio if URL changed
+    if (!audioRef.current || audioUrlRef.current !== soundUrl) {
+      const audio = new Audio(soundUrl);
+      audio.preload = 'auto';
+      audioRef.current = audio;
+      audioUrlRef.current = soundUrl;
+    }
+
+    const audio = audioRef.current;
+    audio.volume = Math.min(Math.max(soundVolume, 0), 1);
+    audio.currentTime = 0;
+    const p = audio.play();
+    if (p) p.catch(() => { });
+  }, []);
+
+  /*
+   * --------------------------------------------------
    * ANIMATION
    * --------------------------------------------------
    */
@@ -365,7 +401,7 @@ const OptionWheel = ({
       ? null
       : requestAnimationFrame(runFrame);
 
-  }, []);
+  }, [playTick]);
 
   /*
    * Start animation.
@@ -377,32 +413,6 @@ const OptionWheel = ({
     lastRef.current = performance.now();
     rafRef.current = requestAnimationFrame(runFrame);
   }, [runFrame]);
-
-  /*
-   * --------------------------------------------------
-   * SOUND
-   * --------------------------------------------------
-   */
-
-  const playTick = useCallback(() => {
-    const { soundUrl, soundVolume } = cfgRef.current;
-    if (!soundUrl) return;
-
-    const now = performance.now();
-    if (now - lastTickRef.current < 70) return;
-    lastTickRef.current = now;
-
-    if (!audioRef.current || audioUrlRef.current !== soundUrl) {
-      audioRef.current = new Audio(soundUrl);
-      audioRef.current.preload = 'auto';
-      audioUrlRef.current = soundUrl;
-    }
-
-    const audio = audioRef.current;
-    audio.volume = Math.min(Math.max(soundVolume, 0), 1);
-    audio.currentTime = 0;
-    audio.play()?.catch(() => { });
-  }, []);
 
   /*
    * --------------------------------------------------
@@ -440,11 +450,16 @@ const OptionWheel = ({
       const selectedLabel = getItemLabel(selectedItem);
 
       onChangeRef.current?.(idx, selectedItem, selectedVal, selectedLabel);
-      playTick();
+
+      // Play once per unique index change
+      if (idx !== lastSoundedIndexRef.current) {
+        lastSoundedIndexRef.current = idx;
+        playTick();
+      }
     }
 
     startLoop();
-  }, [startLoop, playTick, getItemValue, getItemLabel]);
+  }, [startLoop, getItemValue, getItemLabel]);
 
   /*
    * --------------------------------------------------
