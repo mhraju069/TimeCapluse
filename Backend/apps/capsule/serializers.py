@@ -27,6 +27,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
     total_views = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
+    is_reviewed = serializers.SerializerMethodField()
 
     class Meta:
         model = Capsule
@@ -35,7 +36,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
             'profile', 'cover', 'grid_x', 'grid_y',
             'views', 'likes', 'is_public', 'created_at',
             'average_rating', 'total_reviews', 'total_views', 'user',
-            'is_liked',
+            'is_liked','is_reviewed',
         ]
 
     def get_profile(self, obj):
@@ -70,6 +71,13 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
         if not request.user.is_authenticated:
             return False
         result = obj.capsule_likes.filter(user=request.user).exists()
+        return result
+
+    def get_is_reviewed(self,obj):
+        request = self.context.get('request')
+        if not request.user.is_authenticated:
+            return False
+        result = obj.review_set.filter(user=request.user).exists()
         return result
 
 class NullableIntegerField(serializers.IntegerField):
@@ -258,7 +266,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'user', 'user_name', 'user_image', 'capsule', 'rating', 'review', 'created_at']
-        read_only_fields = ['id', 'user', 'created_at']
+        read_only_fields = ['id', 'user', 'capsule', 'created_at']
     
     def get_user_image(self, obj):
         request = self.context.get('request')

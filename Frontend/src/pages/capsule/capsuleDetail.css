@@ -48,7 +48,7 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    border: 1px solid var(--border-color);
+    /* border: 1px solid var(--border-color); */
     border-radius: 12px;
     color: #f5f0e8;
     font-family: 'Georgia', 'Times New Roman', serif;
@@ -60,7 +60,6 @@
 }
 
 .back-button:hover {
-    background: var(--background-color);
     border-color: var(--primary-color);
     color: var(--primary-color);
 }

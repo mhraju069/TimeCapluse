@@ -294,7 +294,6 @@ const CapsuleDetail = () => {
                         <line x1="19" y1="12" x2="5" y2="12" />
                         <polyline points="12 19 5 12 12 5" />
                     </svg>
-                    Back
                 </button>
 
                 <div className='details-content' style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
@@ -328,7 +327,6 @@ const CapsuleDetail = () => {
                                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
-                                            Edit
                                         </button>
                                     ) : (
                                         <>
@@ -387,7 +385,6 @@ const CapsuleDetail = () => {
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                                         </svg>
-                                        {/* <span>{liked ? 'Liked' : 'Like'}</span> */}
                                     </button>
                                 </div>
                             )}
@@ -504,7 +501,7 @@ const CapsuleDetail = () => {
                         <div className="reviews-header">
                             <h2 className="reviews-title">Reviews ({capsule.total_reviews || 0})</h2>
                             {/* Add Review Button - Show only if not the owner and logged in */}
-                            {token && currentUserId !== capsule.user?.id && !showReviewForm && (
+                            {token && currentUserId !== capsule.user?.id && !showReviewForm && !capsule.is_reviewed && (
                                 <button
                                     className="add-review-btn"
                                     onClick={() => setShowReviewForm(true)}
@@ -513,7 +510,6 @@ const CapsuleDetail = () => {
                                         <line x1="12" y1="5" x2="12" y2="19" />
                                         <line x1="5" y1="12" x2="19" y2="12" />
                                     </svg>
-                                    Add Review
                                 </button>
                             )}
                         </div>
