@@ -32,7 +32,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Capsule
         fields = [
-            'id', 'name', 'bio', 'story', 'location', 'dob',
+            'id', 'name', 'bio', 'location', 'dob',
             'profile', 'cover', 'grid_x', 'grid_y',
             'views', 'likes', 'is_public', 'created_at',
             'average_rating', 'total_reviews', 'total_views', 'user',
@@ -171,7 +171,7 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Capsule
         fields = [
-            'name', 'bio', 'story', 'location', 'dob',
+            'name', 'bio', 'location', 'dob',
             'profile', 'cover', 'is_public'
         ]
     
@@ -181,8 +181,6 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'name': 'Name is required'})
         if not attrs.get('bio'):
             raise serializers.ValidationError({'bio': 'Bio is required'})
-        if not attrs.get('story'):
-            raise serializers.ValidationError({'story': 'Story is required'})
         return attrs
     
     def create(self, validated_data):

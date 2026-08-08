@@ -12,7 +12,6 @@ class Capsule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capsules')
     name = models.CharField(max_length=50,default="")
     bio = models.CharField(max_length=255,default="")
-    story = models.TextField(default="")
     location = models.CharField(max_length=150,default="")
     dob = models.DateField(default="2025-01-01")
 

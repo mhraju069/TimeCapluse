@@ -30,7 +30,6 @@ const CapsuleDetail = () => {
     const [formData, setFormData] = useState({
         name: '',
         bio: '',
-        story: '',
         location: '',
         dob: '',
         is_public: true,
@@ -111,7 +110,6 @@ const CapsuleDetail = () => {
             setFormData({
                 name: data.name || '',
                 bio: data.bio || '',
-                story: data.story || '',
                 location: data.location || '',
                 dob: data.dob || '',
                 is_public: data.is_public ?? true,
@@ -297,7 +295,7 @@ const CapsuleDetail = () => {
                     </svg>
                 </button>
 
-                <div className='details-content' style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                <div className='details-content' style={{ display: 'flex', gap: '1rem', justifyContent: 'center', maxHeight: '750px', }}>
                     <div className="capsule-detail-card">
                         <div className="capsule-detail-cover-wrap">
                             {capsule.cover ? (
@@ -421,14 +419,6 @@ const CapsuleDetail = () => {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label>Story</label>
-                                        <textarea
-                                            value={formData.story}
-                                            onChange={(e) => setFormData({ ...formData, story: e.target.value })}
-                                            rows="5"
-                                        />
-                                    </div>
-                                    <div className="form-group">
                                         <label>Location</label>
                                         <input
                                             type="text"
@@ -458,12 +448,6 @@ const CapsuleDetail = () => {
                             ) : (
                                 <>
                                     <p className="capsule-detail-bio">{capsule.bio || 'No bio yet'}</p>
-                                    {capsule.story && (
-                                        <div className="capsule-detail-story">
-                                            <h3>Story</h3>
-                                            <p>{capsule.story}</p>
-                                        </div>
-                                    )}
                                     <div className="capsule-detail-meta">
                                         {capsule.location && (
                                             <span className="meta-item">

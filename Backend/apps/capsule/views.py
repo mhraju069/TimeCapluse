@@ -39,8 +39,7 @@ class CapsuleViewportView(APIView):
             if text:
                 capsules = capsules.filter(
                     Q(name__icontains=text) |
-                    Q(bio__icontains=text) |
-                    Q(story__icontains=text)
+                    Q(bio__icontains=text)
                 )
             
             # Location search

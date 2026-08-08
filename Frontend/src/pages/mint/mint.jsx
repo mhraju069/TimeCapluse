@@ -7,7 +7,6 @@ const Mint = () => {
         name: "",
         bio: "",
         dob: "",
-        story: "",
         location: "",
         is_public: true,
     });
@@ -64,7 +63,6 @@ const Mint = () => {
             const formDataToSend = new FormData();
             formDataToSend.append("name", formData.name);
             formDataToSend.append("bio", formData.bio);
-            formDataToSend.append("story", formData.story);
             formDataToSend.append("location", formData.location || "");
             formDataToSend.append("dob", formData.dob || "2025-01-01");
             formDataToSend.append("is_public", formData.is_public ? "true" : "false");
@@ -98,7 +96,6 @@ const Mint = () => {
                 name: "",
                 bio: "",
                 dob: "",
-                story: "",
                 location: "",
                 is_public: true,
             });
@@ -322,24 +319,7 @@ const Mint = () => {
                                 }}>{formData.dob ? `Born: ${new Date(formData.dob).toLocaleDateString()}` : "Date of birth"}</span>
                             </div>
 
-                            {/* Story */}
-                            {formData.story && (
-                                <p style={{
-                                    padding: '8px 20px 0',
-                                    color: 'rgba(245, 240, 232, 0.65)',
-                                    fontSize: '0.85rem',
-                                    margin: 0,
-                                    lineHeight: 1.6,
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 3,
-                                    WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden',
-                                    fontFamily: "'Georgia', 'Times New Roman', serif",
-                                }}>
-                                    {formData.story}
-                                </p>
-                            )}
-                        </div>
+                         </div>
                     </div>
 
                     {/* Decorative hint */}
@@ -695,56 +675,6 @@ const Mint = () => {
                                 />
                             </div>
 
-                            {/* Story (spans two columns) */}
-                            <div style={{ gridColumn: "1 / -1" }}>
-                                <label
-                                    style={{
-                                        display: "block",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 500,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.12em",
-                                        color: "#d4a574",
-                                        marginBottom: "8px",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
-                                    }}
-                                >
-                                    Your Story
-                                </label>
-                                <textarea
-                                    name="story"
-                                    value={formData.story}
-                                    onChange={handleChange}
-                                    placeholder="Tell your story…"
-                                    rows="10"
-                                    required
-                                    style={{
-                                        width: "100%",
-                                        background: "rgba(212, 165, 116, 0.06)",
-                                        border: "1px solid rgba(212, 165, 116, 0.2)",
-                                        borderRadius: "14px",
-                                        padding: "14px 18px",
-                                        color: "#f5f0e8",
-                                        fontSize: "0.95rem",
-                                        outline: "none",
-                                        resize: "vertical",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
-                                        transition: "all 0.2s ease",
-                                        boxSizing: "border-box",
-                                        lineHeight: 1.6,
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
-                                        e.target.style.boxShadow = "0 0 0 3px rgba(212, 165, 116, 0.1)";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.1)";
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.2)";
-                                        e.target.style.boxShadow = "none";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.06)";
-                                    }}
-                                />
-                            </div>
                         </div>
 
                         {/* Mint Button */}

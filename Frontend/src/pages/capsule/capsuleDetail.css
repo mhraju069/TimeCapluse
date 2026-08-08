@@ -389,8 +389,7 @@
     padding: 2rem;
     max-height: auto;
     overflow-y: auto;
-    scrollbar-color: #d4a574 #0f0e0c;
-    scrollbar-width: thin;
+    scrollbar-width: none;
     /* max-width: 50%; */
     min-width: 50%;
 }
