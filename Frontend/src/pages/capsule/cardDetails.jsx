@@ -44,11 +44,11 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
-            
+
             fetch(`/api/capsules/${descriptor.id}/`, { headers })
                 .then(res => res.json())
                 .then(data => setDetail(data))
-                .catch(() => {});
+                .catch(() => { });
         }
     }, [isServer, descriptor?.id, detail]);
 
@@ -182,30 +182,29 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
                                 <img src={avatar} alt={data.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
 
-                            {/* Like button */}
-                            <button style={{
-                                display: 'flex', alignItems: 'center', gap: '6px',
-                                background: 'rgba(255,255,255,0.08)',
-                                border: '1px solid rgba(255,255,255,0.12)',
-                                borderRadius: '999px', padding: '7px 14px',
-                                cursor: 'pointer', color: '#fff', fontSize: '0.82rem', fontWeight: 600,
-                            }}>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" strokeWidth="0">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                </svg>
-                                Like
-                            </button>
+
                         </div>
 
                         {/* Stats row */}
-                        <div style={{
+                        {/* <div style={{
                             display: 'flex', justifyContent: 'flex-end', gap: '18px',
                             padding: '15px 20px 0',
                             color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem',
                         }}>
-                            <span><strong style={{ color: '#fff' }}>{data.likes}</strong> likes</span>
-                            <span><strong style={{ color: '#fff' }}>{data.views}</strong> views</span>
-                        </div>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <strong style={{ color: '#fff' }}>{data.likes}</strong>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M7 22V11M2 13V20C2 21.1046 2.89543 22 4 22H17.4262C18.907 22 20.1662 20.9197 20.3914 19.4562L21.4683 12.4562C21.7479 10.6389 20.3418 9 18.5032 9H15C14.4477 9 14 8.55228 14 8V4.46584C14 3.10399 12.896 2 11.5342 2C11.2093 2 10.915 2.1913 10.7831 2.48812L7.26394 10.4061C7.10344 10.7673 6.74532 11 6.35013 11H4C2.89543 11 2 11.8954 2 13Z"/>
+                                </svg>
+                            </span>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <strong style={{ color: '#fff' }}>{data.views}</strong>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2.42012 12.7132C2.28394 12.4975 2.21584 12.3897 2.17772 12.2234C2.14909 12.0985 2.14909 11.9015 2.17772 11.7766C2.21584 11.6103 2.28394 11.5025 2.42012 11.2868C3.54553 9.50484 6.8954 5 12.0004 5C17.1054 5 20.4553 9.50484 21.5807 11.2868C21.7169 11.5025 21.785 11.6103 21.8231 11.7766C21.8517 11.9015 21.8517 12.0985 21.8231 12.2234C21.785 12.3897 21.7169 12.4975 21.5807 12.7132C20.4553 14.4952 17.1054 19 12.0004 19C6.8954 19 3.54553 14.4952 2.42012 12.7132Z"/>
+                                    <path d="M12.0004 15C13.6573 15 15.0004 13.6569 15.0004 12C15.0004 10.3431 13.6573 9 12.0004 9C10.3435 9 9.0004 10.3431 9.0004 12C9.0004 13.6569 10.3435 15 12.0004 15Z"/>
+                                </svg>
+                            </span>
+                        </div> */}
 
                         {/* Name, username, bio */}
                         <div style={{ padding: '0px 20px 0' }}>
@@ -220,11 +219,33 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
                             </div>
                             <p style={{ margin: 0, color: 'rgba(255,255,255,0.75)', fontSize: '0.875rem', lineHeight: 1.55 }}>{data.bio}</p>
                         </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            {/* Star rating */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px 0' }}>
+                                <StarRating rating={data.rating} />
+                                <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem' }}>{data.reviewCount} reviews</span>
+                            </div>
 
-                        {/* Star rating */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px 0' }}>
-                            <StarRating rating={data.rating} />
-                            <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem' }}>{data.reviewCount} reviews</span>
+                            {/* Stats row */}
+                            <div style={{
+                                display: 'flex', justifyContent: 'flex-end', gap: '18px',
+                                padding: '15px 20px 0',
+                                color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem',
+                            }}>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                    <strong style={{ color: '#fff' }}>{data.likes}</strong>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M7 22V11M2 13V20C2 21.1046 2.89543 22 4 22H17.4262C18.907 22 20.1662 20.9197 20.3914 19.4562L21.4683 12.4562C21.7479 10.6389 20.3418 9 18.5032 9H15C14.4477 9 14 8.55228 14 8V4.46584C14 3.10399 12.896 2 11.5342 2C11.2093 2 10.915 2.1913 10.7831 2.48812L7.26394 10.4061C7.10344 10.7673 6.74532 11 6.35013 11H4C2.89543 11 2 11.8954 2 13Z" />
+                                    </svg>
+                                </span>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                    <strong style={{ color: '#fff' }}>{data.views}</strong>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M2.42012 12.7132C2.28394 12.4975 2.21584 12.3897 2.17772 12.2234C2.14909 12.0985 2.14909 11.9015 2.17772 11.7766C2.21584 11.6103 2.28394 11.5025 2.42012 11.2868C3.54553 9.50484 6.8954 5 12.0004 5C17.1054 5 20.4553 9.50484 21.5807 11.2868C21.7169 11.5025 21.785 11.6103 21.8231 11.7766C21.8517 11.9015 21.8517 12.0985 21.8231 12.2234C21.785 12.3897 21.7169 12.4975 21.5807 12.7132C20.4553 14.4952 17.1054 19 12.0004 19C6.8954 19 3.54553 14.4952 2.42012 12.7132Z" />
+                                        <path d="M12.0004 15C13.6573 15 15.0004 13.6569 15.0004 12C15.0004 10.3431 13.6573 9 12.0004 9C10.3435 9 9.0004 10.3431 9.0004 12C9.0004 13.6569 10.3435 15 12.0004 15Z" />
+                                    </svg>
+                                </span>
+                            </div>
                         </div>
 
                         {/* Divider */}
@@ -233,7 +254,7 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
 
                         {/* Learn More button */}
                         <div style={{ padding: '10px 20px 10px', display: 'flex', justifyContent: 'space-between' }}>
-                            <button 
+                            <button
                                 className="capsule-learn-more"
                                 onClick={(e) => {
                                     e.stopPropagation();
