@@ -121,7 +121,7 @@ const Mint = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "20px",
-                fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+                fontFamily: "'Verdana', sans-serif",
             }}
         >
             <div
@@ -154,12 +154,12 @@ const Mint = () => {
 
                         <h2
                             style={{
-                                fontFamily: "'Georgia', 'Times New Roman', serif",
+                                fontFamily: "'Verdana', sans-serif",
                                 fontSize: "2.4rem",
                                 fontWeight: 400,
                                 lineHeight: 1.1,
                                 margin: "0 0 8px 0",
-                                color: "#f5f0e8",
+                                color: "#ffffff",
                             }}
                         >
                             The <span style={{
@@ -174,7 +174,7 @@ const Mint = () => {
                                 fontSize: "0.85rem",
                                 lineHeight: 1.6,
                                 margin: "0",
-                                fontFamily: "'Georgia', 'Times New Roman', serif",
+                                fontFamily: "'Verdana', sans-serif",
                                 paddingBottom: "20px"
                             }}
                         >
@@ -249,7 +249,7 @@ const Mint = () => {
                                     {profileImage ? (
                                         <img src={profileImage} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     ) : (
-                                        <div style={{ width: '100%', height: '100%', background: 'rgba(212, 165, 116, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(212, 165, 116, 0.6)', fontSize: '1.5rem', fontFamily: "'Georgia', serif" }}>✦</div>
+                                        <div style={{ width: '100%', height: '100%', background: 'rgba(212, 165, 116, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(212, 165, 116, 0.6)', fontSize: '1.5rem', fontFamily: "'Verdana', sans-serif" }}>✦</div>
                                     )}
                                 </div>
 
@@ -259,8 +259,8 @@ const Mint = () => {
                                     background: 'rgba(212, 165, 116, 0.1)',
                                     border: '1px solid rgba(212, 165, 116, 0.25)',
                                     borderRadius: '999px', padding: '7px 14px',
-                                    cursor: 'pointer', color: '#f5f0e8', fontSize: '0.82rem', fontWeight: 600,
-                                    fontFamily: "'Georgia', 'Times New Roman', serif",
+                                    cursor: 'pointer', color: '#ffffff', fontSize: '0.82rem', fontWeight: 600,
+                                    fontFamily: "'Verdana', sans-serif",
                                     transition: 'all 0.2s ease',
                                 }}
                                     onMouseEnter={(e) => {
@@ -283,8 +283,8 @@ const Mint = () => {
                             <div style={{
                                 display: 'flex', justifyContent: 'flex-end', gap: '18px',
                                 padding: '15px 20px 0',
-                                color: 'rgba(245, 240, 232, 0.5)', fontSize: '0.8rem',
-                                fontFamily: "'Georgia', 'Times New Roman', serif",
+                                color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.8rem',
+                                fontFamily: "'Verdana', sans-serif",
                             }}>
                                 <span><strong style={{ color: '#d4a574' }}>—</strong> likes</span>
                                 <span><strong style={{ color: '#d4a574' }}>—</strong> views</span>
@@ -294,18 +294,18 @@ const Mint = () => {
                             <div style={{ padding: '0px 20px 0' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <span style={{
-                                        color: '#f5f0e8',
+                                        color: '#ffffff',
                                         fontWeight: 600,
                                         fontSize: '1.15rem',
-                                        fontFamily: "'Georgia', 'Times New Roman', serif"
+                                        fontFamily: "'Verdana', sans-serif"
                                     }}>{formData.name || "Your Name"}</span>
                                 </div>
                                 <p style={{
                                     margin: 0,
-                                    color: 'rgba(245, 240, 232, 0.7)',
+                                    color: 'rgba(255, 255, 255, 0.7)',
                                     fontSize: '0.875rem',
                                     lineHeight: 1.6,
-                                    fontFamily: "'Georgia', 'Times New Roman', serif"
+                                    fontFamily: "'Verdana', sans-serif"
                                 }}>{formData.bio || "A short bio"}</p>
                             </div>
 
@@ -314,7 +314,7 @@ const Mint = () => {
                                 <span style={{
                                     color: 'rgba(212, 165, 116, 0.6)',
                                     fontSize: '0.8rem',
-                                    fontFamily: "'Georgia', 'Times New Roman', serif",
+                                    fontFamily: "'Verdana', sans-serif",
                                     fontStyle: 'italic'
                                 }}>{formData.dob ? `Born: ${new Date(formData.dob).toLocaleDateString()}` : "Date of birth"}</span>
                             </div>
@@ -382,7 +382,7 @@ const Mint = () => {
                                         letterSpacing: "0.12em",
                                         color: "#d4a574",
                                         marginBottom: "8px",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                 >
                                     Profile Image
@@ -414,7 +414,7 @@ const Mint = () => {
                                     {profileImage ? (
                                         <img src={profileImage} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                     ) : (
-                                        <span style={{ color: "rgba(212, 165, 116, 0.5)", fontSize: "1.5rem", fontFamily: "'Georgia', serif" }}>✦</span>
+                                        <span style={{ color: "rgba(212, 165, 116, 0.5)", fontSize: "1.5rem", fontFamily: "'Verdana', sans-serif" }}>✦</span>
                                     )}
                                     <input
                                         id="profileUpload"
@@ -437,7 +437,7 @@ const Mint = () => {
                                         letterSpacing: "0.12em",
                                         color: "#d4a574",
                                         marginBottom: "8px",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                 >
                                     Cover Image
@@ -469,7 +469,7 @@ const Mint = () => {
                                     {coverImage ? (
                                         <img src={coverImage} alt="Cover" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                     ) : (
-                                        <span style={{ color: "rgba(212, 165, 116, 0.5)", fontSize: "0.85rem", fontFamily: "'Georgia', serif", fontStyle: "italic" }}>Upload cover image</span>
+                                        <span style={{ color: "rgba(212, 165, 116, 0.5)", fontSize: "0.85rem", fontFamily: "'Verdana', sans-serif", fontStyle: "italic" }}>Upload cover image</span>
                                     )}
                                     <input
                                         id="coverUpload"
@@ -492,7 +492,7 @@ const Mint = () => {
                                         letterSpacing: "0.12em",
                                         color: "#d4a574",
                                         marginBottom: "8px",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                 >
                                     Name
@@ -510,12 +510,12 @@ const Mint = () => {
                                         border: "1px solid rgba(212, 165, 116, 0.2)",
                                         borderRadius: "14px",
                                         padding: "14px 18px",
-                                        color: "#f5f0e8",
+                                        color: "#ffffff",
                                         fontSize: "0.95rem",
                                         outline: "none",
                                         transition: "all 0.2s ease",
                                         boxSizing: "border-box",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                     onFocus={(e) => {
                                         e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
@@ -541,7 +541,7 @@ const Mint = () => {
                                         letterSpacing: "0.12em",
                                         color: "#d4a574",
                                         marginBottom: "8px",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                 >
                                     Bio
@@ -559,12 +559,12 @@ const Mint = () => {
                                         border: "1px solid rgba(212, 165, 116, 0.2)",
                                         borderRadius: "14px",
                                         padding: "14px 18px",
-                                        color: "#f5f0e8",
+                                        color: "#ffffff",
                                         fontSize: "0.95rem",
                                         outline: "none",
                                         transition: "all 0.2s ease",
                                         boxSizing: "border-box",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                     onFocus={(e) => {
                                         e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
@@ -590,7 +590,7 @@ const Mint = () => {
                                         letterSpacing: "0.12em",
                                         color: "#d4a574",
                                         marginBottom: "8px",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                 >
                                     Location
@@ -607,12 +607,12 @@ const Mint = () => {
                                         border: "1px solid rgba(212, 165, 116, 0.2)",
                                         borderRadius: "14px",
                                         padding: "14px 18px",
-                                        color: "#f5f0e8",
+                                        color: "#ffffff",
                                         fontSize: "0.95rem",
                                         outline: "none",
                                         transition: "all 0.2s ease",
                                         boxSizing: "border-box",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                     onFocus={(e) => {
                                         e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
@@ -638,7 +638,7 @@ const Mint = () => {
                                         letterSpacing: "0.12em",
                                         color: "#d4a574",
                                         marginBottom: "8px",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                 >
                                     Date of Birth
@@ -654,13 +654,13 @@ const Mint = () => {
                                         border: "1px solid rgba(212, 165, 116, 0.2)",
                                         borderRadius: "14px",
                                         padding: "14px 18px",
-                                        color: "#f5f0e8",
+                                        color: "#ffffff",
                                         fontSize: "0.95rem",
                                         outline: "none",
                                         colorScheme: "dark",
                                         transition: "all 0.2s ease",
                                         boxSizing: "border-box",
-                                        fontFamily: "'Georgia', 'Times New Roman', serif",
+                                        fontFamily: "'Verdana', sans-serif",
                                     }}
                                     onFocus={(e) => {
                                         e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
@@ -699,7 +699,7 @@ const Mint = () => {
                                     : "0 4px 24px rgba(212, 165, 116, 0.3)",
                                 letterSpacing: "0.05em",
                                 width: "100%",
-                                fontFamily: "'Georgia', 'Times New Roman', serif",
+                                fontFamily: "'Verdana', sans-serif",
                                 opacity: loading ? 0.7 : 1,
                             }}
                         >

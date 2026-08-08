@@ -1,22 +1,26 @@
 /* Timeline Section */
 .timeline-section {
-    width: 100vw;
+    width: 100%;
+    max-width: 1600px;
     margin: 60px auto;
+    padding: 0 20px;
+    font-family: 'Verdana', sans-serif;
 }
 
 .timeline-section-title {
-    color: #fff;
+    color: #ffffff;
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     margin-bottom: 20px;
     text-align: center;
+    font-family: 'Verdana', sans-serif;
 }
 
 /* Loading & Empty states */
 .timeline-loading {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-muted);
     text-align: center;
     padding: 40px;
     font-size: 0.9rem;
@@ -25,33 +29,35 @@
 .timeline-empty {
     text-align: center;
     padding: 60px 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed rgba(255, 255, 255, 0.15);
+    background: var(--background-color);
+    border: 1px dashed var(--border-color);
     border-radius: 12px;
 }
 
 .timeline-empty p {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted);
     margin: 0 0 20px;
     font-size: 0.95rem;
 }
 
 /* Add button */
 .timeline-add-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #ffffff;
     padding: 10px 24px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.2s ease;
+    font-family: 'Verdana', sans-serif;
 }
 
 .timeline-add-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: var(--border-color);
+    background: var(--background-color);
+    color: var(--primary-color);
 }
 
 /* Timeline Container */
@@ -134,7 +140,7 @@
 .timeline-year-display {
     font-style: italic;
     font-size: 3rem;
-    color: #d4a024;
+    color: var(--primary-color);
     font-weight: 300;
     margin-bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -176,7 +182,7 @@
 }
 
 .timeline-dots .dot.active {
-    background: #d4a024;
+    background: var(--primary-color);
     transform: scale(1.3);
     box-shadow: 0 0 10px rgba(212, 160, 36, 0.5);
 }
@@ -201,9 +207,9 @@
 }
 
 .timeline-year-nav-btn {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #ffffff;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -215,8 +221,9 @@
 }
 
 .timeline-year-nav-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: var(--border-color);
+    background: var(--background-color);
+    color: var(--primary-color);
 }
 
 .timeline-year-nav-btn:disabled {
@@ -252,19 +259,20 @@
     gap: 12px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-muted);
     cursor: pointer;
     padding: 5px;
     transition: all 0.2s ease;
     font-size: 0.9rem;
+    font-family: 'Verdana', sans-serif;
 }
 
 .timeline-year-item:hover {
-    color: rgba(255, 255, 255, 0.8);
+    color: #ffffff;
 }
 
 .timeline-year-item.active {
-    color: #d4a024;
+    color: var(--primary-color);
 }
 
 .timeline-year-dot {
@@ -276,7 +284,7 @@
 }
 
 .timeline-year-item.active .timeline-year-dot {
-    background: #d4a024;
+    background: var(--primary-color);
     box-shadow: 0 0 10px rgba(212, 160, 36, 0.5);
 }
 
@@ -292,9 +300,9 @@
     bottom: 30px;
     right: 30px;
     z-index: 3;
-    background: #d4a024;
+    background: var(--primary-color);
     border: none;
-    color: #fff;
+    color: #ffffff;
     width: 50px;
     height: 50px;
     border-radius: 50%;

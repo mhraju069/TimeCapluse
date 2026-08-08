@@ -386,7 +386,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    margin-top: 2rem;
+    /* margin-top: 1rem; */
     padding-top: 1.5rem;
     border-top: 1px solid rgba(212, 165, 116, 0.15);
 }
