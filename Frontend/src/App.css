@@ -19,7 +19,7 @@ body,
   overflow-x: hidden;
   background-color: #0f0f14;
   scrollbar-color: #d4a574 #0f0e0c;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
 body {

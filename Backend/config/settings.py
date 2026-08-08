@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     #Local Apps
     'apps.authentication',
     'apps.capsule',
+    'apps.timeline',
 
 ]
 

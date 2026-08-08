@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Timeline from './Timeline';
 import './capsuleDetail.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -625,7 +626,15 @@ const CapsuleDetail = () => {
                         )}
                     </section>
                 </div>
+
+
             </div>
+            {/* Timeline Section */}
+            <Timeline
+                capsuleId={id}
+                capsuleName={capsule.name}
+                isOwner={token && currentUserId === capsule.user?.id}
+            />
         </div>
     );
 };
