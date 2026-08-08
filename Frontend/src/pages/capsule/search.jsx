@@ -94,7 +94,7 @@ const AdvancedSearchModal = ({ filters, onChange, onApply, onClose }) => {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.8rem' }}>
           <h2 style={{ margin: 0, color: '#fff', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            Advanced Search
+            Search Capsule
           </h2>
           <button
             onClick={onClose}

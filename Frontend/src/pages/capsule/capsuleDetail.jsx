@@ -398,7 +398,7 @@ const CapsuleDetail = () => {
                             <h1 className="capsule-detail-name">{capsule.name}</h1>
                             <div className="capsule-detail-rating">
                                 {renderStars(capsule.average_rating)}
-                                <span className="rating-text">{capsule.average_rating || 0}/5 ({capsule.review_count || 0} reviews)</span>
+                                <span className="rating-text">{capsule.average_rating || 0}/5 ({capsule.total_reviews || 0} reviews)</span>
                             </div>
 
                             {editing ? (

@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.db.models import F, Avg, Sum
+from django.db.models import F, Avg, Sum, Q
+from django.db import models
 from django.shortcuts import get_object_or_404
 
 from .models import Capsule, Review, Like, View
@@ -15,33 +16,80 @@ class CapsuleViewportView(APIView):
     """
     Viewport bounds অনুযায়ী capsules fetch করে।
     Query params: min_x, max_x, min_y, max_y
+    Optional filters: text, location, year, month, date_from, date_to
     """
 
     def get(self, request):
-        try:
-            min_x = int(request.query_params.get('min_x'))
-            max_x = int(request.query_params.get('max_x'))
-            min_y = int(request.query_params.get('min_y'))
-            max_y = int(request.query_params.get('max_y'))
-        except (TypeError, ValueError):
-            return Response(
-                {"error": "min_x, max_x, min_y, max_y (integers) required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # Get filter parameters
+        text = request.query_params.get('text', '').strip()
+        location = request.query_params.get('location', '').strip()
+        year = request.query_params.get('year', '').strip()
+        month = request.query_params.get('month', '').strip()
+        date_from = request.query_params.get('date_from', '').strip()
+        date_to = request.query_params.get('date_to', '').strip()
 
-        # Safety: একবারে অনেক বড় range request আটকানো (abuse prevention)
-        MAX_RANGE = 100
-        if (max_x - min_x) > MAX_RANGE or (max_y - min_y) > MAX_RANGE:
-            return Response(
-                {"error": f"Viewport range too large. Max {MAX_RANGE} cells per axis."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # Check if any filters are active
+        has_filters = text or location or year or month or date_from or date_to
 
-        capsules = Capsule.objects.filter(
-            grid_x__gte=min_x, grid_x__lte=max_x,
-            grid_y__gte=min_y, grid_y__lte=max_y,
-            is_public=True
-        ).only('id', 'grid_x', 'grid_y', 'name', 'cover_thumbnail', 'cover')
+        if has_filters:
+            # If filters are active, search across all capsules (viewport bounds not needed)
+            capsules = Capsule.objects.filter(is_public=True)
+            
+            # Text search in name, bio, and story
+            if text:
+                capsules = capsules.filter(
+                    Q(name__icontains=text) |
+                    Q(bio__icontains=text) |
+                    Q(story__icontains=text)
+                )
+            
+            # Location search
+            if location:
+                capsules = capsules.filter(location__icontains=location)
+            
+            # Year filter
+            if year:
+                capsules = capsules.filter(dob__year=year)
+            
+            # Month filter
+            if month:
+                capsules = capsules.filter(dob__month=month)
+            
+            # Date range filter
+            if date_from:
+                capsules = capsules.filter(dob__gte=date_from)
+            if date_to:
+                capsules = capsules.filter(dob__lte=date_to)
+            
+            # Order by creation date (newest first)
+            capsules = capsules.order_by('-created_at')
+        else:
+            # No filters - need viewport bounds
+            try:
+                min_x = int(request.query_params.get('min_x'))
+                max_x = int(request.query_params.get('max_x'))
+                min_y = int(request.query_params.get('min_y'))
+                max_y = int(request.query_params.get('max_y'))
+            except (TypeError, ValueError):
+                return Response(
+                    {"error": "min_x, max_x, min_y, max_y (integers) required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Safety: একবারে অনেক বড় range request আটকানো (abuse prevention)
+            MAX_RANGE = 100
+            if (max_x - min_x) > MAX_RANGE or (max_y - min_y) > MAX_RANGE:
+                return Response(
+                    {"error": f"Viewport range too large. Max {MAX_RANGE} cells per axis."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # No filters - use viewport bounds
+            capsules = Capsule.objects.filter(
+                grid_x__gte=min_x, grid_x__lte=max_x,
+                grid_y__gte=min_y, grid_y__lte=max_y,
+                is_public=True
+            )
 
         serializer = CapsuleGridSerializer(
             capsules, many=True, context={'request': request}

@@ -369,18 +369,22 @@ const Card = React.memo(({
     const isDraggingRef = useRef(false);
 
     useEffect(() => {
-        // If already loaded before, show instantly (no dark flash while dragging)
-        if (loadedThumbCache.has(descriptor.thumb_src)) {
+        // If no thumbnail or already loaded before, show instantly (no dark flash)
+        if (!descriptor.thumb_src || loadedThumbCache.has(descriptor.thumb_src)) {
             setDarkOpacity(0);
             return;
         }
         setDarkOpacity(1);
         const img = new Image();
+        img.referrerPolicy = 'no-referrer';
         img.src = descriptor.thumb_src;
+        let cancelled = false;
         const reveal = () => {
+            if (cancelled) return;
             loadedThumbCache.add(descriptor.thumb_src);
             let start = null;
             const fade = t => {
+                if (cancelled) return;
                 if (start === null) start = t;
                 // Smooth ease-out: dark -> real image (no blur/scale, GPU friendly)
                 const p = Math.min(1, (t - start) / 400);
@@ -390,11 +394,18 @@ const Card = React.memo(({
             };
             requestAnimationFrame(fade);
         };
+        const handleError = () => {
+            if (cancelled) return;
+            // If image fails to load, show placeholder background instead of black
+            setDarkOpacity(0);
+        };
+        img.onerror = handleError;
         if (img.decode) {
             img.decode().then(reveal).catch(reveal);
         } else {
             img.onload = reveal;
         }
+        return () => { cancelled = true; };
     }, [descriptor]);
 
     const handleMouseDown = useCallback((e) => {
@@ -449,6 +460,7 @@ const Card = React.memo(({
             }}
             loading="lazy"
             decoding="async"
+            referrerPolicy="no-referrer"
         />
         {/* Dark overlay that fades out to reveal the real image (dark -> image) */}
         <div

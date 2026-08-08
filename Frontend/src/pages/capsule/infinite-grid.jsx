@@ -112,12 +112,115 @@ export const InfiniteDraggableGrid = ({
   const [serverCapsules, setServerCapsules] = useState({});
   // True until the first backend load completes (prevents static-image flash)
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  // Search state
+  const [searchTopic, setSearchTopic] = useState('');
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [noResults, setNoResults] = useState(false);
+  // Cache of previously loaded server capsules (to restore after search reset)
+  const prevServerCapsulesRef = useRef({});
+  const serverInitRef = useRef(false);
 
   const hasActive = activeFilters.text || activeFilters.location || activeFilters.year || activeFilters.month ||
     activeFilters.dateFrom || activeFilters.dateTo || activeFilters.imageFile;
 
+  // Fetch search results from backend using viewport API
+  const fetchSearchResults = async (searchFilters) => {
+    // Save current server capsules before search (to restore later)
+    if (!serverInitRef.current) {
+      prevServerCapsulesRef.current = { ...serverCapsulesRef.current };
+      serverInitRef.current = true;
+    }
+
+    const params = new URLSearchParams();
+    
+    // Always include viewport bounds (large range) so backend doesn't reject
+    params.append('min_x', '0');
+    params.append('max_x', '100');
+    params.append('min_y', '0');
+    params.append('max_y', '100');
+    
+    // Include filter params
+    if (searchFilters.text) params.append('text', searchFilters.text);
+    if (searchFilters.location) params.append('location', searchFilters.location);
+    if (searchFilters.year) params.append('year', searchFilters.year);
+    if (searchFilters.month) params.append('month', searchFilters.month);
+    if (searchFilters.dateFrom) params.append('date_from', searchFilters.dateFrom);
+    if (searchFilters.dateTo) params.append('date_to', searchFilters.dateTo);
+
+    console.log('Search API call:', `/api/capsules/viewport/?${params.toString()}`);
+
+    try {
+      const res = await fetch(`/api/capsules/viewport/?${params.toString()}`);
+      if (!res.ok) throw new Error('Search failed');
+      const data = await res.json();
+      
+      // Convert search results to server capsules format
+      if (Array.isArray(data)) {
+        const capsuleMap = {};
+        data.forEach(capsule => {
+          const key = `${capsule.grid_x}:${capsule.grid_y}`;
+          capsuleMap[key] = mapServerCapsule(capsule);
+        });
+        
+        if (data.length === 0) {
+          // No results found - keep old capsules visible with blur overlay
+          setNoResults(true);
+          console.log('No results found');
+        } else {
+          // Results found - replace with search results
+          setServerCapsules(capsuleMap);
+          setNoResults(false);
+        }
+        setIsSearchMode(true);
+        console.log('Search results:', data.length);
+      }
+      
+      // Set search topic for display
+      const topic = searchFilters.text || searchFilters.location || 
+        (searchFilters.year ? `Year: ${searchFilters.year}` : '') ||
+        (searchFilters.month ? `Month: ${MONTHS[searchFilters.month - 1]}` : '') || 'Search Results';
+      setSearchTopic(topic);
+    } catch (err) {
+      console.error('Search error:', err);
+    }
+  };
+
+  const clearSearch = () => {
+    setFilters(EMPTY_FILTERS);
+    setActiveFilters(EMPTY_FILTERS);
+    setSearchTopic('');
+    setIsSearchMode(false);
+    setNoResults(false);
+    // Restore previously loaded server capsules instead of showing static gallery
+    if (serverInitRef.current && Object.keys(prevServerCapsulesRef.current).length > 0) {
+      setServerCapsules(prevServerCapsulesRef.current);
+    } else {
+      setServerCapsules({});
+    }
+    serverInitRef.current = false;
+  };
+
+  // Update the onApply handler to fetch search results
+  const handleSearchApply = (applied) => {
+    setFilters(applied);
+    setActiveFilters(applied);
+    // Check the NEW applied filters, not the old activeFilters state
+    const hasAppliedFilters = applied.text || applied.location || applied.year || applied.month ||
+      applied.dateFrom || applied.dateTo || applied.imageFile;
+    if (hasAppliedFilters) {
+      fetchSearchResults(applied);
+    } else {
+      clearSearch();
+    }
+  };
+
   const filteredGallery = useMemo(() => {
     if (!gallery) return [];
+    // If in search mode, only show server capsules (search results)
+    if (isSearchMode) {
+      return Object.values(serverCapsules);
+    }
+    // Otherwise use local filtering
     let result = gallery;
     if (activeFilters.text.trim()) {
       const q = activeFilters.text.toLowerCase().trim();
@@ -134,7 +237,7 @@ export const InfiniteDraggableGrid = ({
       result = result.filter(item => item.month === Number(activeFilters.month));
     }
     return result.length ? result : gallery; // fallback to full gallery to avoid empty canvas
-  }, [gallery, activeFilters]);
+  }, [gallery, activeFilters, serverCapsules, isSearchMode]);
 
   // Clear cell cache whenever filters change
   useEffect(() => {
@@ -504,12 +607,115 @@ export const InfiniteDraggableGrid = ({
         <AdvancedSearchModal
           filters={filters}
           onChange={setFilters}
-          onApply={applied => {
-            setFilters(applied);
-            setActiveFilters(applied);
-          }}
+          onApply={handleSearchApply}
           onClose={() => setModalOpen(false)}
         />
+      )}
+
+      {/* ── Search Topic Indicator ───────────────────────────────────────── */}
+      {searchTopic && (
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 20,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          background: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          borderRadius: '999px',
+          padding: '10px 20px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
+        }}>
+          <span style={{
+            color: '#fff',
+            fontSize: '0.9rem',
+            fontWeight: 500,
+            letterSpacing: '0.02em',
+          }}>
+            {searchTopic}
+          </span>
+          <button
+            onClick={clearSearch}
+            style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: 'rgba(255, 255, 255, 0.7)',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.color = '#fff';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
+            }}
+          >
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      {/* ── No Results Found Overlay ─────────────────────────────────────── */}
+      {noResults && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 15,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(0, 0, 0, 0.55)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          pointerEvents: 'none',
+        }}>
+          <div style={{
+            textAlign: 'center',
+            padding: '30px 50px',
+            borderRadius: '16px',
+            background: 'rgba(0, 0, 0, 0.6)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 8px 40px rgba(0, 0, 0, 0.5)',
+          }}>
+            <div style={{
+              fontSize: '3rem',
+              marginBottom: '12px',
+              opacity: 0.6,
+            }}>🔍</div>
+            <h2 style={{
+              color: '#fff',
+              fontSize: '1.4rem',
+              fontWeight: 600,
+              margin: '0 0 8px',
+              letterSpacing: '0.02em',
+            }}>
+              No Results Found
+            </h2>
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.6)',
+              fontSize: '0.9rem',
+              margin: 0,
+              lineHeight: 1.5,
+            }}>
+              No capsules match "{searchTopic}"
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Drag prompt placeholder */}
