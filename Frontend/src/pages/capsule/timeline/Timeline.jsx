@@ -57,8 +57,11 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
     const updateDisplayData = (timeline) => {
         if (!timeline) return;
         const activeImage = getActiveImage(timeline);
+        const formattedDate = formatDate(timeline.event_date);
         setDisplayData({
-            year: formatDate(timeline.event_date),
+            year: formattedDate,
+            date: formattedDate,
+            event_date: formattedDate,
             title: timeline.title,
             description: timeline.description,
             image: activeImage,
@@ -81,6 +84,14 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                 setIsAnimating(false);
             }, 50);
         }, 300);
+    };
+
+    const handleDotClick = (imageIdx) => {
+        if (!currentTimeline) return;
+        setImageIndexes(prev => ({
+            ...prev,
+            [currentTimeline.id]: imageIdx
+        }));
     };
 
     const handleYearClick = (index) => {
@@ -124,10 +135,13 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
     };
 
     const formatDate = (dateStr) => {
+        if (!dateStr) return '';
         try {
             const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr;
             return date.toLocaleDateString('en-US', {
                 month: 'short',
+                day: 'numeric',
                 year: 'numeric'
             });
         } catch {
@@ -218,7 +232,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
     }
 
     const currentTimeline = timelines[currentIndex];
-    const yearItems = timelines.map(t => new Date(t.event_date).getFullYear().toString());
+    const yearItems = timelines.map(t => new Date(t.event_date).getFullYear().toString() + " ◦");
 
     return (
         <div className="timeline-section">
@@ -227,11 +241,25 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
             <div className="timeline-container">
                 {/* Background Image */}
                 <div className={`timeline-bg ${isAnimating ? 'fade-out' : 'fade-in'}`}>
-                    {displayData.image ? (
+                    {currentTimeline?.images && currentTimeline.images.length > 0 ? (
+                        currentTimeline.images.map((imgObj, i) => {
+                            const url = imgObj.image_url || imgObj.image;
+                            const activeIdx = imageIndexes[currentTimeline.id] || 0;
+                            const isActive = i === activeIdx;
+                            return (
+                                <img
+                                    key={imgObj.id || i}
+                                    src={url}
+                                    alt={currentTimeline.title}
+                                    className={`timeline-bg-image ${isActive ? 'active' : ''}`}
+                                />
+                            );
+                        })
+                    ) : displayData.image ? (
                         <img
                             src={displayData.image}
                             alt={displayData.title}
-                            className="timeline-bg-image"
+                            className="timeline-bg-image active"
                         />
                     ) : (
                         <div className="timeline-bg-placeholder" />
@@ -242,7 +270,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                 {/* Content */}
                 <div className={`timeline-content ${isAnimating ? 'slide-out' : 'slide-in'}`}>
                     <div className="timeline-year-display">
-                        {displayData.year}
+                        {displayData.event_date}
                     </div>
                     <h3 className="timeline-title-display">{displayData.title}</h3>
                     <p className="timeline-description">{displayData.description}</p>
@@ -253,7 +281,9 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                             {Array.from({ length: displayData.imageCount }).map((_, i) => (
                                 <span
                                     key={i}
-                                    className={`dot ${(imageIndexes[timelines[currentIndex]?.id] || 0) === i ? 'active' : ''}`}
+                                    className={`dot ${(imageIndexes[currentTimeline?.id] || 0) === i ? 'active' : ''}`}
+                                    onClick={() => handleDotClick(i)}
+                                    title={`View image ${i + 1}`}
                                 />
                             ))}
                         </div>
@@ -264,22 +294,21 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                 <div className="timeline-option-wheel">
                     <OptionWheel
                         items={yearItems}
+                        value={currentIndex}
                         defaultSelected={currentIndex}
-                        textColor="rgba(255, 255, 255, 0.25)"
-                        activeColor="#ffffff"
                         side="right"
-                        fontSize={getDynamicFontSize()}
+                        fontSize={2}
                         spacing={getDynamicSpacing()}
-                        curve={1}
-                        tilt={getDynamicTilt()}
-                        blur={getDynamicBlur()}
-                        fade={0.3}
-                        smoothing={200}
+                        curve={2}
+                        tilt={15}
+                        blur={2}
+                        fade={0}
+                        smoothing={300}
                         inset={100}
-                        loop={false}
+                        loop={true}
                         draggable={true}
                         onChange={(index) => {
-                            if (!isAnimating && index !== currentIndex) {
+                            if (index !== currentIndex) {
                                 animateTransition(index);
                             }
                         }}

@@ -57,13 +57,16 @@
     opacity,
     filter;
 
+  color: var(--ow-text-color);
+
   color:
     color-mix(in srgb,
       var(--ow-active-color) calc(var(--ow-p, 0) * 100%),
       var(--ow-text-color));
 
   transition:
-    color 0.15s ease;
+    color 0.15s ease,
+    font-weight 0.15s ease;
 }
 
 
@@ -83,7 +86,8 @@
  * Selected year.
  */
 .option-wheel__item--selected {
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--ow-active-color) !important;
 }
 
 
