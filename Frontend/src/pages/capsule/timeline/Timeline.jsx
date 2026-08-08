@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import TimelineModal from './TimelineModal';
+import OptionWheel from './OptionWheel';
 import './timeline.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -75,21 +76,11 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
 
         animationTimeoutRef.current = setTimeout(() => {
             setCurrentIndex(newIndex);
-            
+
             setTimeout(() => {
                 setIsAnimating(false);
             }, 50);
         }, 300);
-    };
-
-    const handlePrev = () => {
-        if (isAnimating || currentIndex === 0) return;
-        animateTransition(currentIndex - 1);
-    };
-
-    const handleNext = () => {
-        if (isAnimating || currentIndex === timelines.length - 1) return;
-        animateTransition(currentIndex + 1);
     };
 
     const handleYearClick = (index) => {
@@ -136,13 +127,54 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
         try {
             const date = new Date(dateStr);
             return date.toLocaleDateString('en-US', {
-                day: "numeric",
                 month: 'short',
                 year: 'numeric'
             });
         } catch {
             return dateStr;
         }
+    };
+
+    // Calculate dynamic font size based on number of items
+    const getDynamicFontSize = () => {
+        const count = timelines.length;
+        if (count <= 5) return 3;
+        if (count <= 10) return 2.5;
+        if (count <= 15) return 2;
+        if (count <= 20) return 1.8;
+        if (count <= 30) return 1.5;
+        if (count <= 40) return 1.2;
+        return 1;
+    };
+
+    // Calculate dynamic spacing based on number of items
+    const getDynamicSpacing = () => {
+        const count = timelines.length;
+        if (count <= 5) return 1.8;
+        if (count <= 10) return 1.5;
+        if (count <= 15) return 1.3;
+        if (count <= 20) return 1.1;
+        if (count <= 30) return 1.0;
+        return 0.8;
+    };
+
+    // Calculate dynamic tilt based on number of items
+    const getDynamicTilt = () => {
+        const count = timelines.length;
+        if (count <= 5) return 8;
+        if (count <= 10) return 6;
+        if (count <= 15) return 5;
+        if (count <= 20) return 4;
+        return 3;
+    };
+
+    // Calculate dynamic blur based on number of items
+    const getDynamicBlur = () => {
+        const count = timelines.length;
+        if (count <= 5) return 1.5;
+        if (count <= 10) return 1.2;
+        if (count <= 15) return 1.0;
+        return 0.8;
     };
 
     if (loading) {
@@ -185,6 +217,9 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
         );
     }
 
+    const currentTimeline = timelines[currentIndex];
+    const yearItems = timelines.map(t => new Date(t.event_date).getFullYear().toString());
+
     return (
         <div className="timeline-section">
             <h2 className="timeline-section-title">Timeline</h2>
@@ -193,9 +228,9 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                 {/* Background Image */}
                 <div className={`timeline-bg ${isAnimating ? 'fade-out' : 'fade-in'}`}>
                     {displayData.image ? (
-                        <img 
-                            src={displayData.image} 
-                            alt={displayData.title} 
+                        <img
+                            src={displayData.image}
+                            alt={displayData.title}
                             className="timeline-bg-image"
                         />
                     ) : (
@@ -225,44 +260,30 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                     )}
                 </div>
 
-                {/* Vertical Year Navigation */}
-                <div className="timeline-year-nav">
-                    <button
-                        className="timeline-year-nav-btn up"
-                        onClick={handlePrev}
-                        disabled={currentIndex === 0 || isAnimating}
-                    >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="18 15 12 9 6 15" />
-                        </svg>
-                    </button>
-
-                    <div className="timeline-years-list">
-                        {timelines.map((timeline, index) => {
-                            const year = new Date(timeline.event_date).getFullYear();
-                            return (
-                                <button
-                                    key={timeline.id}
-                                    className={`timeline-year-item ${index === currentIndex ? 'active' : ''}`}
-                                    onClick={() => handleYearClick(index)}
-                                    disabled={isAnimating}
-                                >
-                                    <span className="timeline-year-dot" />
-                                    <span className="timeline-year-text">{year}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
-
-                    <button
-                        className="timeline-year-nav-btn down"
-                        onClick={handleNext}
-                        disabled={currentIndex === timelines.length - 1 || isAnimating}
-                    >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                    </button>
+                {/* OptionWheel Year Navigation */}
+                <div className="timeline-option-wheel">
+                    <OptionWheel
+                        items={yearItems}
+                        defaultSelected={currentIndex}
+                        textColor="rgba(255, 255, 255, 0.25)"
+                        activeColor="#ffffff"
+                        side="right"
+                        fontSize={getDynamicFontSize()}
+                        spacing={getDynamicSpacing()}
+                        curve={1}
+                        tilt={getDynamicTilt()}
+                        blur={getDynamicBlur()}
+                        fade={0.3}
+                        smoothing={200}
+                        inset={100}
+                        loop={false}
+                        draggable={true}
+                        onChange={(index) => {
+                            if (!isAnimating && index !== currentIndex) {
+                                animateTransition(index);
+                            }
+                        }}
+                    />
                 </div>
 
                 {/* Add Button */}

@@ -187,111 +187,23 @@
     box-shadow: 0 0 10px rgba(212, 160, 36, 0.5);
 }
 
-/* Vertical Year Navigation */
-.timeline-year-nav {
+/* OptionWheel Year Navigation */
+.timeline-option-wheel {
     position: absolute;
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
+
+    bottom: 50%;
+    top: 35%;
+    right: -40px;
+    left: auto;
+
     z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
 
-.timeline-year-nav:disabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
+    width: 400px;
+    height: 250px;
 
-.timeline-year-nav-btn {
-    background: transparent;
-    border: 1px solid transparent;
-    color: #ffffff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.timeline-year-nav-btn:hover:not(:disabled) {
-    border-color: var(--border-color);
-    background: var(--background-color);
-    color: var(--primary-color);
-}
-
-.timeline-year-nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.timeline-years-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 10px 0;
-}
-
-.timeline-years-list::-webkit-scrollbar {
-    width: 4px;
-}
-
-.timeline-years-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.timeline-years-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
-}
-
-.timeline-year-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 5px;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-family: 'Verdana', sans-serif;
-}
-
-.timeline-year-item:hover {
-    color: #ffffff;
-}
-
-.timeline-year-item.active {
-    color: var(--primary-color);
-}
-
-.timeline-year-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transition: all 0.2s ease;
-}
-
-.timeline-year-item.active .timeline-year-dot {
-    background: var(--primary-color);
-    box-shadow: 0 0 10px rgba(212, 160, 36, 0.5);
-}
-
-.timeline-year-text {
-    font-style: italic;
-    font-size: x-large;
-    font-weight: 500;
+    border-radius: 16px;
+    overflow: hidden;
+    contain: layout paint;
 }
 
 /* Add FAB Button */
@@ -344,17 +256,8 @@
         font-size: 0.85rem;
     }
 
-    .timeline-year-nav {
-        right: 10px;
-    }
-
-    .timeline-years-list {
-        gap: 10px;
-        max-height: 300px;
-    }
-
-    .timeline-year-text {
-        font-size: 0.8rem;
+    .timeline-option-wheel {
+        height: 180px;
     }
 }
 
@@ -375,17 +278,7 @@
         font-size: 1.4rem;
     }
 
-    .timeline-year-nav {
-        right: 5px;
-    }
-
-    .timeline-year-nav-btn {
-        width: 32px;
-        height: 32px;
-    }
-
-    .timeline-years-list {
-        gap: 8px;
-        max-height: 250px;
+    .timeline-option-wheel {
+        height: 150px;
     }
 }
