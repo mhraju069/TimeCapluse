@@ -25,7 +25,7 @@ const Mint = () => {
         const checkUserCapsule = async () => {
             const token = localStorage.getItem("access_token");
             if (!token) {
-                setCheckingCapsule(false);
+                navigate("/auth");
                 return;
             }
 
@@ -89,7 +89,7 @@ const Mint = () => {
             // Get auth token from localStorage
             const token = localStorage.getItem("access_token");
             if (!token) {
-                setError("Please login to mint a capsule");
+                navigate("/auth");
                 setLoading(false);
                 return;
             }
