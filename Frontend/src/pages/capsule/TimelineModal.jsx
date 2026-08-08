@@ -20,6 +20,7 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
         event_date: '',
         images: [],
     });
+    const [imagePreviews, setImagePreviews] = useState([]);
     const [creating, setCreating] = useState(false);
     const [error, setError] = useState('');
 
@@ -42,6 +43,22 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
         return () => window.removeEventListener('keydown', handleEscape);
     }, [onClose]);
 
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setFormData({ ...formData, images: files });
+
+        // Create previews
+        const previews = files.map(file => URL.createObjectURL(file));
+        setImagePreviews(previews);
+    };
+
+    const removeImage = (index) => {
+        const newImages = formData.images.filter((_, i) => i !== index);
+        const newPreviews = imagePreviews.filter((_, i) => i !== index);
+        setFormData({ ...formData, images: newImages });
+        setImagePreviews(newPreviews);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setCreating(true);
@@ -52,7 +69,7 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
             formDataObj.append('title', formData.title);
             formDataObj.append('description', formData.description);
             formDataObj.append('event_date', formData.event_date);
-            
+
             // Append multiple images
             formData.images.forEach(image => {
                 formDataObj.append('images', image);
@@ -146,7 +163,7 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
                                 type="file"
                                 accept="image/*"
                                 multiple
-                                onChange={(e) => setFormData({ ...formData, images: Array.from(e.target.files) })}
+                                onChange={handleImageChange}
                             />
                             <label htmlFor="images" className="file-input-label">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -157,6 +174,28 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
                                 <span>Choose images</span>
                             </label>
                         </div>
+
+                        {/* Image Previews */}
+                        {imagePreviews.length > 0 && (
+                            <div className="image-previews">
+                                {imagePreviews.map((preview, index) => (
+                                    <div key={index} className="image-preview-item">
+                                        <img src={preview} alt={`Preview ${index + 1}`} />
+                                        <button
+                                            type="button"
+                                            className="image-remove-btn"
+                                            onClick={() => removeImage(index)}
+                                        >
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18" />
+                                                <line x1="6" y1="6" x2="18" y2="18" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         {formData.images.length > 0 && (
                             <p className="image-count">
                                 {formData.images.length} image(s) selected
