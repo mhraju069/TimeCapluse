@@ -26,6 +26,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
     total_reviews = serializers.SerializerMethodField()
     total_views = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Capsule
@@ -34,6 +35,7 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
             'profile', 'cover', 'grid_x', 'grid_y',
             'views', 'likes', 'is_public', 'created_at',
             'average_rating', 'total_reviews', 'total_views', 'user',
+            'is_liked',
         ]
 
     def get_profile(self, obj):
@@ -62,7 +64,13 @@ class CapsuleDetailSerializer(serializers.ModelSerializer):
             'name': obj.user.name,
             'email': obj.user.email,
         }
-
+        
+    def get_is_liked(self,obj):
+        request = self.context.get('request')
+        if not request.user.is_authenticated:
+            return False
+        result = obj.capsule_likes.filter(user=request.user).exists()
+        return result
 
 class NullableIntegerField(serializers.IntegerField):
     """Custom IntegerField that converts empty strings to None"""

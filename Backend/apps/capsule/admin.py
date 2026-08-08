@@ -10,3 +10,4 @@ class CapsuleAdmin(ModelAdmin):
 
 
 admin.site.register(Review,ModelAdmin)
+admin.site.register(Like,ModelAdmin)

@@ -52,6 +52,11 @@ class CapsuleViewportView(APIView):
 class CapsuleDetailView(APIView):
     permission_classes = [AllowAny]
 
+    def get_permission_classes(self):
+        if self.request.method == 'GET':
+            return [AllowAny]
+        return [IsAuthenticated]
+        
     def get(self, request, capsule_id):
         capsule = get_object_or_404(Capsule, id=capsule_id, is_public=True)
 

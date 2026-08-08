@@ -28,7 +28,7 @@ const Navbar = () => {
         const checkAuth = () => {
             const token = localStorage.getItem('access_token');
             const userData = localStorage.getItem('user');
-            
+
             if (token && userData) {
                 setIsLoggedIn(true);
                 setUser(JSON.parse(userData));
@@ -72,15 +72,15 @@ const Navbar = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
-        
+
         // Update state
         setIsLoggedIn(false);
         setUser(null);
-        
+
         // Redirect to home
         window.location.href = '/';
     };
-    
+
     const handleAuthClick = () => {
         // This will be called after login/logout to close the menu
         // The menu will handle its own closing via the closeOnClickAway prop
@@ -98,9 +98,8 @@ const Navbar = () => {
                 menuButtonColor="#ffffff"
                 openMenuButtonColor="#ffffff"
                 changeMenuColorOnOpen={true}
-                colors={['#B497CF', '#5227FF']}
                 logoUrl={logo}
-                accentColor="rgba(255, 81, 0, 0.99)"
+                accentColor="var(--primary-color)"
                 isLoggedIn={isLoggedIn}
                 user={user}
                 onLoginClick={handleLoginClick}

@@ -87,6 +87,10 @@ const CapsuleDetail = () => {
             hasFetched.current = true;
             fetchCapsule();
             fetchReviews(1);
+            // Check like status after capsule is loaded
+            setTimeout(() => {
+                checkLikeStatus();
+            }, 500);
         }
 
         return () => {
@@ -98,7 +102,7 @@ const CapsuleDetail = () => {
     const fetchCapsule = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/capsules/${id}/`, {
-                headers: getApiHeaders(),
+                headers: getApiHeaders(token),
             });
             if (!res.ok) throw new Error('Failed to fetch capsule');
             const data = await res.json();
@@ -115,6 +119,22 @@ const CapsuleDetail = () => {
             setError(err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const checkLikeStatus = async () => {
+        if (!token) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/capsules/${id}/like/`, {
+                headers: getApiHeaders(token),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setLiked(data.liked);
+                setLikesCount(data.likes_count);
+            }
+        } catch (err) {
+            console.error('Failed to check like status:', err);
         }
     };
 
@@ -327,49 +347,55 @@ const CapsuleDetail = () => {
                             </div>
                         </div>
 
-                        <div className="capsule-detail-stats">
-                            <div className="capsule-stat">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-                                <span>{capsule.views || 0} views</span>
-                            </div>
-                            <div className="capsule-stat">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                                </svg>
-                                <span>{likesCount} likes</span>
-                            </div>
-                            <div className="capsule-stat">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                </svg>
-                                <span>{capsule.average_rating || 0}/5</span>
-                            </div>
-                            <div className="capsule-stat">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                </svg>
-                                <span>{capsule.review_count || 0} reviews</span>
-                            </div>
-                        </div>
-
-                        {/* Like Button - Show only if not the owner */}
-                        {token && currentUserId !== capsule.user?.id && (
-                            <div className="capsule-like-section">
-                                <button 
-                                    className={`like-btn ${liked ? 'liked' : ''}`}
-                                    onClick={handleLike}
-                                    disabled={likeLoading}
-                                >
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div className="capsule-detail-stats">
+                                <div className="capsule-stat">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    <span>{capsule.views || 0} views</span>
+                                </div>
+                                <div className="capsule-stat">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                                     </svg>
-                                    <span>{liked ? 'Liked' : 'Like'}</span>
-                                </button>
+                                    <span>{capsule.likes || 0} likes</span>
+                                </div>
+                                <div className="capsule-stat">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    <span>{capsule.average_rating || 0}/5</span>
+                                </div>
+                                <div className="capsule-stat">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                    </svg>
+                                    <span>{capsule.total_reviews || 0} reviews</span>
+                                </div>
+
                             </div>
-                        )}
+                            {/* Like Button - Show only if not the owner */}
+                            {token && currentUserId !== capsule.user?.id && (
+                                <div className="capsule-like-section">
+                                    <button
+                                        className={`like-btn ${liked ? 'liked' : 'like'}`}
+                                        onClick={handleLike}
+                                        disabled={likeLoading}
+                                    >
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                        </svg>
+                                        <span>{liked ? 'Liked' : 'Like'}</span>
+                                    </button>
+                                </div>
+                            )}
+
+
+                        </div>
+
+
 
                         <div className="capsule-detail-info">
                             <h1 className="capsule-detail-name">{capsule.name}</h1>
@@ -477,21 +503,22 @@ const CapsuleDetail = () => {
                     <section className="capsule-reviews-section">
                         <div className="reviews-header">
                             <h2 className="reviews-title">Reviews ({capsule.total_reviews || 0})</h2>
+                            {/* Add Review Button - Show only if not the owner and logged in */}
+                            {token && currentUserId !== capsule.user?.id && !showReviewForm && (
+                                <button
+                                    className="add-review-btn"
+                                    onClick={() => setShowReviewForm(true)}
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                    Add Review
+                                </button>
+                            )}
                         </div>
 
-                        {/* Add Review Button - Show only if not the owner and logged in */}
-                        {token && currentUserId !== capsule.user?.id && !showReviewForm && (
-                            <button 
-                                className="add-review-btn"
-                                onClick={() => setShowReviewForm(true)}
-                            >
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <line x1="12" y1="5" x2="12" y2="19" />
-                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                </svg>
-                                Add Review
-                            </button>
-                        )}
+
 
                         {/* Review Form */}
                         {showReviewForm && (
@@ -521,14 +548,14 @@ const CapsuleDetail = () => {
                                     />
                                 </div>
                                 <div className="review-form-actions">
-                                    <button 
+                                    <button
                                         className="submit-review-btn"
                                         onClick={handleSubmitReview}
                                         disabled={submittingReview}
                                     >
                                         {submittingReview ? 'Submitting...' : 'Submit Review'}
                                     </button>
-                                    <button 
+                                    <button
                                         className="cancel-review-btn"
                                         onClick={() => {
                                             setShowReviewForm(false);

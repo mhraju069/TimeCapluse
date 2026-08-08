@@ -36,7 +36,16 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
     const [detail, setDetail] = useState(null);
     useEffect(() => {
         if (isServer && descriptor?.id && !detail) {
-            fetch(`/api/capsules/${descriptor.id}/`)
+            // Get token from localStorage if available
+            const token = localStorage.getItem('access_token');
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
+            fetch(`/api/capsules/${descriptor.id}/`, { headers })
                 .then(res => res.json())
                 .then(data => setDetail(data))
                 .catch(() => {});

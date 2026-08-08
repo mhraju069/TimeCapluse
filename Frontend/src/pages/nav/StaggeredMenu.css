@@ -398,8 +398,7 @@
     gap: 0.75rem;
     width: 100%;
     padding: 0.875rem 1.5rem;
-    background: rgba(212, 165, 116, 0.1);
-    border: 1px solid rgba(212, 165, 116, 0.3);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     color: #f5f0e8;
     font-family: 'Georgia', 'Times New Roman', serif;
@@ -412,11 +411,8 @@
 }
 
 .sm-auth-button:hover {
-    background: rgba(212, 165, 116, 0.15);
-    border-color: rgba(255, 81, 0, 0.99);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(212, 165, 116, 0.35);
-    color: rgba(255, 81, 0, 0.99);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .sm-auth-button:active {
@@ -461,13 +457,12 @@
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    border: 2px solid rgba(212, 165, 116, 0.4);
-    background: rgba(212, 165, 116, 0.1);
+    border: 2px solid var(--border-color);
     transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .sm-profile-button:hover .sm-profile-avatar {
-    border-color: rgba(255, 81, 0, 0.99);
+    border-color: var(--primary-color);
     transform: scale(1.05);
 }
 
