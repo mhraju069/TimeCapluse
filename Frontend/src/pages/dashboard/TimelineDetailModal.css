@@ -64,19 +64,24 @@
 }
 
 .timeline-detail-close {
-    color: #fff;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .timeline-detail-close:hover {
-    color: var(--primary-color)
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    transform: rotate(90deg);
 }
 
 .timeline-detail-error {
@@ -197,19 +202,22 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
     color: #ffffff;
     font-family: 'Verdana', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-edit:hover {
+    background: rgba(212, 165, 116, 0.1);
+    border-color: rgba(212, 165, 116, 0.4);
     color: var(--primary-color);
+    transform: translateY(-2px);
 }
 
 /* Edit Form */
@@ -274,21 +282,22 @@
 
 .btn-cancel {
     padding: 10px 20px;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
     color: #ffffff;
     font-family: 'Verdana', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-cancel:hover:not(:disabled) {
-    border-color: var(--border-color);
-    background: var(--background-color);
-    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    transform: translateY(-2px);
 }
 
 .btn-cancel:disabled {
@@ -300,18 +309,20 @@
     padding: 10px 20px;
     background: var(--primary-color);
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     color: #ffffff;
     font-family: 'Verdana', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(212, 160, 36, 0.3);
 }
 
 .btn-save:hover:not(:disabled) {
     background: #b8891d;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 160, 36, 0.4);
 }
 
 .btn-save:disabled {
@@ -338,6 +349,73 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* Carousel Modal */
+.carousel-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.carousel-modal-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    animation: zoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-modal-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-modal-close:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 /* Responsive */
 @media screen and (max-width: 768px) {
     .timeline-detail-modal {
@@ -358,5 +436,11 @@
 
     .timeline-images-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .carousel-modal-close {
+        top: -45px;
+        width: 36px;
+        height: 36px;
     }
 }

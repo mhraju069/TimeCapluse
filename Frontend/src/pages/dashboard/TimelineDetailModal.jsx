@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ImageCarousel from '../../components/application/carousel/ImageCarousel';
 import './TimelineDetailModal.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -26,6 +27,8 @@ const TimelineDetailModal = ({ event, onClose, onUpdate }) => {
     const [images, setImages] = useState([]);
     const [newImages, setNewImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [showCarousel, setShowCarousel] = useState(false);
+    const [carouselStartIndex, setCarouselStartIndex] = useState(0);
 
     useEffect(() => {
         // Load existing images
@@ -36,61 +39,78 @@ const TimelineDetailModal = ({ event, onClose, onUpdate }) => {
 
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setNewImages([...newImages, ...files]);
-
-        // Create previews
-        const previews = files.map(file => URL.createObjectURL(file));
-        setImagePreviews([...imagePreviews, ...previews]);
+        setNewImages(prev => [...prev, ...files]);
+        
+        // Generate previews
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setImagePreviews(prev => [...prev, ...newPreviews]);
     };
 
-    const removeExistingImage = (index) => {
-        const newImagesList = images.filter((_, i) => i !== index);
-        setImages(newImagesList);
+    const handleRemoveNewImage = (index) => {
+        setNewImages(prev => prev.filter((_, i) => i !== index));
+        setImagePreviews(prev => prev.filter((_, i) => i !== index));
     };
 
-    const removeNewImage = (index) => {
-        const newNewImages = newImages.filter((_, i) => i !== index);
-        const newPreviews = imagePreviews.filter((_, i) => i !== index);
-        setNewImages(newNewImages);
-        setImagePreviews(newPreviews);
+    const handleRemoveExistingImage = async (imageId) => {
+        if (!confirm('Are you sure you want to delete this image?')) return;
+        
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/timeline-images/${imageId}/`, {
+                method: 'DELETE',
+                headers: getApiHeaders(token),
+            });
+            
+            if (!res.ok) throw new Error('Failed to delete image');
+            
+            setImages(prev => prev.filter(img => img.id !== imageId));
+            if (onUpdate) onUpdate();
+        } catch (err) {
+            console.error('Delete image error:', err);
+            setError('Failed to delete image');
+        }
     };
 
-    const handleSave = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setSaving(true);
         setError('');
 
         try {
-            const formDataObj = new FormData();
-            formDataObj.append('title', formData.title);
-            formDataObj.append('description', formData.description);
-            formDataObj.append('event_date', formData.event_date);
-
-            // Append existing images that weren't removed
-            images.forEach(img => {
-                formDataObj.append('existing_images', img.id || img.image_url || img.image);
-            });
-
-            // Append new images
-            newImages.forEach(image => {
-                formDataObj.append('images', image);
-            });
-
-            const res = await fetch(`${API_BASE_URL}/api/capsules/timeline/${event.id}/`, {
+            // Update event details
+            const res = await fetch(`${API_BASE_URL}/api/timeline/${event.id}/`, {
                 method: 'PATCH',
-                headers: getApiHeaders(token),
-                body: formDataObj,
+                headers: {
+                    ...getApiHeaders(token),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
             });
 
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Failed to update timeline');
+            if (!res.ok) throw new Error('Failed to update event details');
+
+            // Upload new images if any
+            if (newImages.length > 0) {
+                for (const file of newImages) {
+                    const imgFormData = new FormData();
+                    imgFormData.append('timeline', event.id);
+                    imgFormData.append('image', file);
+
+                    const imgRes = await fetch(`${API_BASE_URL}/api/timeline-images/`, {
+                        method: 'POST',
+                        headers: getApiHeaders(token),
+                        body: imgFormData,
+                    });
+
+                    if (!imgRes.ok) console.error('Failed to upload an image');
+                }
             }
 
-            const updated = await res.json();
-            onUpdate(updated);
             setEditing(false);
+            if (onUpdate) onUpdate();
+            onClose();
         } catch (err) {
-            setError(err.message);
+            console.error('Update error:', err);
+            setError(err.message || 'Failed to save changes');
         } finally {
             setSaving(false);
         }
@@ -121,27 +141,33 @@ const TimelineDetailModal = ({ event, onClose, onUpdate }) => {
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
+                            Edit
                         </button>
-
                         <button className="timeline-detail-close" onClick={onClose}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <line x1="18" y1="6" x2="6" y2="18" />
                                 <line x1="6" y1="6" x2="18" y2="18" />
                             </svg>
                         </button>
-
                     </div>
+
                 </div>
 
-                {error && (
-                    <div className="timeline-detail-error">
-                        {error}
-                    </div>
-                )}
+                {error && <div className="timeline-detail-error">{error}</div>}
 
                 <div className="timeline-detail-content">
                     {editing ? (
-                        <div className="timeline-edit-form">
+                        <form onSubmit={handleSubmit} className="timeline-edit-form">
+                            <div className="form-group">
+                                <label>Date</label>
+                                <input
+                                    type="date"
+                                    value={formData.event_date}
+                                    onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
+                                    required
+                                />
+                            </div>
+
                             <div className="form-group">
                                 <label>Title</label>
                                 <input
@@ -153,93 +179,90 @@ const TimelineDetailModal = ({ event, onClose, onUpdate }) => {
                             </div>
 
                             <div className="form-group">
-                                <label>Event Date</label>
-                                <input
-                                    type="date"
-                                    value={formData.event_date}
-                                    onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
                                 <label>Description</label>
                                 <textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    rows="8"
                                     required
                                 />
                             </div>
 
-                            <div className="form-group">
-                                <label>Current Images</label>
-                                <div className="timeline-images-grid">
-                                    {images.map((img, index) => (
-                                        <div key={index} className="timeline-image-item">
-                                            <img src={img.image_url || img.image} alt={`Event ${index + 1}`} />
-                                            <button
-                                                type="button"
-                                                className="timeline-image-remove"
-                                                onClick={() => removeExistingImage(index)}
-                                            >
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                    <line x1="18" y1="6" x2="6" y2="18" />
-                                                    <line x1="6" y1="6" x2="18" y2="18" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Add New Images</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={handleImageUpload}
-                                    className="timeline-file-input"
-                                />
-                                {imagePreviews.length > 0 && (
+                            {/* Existing Images */}
+                            {images.length > 0 && (
+                                <div className="form-group">
+                                    <label>Current Images</label>
                                     <div className="timeline-images-grid">
-                                        {imagePreviews.map((preview, index) => (
-                                            <div key={index} className="timeline-image-item">
-                                                <img src={preview} alt={`New ${index + 1}`} />
+                                        {images.map((img) => (
+                                            <div key={img.id} className="timeline-image-item">
+                                                <img src={img.image_url || img.image} alt="Event" />
                                                 <button
                                                     type="button"
                                                     className="timeline-image-remove"
-                                                    onClick={() => removeNewImage(index)}
+                                                    onClick={() => handleRemoveExistingImage(img.id)}
                                                 >
-                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                        <line x1="18" y1="6" x2="6" y2="18" />
-                                                        <line x1="6" y1="6" x2="18" y2="18" />
-                                                    </svg>
+                                                    ×
                                                 </button>
                                             </div>
                                         ))}
                                     </div>
-                                )}
+                                </div>
+                            )}
+
+                            {/* New Image Previews */}
+                            {imagePreviews.length > 0 && (
+                                <div className="form-group">
+                                    <label>New Images to Upload</label>
+                                    <div className="timeline-images-grid">
+                                        {imagePreviews.map((preview, idx) => (
+                                            <div key={idx} className="timeline-image-item">
+                                                <img src={preview} alt="New Preview" />
+                                                <button
+                                                    type="button"
+                                                    className="timeline-image-remove"
+                                                    onClick={() => handleRemoveNewImage(idx)}
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Upload Input */}
+                            <div className="form-group">
+                                <label>Add More Images</label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className="timeline-file-input"
+                                />
                             </div>
 
                             <div className="timeline-detail-actions">
                                 <button
+                                    type="button"
                                     className="btn-cancel"
-                                    onClick={() => setEditing(false)}
+                                    onClick={() => {
+                                        setEditing(false);
+                                        setNewImages([]);
+                                        setImagePreviews([]);
+                                    }}
                                     disabled={saving}
                                 >
                                     Cancel
                                 </button>
                                 <button
+                                    type="submit"
                                     className="btn-save"
-                                    onClick={handleSave}
                                     disabled={saving}
                                 >
                                     {saving ? 'Saving...' : 'Save Changes'}
                                 </button>
                             </div>
-                        </div>
+                        </form>
                     ) : (
                         <div className="timeline-detail-view">
                             <div className="timeline-detail-date">
@@ -258,29 +281,31 @@ const TimelineDetailModal = ({ event, onClose, onUpdate }) => {
                                                 src={img.image_url || img.image}
                                                 alt={`Event ${index + 1}`}
                                                 className="timeline-detail-image"
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setCarouselStartIndex(index);
+                                                    setShowCarousel(true);
+                                                }}
                                             />
                                         ))}
                                     </div>
                                 </div>
                             )}
 
-                            {/* <div className="timeline-detail-actions">
-                                <button 
-                                    className="btn-edit"
-                                    onClick={() => setEditing(true)}
-                                >
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                    </svg>
-                                    Edit Event
-                                </button>
-                            </div> */}
+                            {/* Image Carousel */}
+                            {showCarousel && (
+                                <ImageCarousel
+                                    images={event.images}
+                                    startIndex={carouselStartIndex}
+                                    onClose={() => setShowCarousel(false)}
+                                />
+                            )}
                         </div>
                     )}
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import TimelineModal from './TimelineModal';
+import TimelineEventModal from './TimelineEventModal';
 import OptionWheel from './OptionWheel';
 import './timeline.css';
 
@@ -23,6 +24,8 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
     const [imageIndexes, setImageIndexes] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [showEventModal, setShowEventModal] = useState(false);
     const [displayData, setDisplayData] = useState({
         year: '',
         title: '',
@@ -149,6 +152,18 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
         }
     };
 
+    const truncateText = (text, maxWords = 70) => {
+        if (!text) return '';
+        const words = text.split(' ');
+        if (words.length <= maxWords) return text;
+        return words.slice(0, maxWords).join(' ') + '...';
+    };
+
+    const handleSeeMore = (event) => {
+        setSelectedEvent(event);
+        setShowEventModal(true);
+    };
+
     // Calculate dynamic font size based on number of items
     const getDynamicFontSize = () => {
         const count = timelines.length;
@@ -273,7 +288,17 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                         {displayData.event_date}
                     </div>
                     <h3 className="timeline-title-display">{displayData.title}</h3>
-                    <p className="timeline-description">{displayData.description}</p>
+                    <p className="timeline-description">
+                        {truncateText(displayData.description)}
+                        {displayData.description && displayData.description.split(' ').length > 70 && (
+                            <span 
+                                className="timeline-see-more"
+                                onClick={() => handleSeeMore(currentTimeline)}
+                            >
+                                See More
+                            </span>
+                        )}
+                    </p>
 
                     {/* Image dots for multi-image carousel */}
                     {displayData.hasMultipleImages && (
@@ -317,21 +342,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                     />
                 </div>
 
-                {/* Add Button */}
-                {isOwner && (
-                    <button
-                        className="timeline-add-fab"
-                        onClick={() => setShowModal(true)}
-                        title="Add Timeline Event"
-                    >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                    </button>
-                )}
-
-                {/* Modal */}
+                {/* Add Event Modal */}
                 {showModal && (
                     <TimelineModal
                         capsuleId={capsuleId}
@@ -341,6 +352,14 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                             fetchTimeline();
                             setShowModal(false);
                         }}
+                    />
+                )}
+
+                {/* Event Detail Modal - Read Only */}
+                {showEventModal && selectedEvent && (
+                    <TimelineEventModal
+                        event={selectedEvent}
+                        onClose={() => setShowEventModal(false)}
                     />
                 )}
             </div>
