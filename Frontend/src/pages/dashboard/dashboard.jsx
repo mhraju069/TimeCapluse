@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Timeline from '../capsule/timeline/Timeline';
+import TimelineCard from './TimelineCard';
+import TimelineDetailModal from './TimelineDetailModal';
 import './dashboard.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -22,6 +23,9 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [data, setData] = useState(null);
+    const [timelineEvents, setTimelineEvents] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -68,6 +72,11 @@ const Dashboard = () => {
 
                 const result = await res.json();
                 setData(result.data);
+
+                // Fetch timeline events
+                if (result.data.has_capsule && result.data.capsule_id) {
+                    fetchTimelineEvents(result.data.capsule_id, token);
+                }
             } catch (err) {
                 setError(err.message || 'Failed to load dashboard');
             } finally {
@@ -77,6 +86,32 @@ const Dashboard = () => {
 
         fetchDashboard();
     }, [navigate]);
+
+    const fetchTimelineEvents = async (capsuleId, token) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/capsules/${capsuleId}/timeline/`, {
+                headers: getApiHeaders(token),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setTimelineEvents(data || []);
+            }
+        } catch (err) {
+            console.error('Failed to fetch timeline events:', err);
+        }
+    };
+
+    const handleSeeMore = (event) => {
+        setSelectedEvent(event);
+        setShowModal(true);
+    };
+
+    const handleUpdateEvent = (updatedEvent) => {
+        setTimelineEvents(prev =>
+            prev.map(event => event.id === updatedEvent.id ? updatedEvent : event)
+        );
+        setSelectedEvent(updatedEvent);
+    };
 
     const formatDate = (dateStr) => {
         if (!dateStr) return 'N/A';
@@ -151,7 +186,7 @@ const Dashboard = () => {
                             <span className="avatar-status" />
                         </div>
                         <div className="header-info">
-                            <h1 className="header-title">Welcome back, <span className="gold-text">{user.name || 'Explorer'}</span></h1>
+                            <h1 className="header-title">Welcome, <span className="gold-text">{user.name || 'Explorer'}</span></h1>
                             <p className="header-subtitle">{user.email}</p>
                         </div>
                     </div>
@@ -275,14 +310,30 @@ const Dashboard = () => {
                 {/* Main Content Grid — Timeline display */}
                 <div className="dashboard-main-grid">
                     <section className="dashboard-section capsules-section" style={{ padding: '24px 0 0 0' }}>
-                        <div className="section-header" style={{ marginBottom: '24px', padding: '0 24px' }}>
-                            <h2 className="section-title">My Timeline</h2>
+                        <div className="section-header" style={{ marginBottom: '24px', padding: '0 2px' }}>
+                            <h2 className="section-title">My Timeline Events</h2>
                             <span className="section-count">{stats.timeline_count || 0} events</span>
                         </div>
 
                         {has_capsule && capsule_id ? (
-                            <div style={{ minHeight: '600px', position: 'relative', borderRadius: '24px', overflow: 'hidden' }}>
-                                <Timeline capsuleId={capsule_id} capsuleName={capsule?.name} isOwner={true} />
+                            <div>
+                                {timelineEvents.length > 0 ? (
+                                    <div className="timeline-cards-grid">
+                                        {timelineEvents.map((event) => (
+                                            <TimelineCard
+                                                key={event.id}
+                                                event={event}
+                                                onSeeMore={handleSeeMore}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="empty-state">
+                                        <div className="empty-icon">✦</div>
+                                        <h3>No timeline events yet</h3>
+                                        <p>Start adding timeline events to your capsule.</p>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="empty-state">
@@ -297,6 +348,15 @@ const Dashboard = () => {
                     </section>
                 </div>
             </div>
+
+            {/* Timeline Detail Modal */}
+            {showModal && selectedEvent && (
+                <TimelineDetailModal
+                    event={selectedEvent}
+                    onClose={() => setShowModal(false)}
+                    onUpdate={handleUpdateEvent}
+                />
+            )}
         </div>
     );
 };
