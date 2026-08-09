@@ -133,7 +133,7 @@ class MyCapsuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Capsule
         fields = [
-            'id', 'name', 'bio', 'location', 'dob',
+            'id', 'name', 'bio', 'location', 'dob','cover',
             'thumbnail', 'profile', 'grid_x', 'grid_y',
             'views', 'likes', 'is_public', 'created_at',
             'review_count', 'average_rating',

@@ -903,3 +903,146 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Dashboard Capsule Detail Card */
+.dashboard-capsule-detail-card {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(212, 165, 116, 0.15);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Cover Image */
+.capsule-detail-cover-wrap {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+    background: #0f0f15;
+}
+
+.capsule-detail-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.capsule-detail-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(82, 39, 255, 0.05));
+    font-size: 4rem;
+    color: rgba(212, 165, 116, 0.4);
+}
+
+.capsule-detail-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(7, 7, 11, 0) 0%, rgba(7, 7, 11, 0.8) 100%);
+    pointer-events: none;
+}
+
+/* Header with Avatar and Actions */
+.capsule-detail-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 28px;
+    margin-top: -60px;
+    position: relative;
+    z-index: 2;
+}
+
+.capsule-detail-avatar-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #07070b;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    background: #000;
+}
+
+.capsule-detail-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.capsule-detail-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #d4a574;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.2), rgba(212, 165, 116, 0.05));
+}
+
+/* Image Upload Buttons Overlay */
+.cover-upload-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 5;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+}
+
+.cover-upload-btn:hover {
+    background: rgba(212, 165, 116, 0.2);
+    border-color: var(--primary-color);
+}
+
+.avatar-upload-btn {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.capsule-detail-avatar-wrap:hover .avatar-upload-btn {
+    opacity: 1;
+}
+
+.avatar-upload-btn svg {
+    color: #fff;
+}
+
+/* Edit Form Styles */
+.capsule-edit-form {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 10px;
+}

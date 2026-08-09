@@ -9,6 +9,7 @@
   --text-color: #ffffff;
   --text-muted: rgba(255, 255, 255, 0.7);
   --text-dim: rgba(255, 255, 255, 0.5);
+  --font-family: 'Verdana', sans-serif;
 }
 
 html,
@@ -23,15 +24,15 @@ body,
   background-color: #0f0f14;
   scrollbar-color: #d4a574 #0f0e0c;
   scrollbar-width: none;
-  font-family: 'Verdana', sans-serif;
+  font-family: var(--font-family);
 }
 
 body {
-  font-family: 'Verdana', sans-serif;
+  font-family: var(--font-family);
 }
 
-* {
-  font-family: 'Verdana', sans-serif;
+*, ::before, ::after {
+  font-family: var(--font-family) !important;
 }
 
 .app-shell {
