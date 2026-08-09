@@ -266,8 +266,299 @@
     box-shadow: 0 6px 20px rgba(212, 160, 36, 0.6);
 }
 
-/* Responsive */
+/* Timeline Header & View Mode Selector */
+.timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.timeline-header .timeline-section-title {
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.timeline-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.timeline-view-switch {
+    display: flex;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 30px;
+    padding: 3px;
+    backdrop-filter: blur(10px);
+}
+
+.timeline-view-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+
+.timeline-view-btn:hover {
+    color: #ffffff;
+}
+
+.timeline-view-btn.active {
+    background: var(--primary-color, #d4a024);
+    color: #0b111e;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(212, 160, 36, 0.3);
+}
+
+/* ==========================================================================
+   Classic Timeline View Layout (Editorial Design with Smooth Carousel)
+   ========================================================================== */
+
+.timeline-classic-container {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    padding: 40px 20px 80px;
+    background: linear-gradient(180deg, #0b111e 0%, #0d1627 50%, #090e18 100%);
+    border-radius: 24px;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6), 0 10px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.classic-timeline-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    min-height: 380px;
+}
+
+.classic-timeline-row.classic-row-reverse {
+    flex-direction: row-reverse;
+}
+
+/* Content Block */
+.classic-content-block {
+    flex: 1;
+    max-width: 520px;
+    position: relative;
+    z-index: 2;
+}
+
+.classic-number-badge {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.classic-ghost-number {
+    position: absolute;
+    top: -45px;
+    left: -20px;
+    font-size: 6.5rem;
+    font-weight: 900;
+    font-family: 'Playfair Display', 'Georgia', serif;
+    color: rgba(255, 255, 255, 0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+    z-index: -1;
+}
+
+.classic-tagline {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--primary-color, #d4a024);
+    margin-bottom: 8px;
+}
+
+.classic-item-title {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.25;
+    margin: 0 0 18px 0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.classic-item-title:hover {
+    color: var(--primary-color, #d4a024);
+}
+
+.classic-item-description {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 22px;
+    font-weight: 300;
+}
+
+.classic-read-more {
+    background: transparent;
+    border: none;
+    color: var(--primary-color, #d4a024);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.25s ease, color 0.25s ease;
+    font-family: inherit;
+}
+
+.classic-read-more:hover {
+    transform: translateX(6px);
+    color: #ffffff;
+}
+
+/* Image Block & Carousel */
+.classic-image-block {
+    flex: 1;
+    max-width: 480px;
+    height: 380px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.classic-image-block:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 160, 36, 0.3);
+}
+
+.classic-image-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.classic-carousel-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.8s ease-in-out, transform 1.2s ease-in-out;
+}
+
+.classic-carousel-img.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.classic-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(11, 17, 30, 0.4) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.classic-carousel-indicators {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 3;
+}
+
+.classic-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.classic-dot.active {
+    width: 20px;
+    border-radius: 10px;
+    background: var(--primary-color, #d4a024);
+}
+
+.classic-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+}
+
+/* Responsive Styles for Classic View */
+@media screen and (max-width: 900px) {
+    .timeline-classic-container {
+        gap: 60px;
+        padding: 30px 16px;
+    }
+
+    .classic-timeline-row,
+    .classic-timeline-row.classic-row-reverse {
+        flex-direction: column;
+        gap: 30px;
+        min-height: auto;
+    }
+
+    .classic-content-block,
+    .classic-image-block {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .classic-image-block {
+        height: 280px;
+    }
+
+    .classic-item-title {
+        font-size: 1.75rem;
+    }
+
+    .classic-ghost-number {
+        font-size: 4.5rem;
+        top: -30px;
+    }
+}
+
 @media screen and (max-width: 768px) {
+    .timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .timeline-container {
         height: 500px;
     }
