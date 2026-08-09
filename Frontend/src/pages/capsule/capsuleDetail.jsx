@@ -297,7 +297,7 @@ const CapsuleDetail = () => {
 
                 <div className='details-content' style={{ display: 'flex', gap: '1rem', justifyContent: 'center', maxHeight: '750px', }}>
                     <div className="capsule-detail-card">
-                        <div className="capsule-detail-cover-wrap">
+                        <div className="capsule-detail-page-cover-wrap">
                             {capsule.cover ? (
                                 <img src={capsule.cover} alt={capsule.name} className="capsule-detail-cover" />
                             ) : (

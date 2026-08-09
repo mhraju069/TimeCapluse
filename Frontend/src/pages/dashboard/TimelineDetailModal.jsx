@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ImageCarousel from '../../components/application/carousel/ImageCarousel';
+import { convertMultipleToWebP } from '../../utils/imageConverter';
 import './TimelineDetailModal.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -37,13 +38,20 @@ const TimelineDetailModal = ({ event, onClose, onUpdate }) => {
         }
     }, [event]);
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
         const files = Array.from(e.target.files);
-        setNewImages(prev => [...prev, ...files]);
-        
-        // Generate previews
-        const newPreviews = files.map(file => URL.createObjectURL(file));
-        setImagePreviews(prev => [...prev, ...newPreviews]);
+        if (!files.length) return;
+
+        try {
+            const webpFiles = await convertMultipleToWebP(files, { quality: 0.8, maxWidth: 1920, maxHeight: 1920 });
+            setNewImages(prev => [...prev, ...webpFiles]);
+
+            // Generate previews
+            const newPreviews = webpFiles.map(file => URL.createObjectURL(file));
+            setImagePreviews(prev => [...prev, ...newPreviews]);
+        } catch (err) {
+            console.error('Error converting images to WebP:', err);
+        }
     };
 
     const handleRemoveNewImage = (index) => {

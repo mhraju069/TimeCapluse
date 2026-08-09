@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './timelineModal.css';
 
+import { convertMultipleToWebP } from '../../../utils/imageConverter';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const getApiHeaders = (token = null) => {
@@ -34,13 +36,20 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
 
 
 
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
         const files = Array.from(e.target.files);
-        setFormData({ ...formData, images: files });
+        if (!files.length) return;
 
-        // Create previews
-        const previews = files.map(file => URL.createObjectURL(file));
-        setImagePreviews(previews);
+        try {
+            const webpFiles = await convertMultipleToWebP(files, { quality: 0.8, maxWidth: 1920, maxHeight: 1920 });
+            setFormData(prev => ({ ...prev, images: webpFiles }));
+
+            // Create previews
+            const previews = webpFiles.map(file => URL.createObjectURL(file));
+            setImagePreviews(previews);
+        } catch (err) {
+            console.error('Error converting images to WebP:', err);
+        }
     };
 
     const removeImage = (index) => {
