@@ -463,3 +463,54 @@ class CapsuleReviewCreateView(APIView):
             }, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PublicStatsView(APIView):
+    """
+    Public API returning aggregate stats for the site:
+    - total capsules
+    - total timeline events
+    - total curators / users with capsules
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        from apps.timeline.models import TimeLine
+        from apps.timeline.serializers import TimeLineSerializer
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        capsules_count = Capsule.objects.count()
+        events_count = TimeLine.objects.count()
+        curators_count = User.objects.filter(is_active=True).count()
+
+        # Fetch up to 12 timeline events from DB
+        from apps.timeline.models import TimeLineImage
+
+        all_timelines = TimeLine.objects.select_related('capsule').prefetch_related('timeline_images').order_by('-event_date')[:12]
+        
+        sample_items = []
+        for tl in all_timelines:
+            img_obj = tl.timeline_images.first()
+            img_url = request.build_absolute_uri(img_obj.image.url) if (img_obj and img_obj.image) else None
+
+            sample_items.append({
+                'id': str(tl.id),
+                'title': tl.title,
+                'description': tl.description,
+                'capsule_name': tl.capsule.name if tl.capsule else 'Time Capsule',
+                'event_date': tl.event_date.strftime('%b %d, %Y') if tl.event_date else '',
+                'event_year': tl.event_date.year if tl.event_date else '',
+                'image_url': img_url,
+            })
+
+        return Response({
+            'status': 'success',
+            'data': {
+                'capsules_count': capsules_count,
+                'events_count': events_count,
+                'curators_count': curators_count,
+                'sample_items': sample_items,
+            }
+        }, status=status.HTTP_200_OK)
+
