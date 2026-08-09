@@ -126,18 +126,9 @@ const Mint = () => {
             console.log("Capsule created:", data);
             alert("Capsule minted successfully! ✦");
 
-            // Reset form
-            setFormData({
-                name: "",
-                bio: "",
-                dob: "",
-                location: "",
-                is_public: true,
-            });
-            setCoverImage(null);
-            setProfileImage(null);
-            setCoverFile(null);
-            setProfileFile(null);
+            // Redirect to dashboard
+            navigate("/dashboard");
+
 
         } catch (err) {
             console.error("Error creating capsule:", err);
@@ -196,17 +187,14 @@ const Mint = () => {
                     <h2 style={{ color: "#ffffff", fontSize: "1.8rem", marginBottom: "12px" }}>
                         Capsule Already Created
                     </h2>
-                    <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.95rem", lineHeight: "1.6", marginBottom: "28px" }}>
-                        Each account can only create one capsule (profile). You have already created <strong>"{existingCapsule.name}"</strong>.
-                    </p>
                     <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
                         <button
                             onClick={() => navigate("/dashboard")}
                             style={{
                                 padding: "12px 24px",
-                                background: "linear-gradient(135deg, #d4a574 0%, #b8860b 100%)",
-                                color: "#000000",
-                                border: "none",
+                                background: "rgba(255,255,255,0.08)",
+                                color: "#ffffff",
+                                border: "1px solid rgba(255,255,255,0.15)",
                                 borderRadius: "12px",
                                 fontWeight: "600",
                                 cursor: "pointer",
@@ -215,22 +203,6 @@ const Mint = () => {
                             }}
                         >
                             Go to Dashboard
-                        </button>
-                        <button
-                            onClick={() => navigate(`/capsule/${existingCapsule.id}`)}
-                            style={{
-                                padding: "12px 24px",
-                                background: "rgba(255,255,255,0.08)",
-                                color: "#ffffff",
-                                border: "1px solid rgba(255,255,255,0.15)",
-                                borderRadius: "12px",
-                                fontWeight: "500",
-                                cursor: "pointer",
-                                fontSize: "0.9rem",
-                                transition: "all 0.2s ease"
-                            }}
-                        >
-                            View Capsule
                         </button>
                     </div>
                 </div>
@@ -445,7 +417,7 @@ const Mint = () => {
                                 }}>{formData.dob ? `Born: ${new Date(formData.dob).toLocaleDateString()}` : "Date of birth"}</span>
                             </div>
 
-                         </div>
+                        </div>
                     </div>
 
                     {/* Decorative hint */}
@@ -679,6 +651,7 @@ const Mint = () => {
                                     onChange={handleChange}
                                     placeholder="Short bio"
                                     required
+                                    maxLength={250}
                                     style={{
                                         width: "100%",
                                         background: "rgba(212, 165, 116, 0.06)",

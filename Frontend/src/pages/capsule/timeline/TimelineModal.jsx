@@ -32,16 +32,7 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
         };
     }, []);
 
-    // Close on Escape key
-    useEffect(() => {
-        const handleEscape = (e) => {
-            if (e.key === 'Escape') {
-                onClose();
-            }
-        };
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
-    }, [onClose]);
+
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
@@ -93,14 +84,8 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
         }
     };
 
-    const handleBackdropClick = (e) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
-
     return (
-        <div className="timeline-modal-backdrop" onClick={handleBackdropClick}>
+        <div className="timeline-modal-backdrop">
             <div className="timeline-modal">
                 <div className="timeline-modal-header">
                     <h2>Add Timeline Event</h2>

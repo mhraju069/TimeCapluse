@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TimelineCard from './TimelineCard';
 import TimelineDetailModal from './TimelineDetailModal';
+import TimelineModal from '../capsule/timeline/TimelineModal';
 import './dashboard.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -26,6 +27,7 @@ const Dashboard = () => {
     const [timelineEvents, setTimelineEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
 
     // Capsule Edit States
     const [editingCapsule, setEditingCapsule] = useState(false);
@@ -488,6 +490,7 @@ const Dashboard = () => {
                                                     value={capsuleFormData.bio}
                                                     onChange={(e) => setCapsuleFormData({ ...capsuleFormData, bio: e.target.value })}
                                                     rows="3"
+                                                    maxLength={250}
                                                     style={{ padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,165,116,0.2)', borderRadius: '8px', color: '#fff', resize: 'vertical' }}
                                                 />
                                             </div>
@@ -591,33 +594,46 @@ const Dashboard = () => {
                             </div>
                         )}
 
-                        <div className="section-header" style={{ marginBottom: '24px', marginTop: '40px', padding: '0 2px' }}>
-                            <h2 className="section-title">My Timeline Events</h2>
-                            <span className="section-count">{stats.timeline_count || 0} events</span>
-                        </div>
-
                         {has_capsule && capsule_id ? (
-                            <div>
-                                {timelineEvents.length > 0 ? (
-                                    <div className="timeline-cards-grid">
-                                        {timelineEvents.map((event) => (
-                                            <TimelineCard
-                                                key={event.id}
-                                                event={event}
-                                                onSeeMore={handleSeeMore}
-                                            />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="empty-state">
-                                        <div className="empty-icon">✦</div>
-                                        <h3>No timeline events yet</h3>
-                                        <p>Start adding timeline events to your capsule.</p>
-                                    </div>
-                                )}
-                            </div>
+                            <>
+                                <div className="section-header" style={{ marginBottom: '24px', marginTop: '40px', padding: '0 2px' }}>
+                                    <h2 className="section-title">My Timeline Events</h2>
+                                    <span className="section-count">{stats.timeline_count || 0} events</span>
+                                </div>
+
+                                <div>
+                                    {timelineEvents.length > 0 ? (
+                                        <div className="timeline-cards-grid">
+                                            {timelineEvents.map((event) => (
+                                                <TimelineCard
+                                                    key={event.id}
+                                                    event={event}
+                                                    onSeeMore={handleSeeMore}
+                                                />
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="empty-state" style={{ padding: '40px 20px', background: 'rgba(255, 255, 255, 0.02)', border: '1px dashed rgba(212, 165, 116, 0.25)', borderRadius: '20px' }}>
+                                            <div className="empty-icon" style={{ fontSize: '2.5rem', color: '#d4a574', marginBottom: '14px' }}>✦</div>
+                                            <h3 style={{ color: '#fff', fontSize: '1.25rem', marginBottom: '8px' }}>No timeline events yet</h3>
+                                            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.9rem', marginBottom: '20px' }}>Start adding timeline events to your capsule.</p>
+                                            <button 
+                                                className="btn-save" 
+                                                onClick={() => setShowAddModal(true)}
+                                                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', background: 'var(--primary-color)', border: 'none', color: '#fff', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 15px rgba(212, 160, 36, 0.2)' }}
+                                            >
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                                </svg>
+                                                Add New Event
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
                         ) : (
-                            <div className="empty-state">
+                            <div className="empty-state" style={{ marginTop: '40px' }}>
                                 <div className="empty-icon">✦</div>
                                 <h3>No capsule created yet</h3>
                                 <p>Mint your profile capsule to start adding timeline events.</p>
@@ -636,6 +652,19 @@ const Dashboard = () => {
                     event={selectedEvent}
                     onClose={() => setShowModal(false)}
                     onUpdate={handleUpdateEvent}
+                />
+            )}
+
+            {/* Add Timeline Event Modal */}
+            {showAddModal && (
+                <TimelineModal
+                    capsuleId={capsule_id}
+                    token={localStorage.getItem('access_token')}
+                    onClose={() => setShowAddModal(false)}
+                    onSuccess={() => {
+                        fetchTimelineEvents(capsule_id, localStorage.getItem('access_token'));
+                        setShowAddModal(false);
+                    }}
                 />
             )}
         </div>
