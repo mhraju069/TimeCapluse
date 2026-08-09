@@ -125,14 +125,20 @@
 .timeline-content {
     position: absolute;
     z-index: 2;
-    left: 10%;
+    left: 5%;
     top: 50%;
-    transform: translateY(-50%);
-    max-width: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 60%;
+    width: 100%;
     color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: start;
     padding: 40px;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 60%;
     scrollbar-width: none;
 }

@@ -23,7 +23,7 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=${VITE_API_URL:-https://hecticly-rural-kittie.ngrok-free.dev}
+        - VITE_API_URL=${VITE_API_URL}
     container_name: relic-frontend
     restart: always
     ports:

@@ -62,10 +62,12 @@ const MONTHS = [
 
 Card.displayName = 'Card';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 /* ─── Viewport API Integration ───────────────────────────────────────────── */
 async function fetchViewport(minX, maxX, minY, maxY) {
   const res = await fetch(
-    `/api/capsules/viewport/?min_x=${minX}&max_x=${maxX}&min_y=${minY}&max_y=${maxY}`
+    `${API_BASE_URL}/api/capsules/viewport/?min_x=${minX}&max_x=${maxX}&min_y=${minY}&max_y=${maxY}`
   );
   if (!res.ok) {
     throw new Error(`Viewport fetch failed: ${res.status}`);
@@ -147,10 +149,10 @@ export const InfiniteDraggableGrid = ({
     if (searchFilters.dateFrom) params.append('date_from', searchFilters.dateFrom);
     if (searchFilters.dateTo) params.append('date_to', searchFilters.dateTo);
 
-    console.log('Search API call:', `/api/capsules/viewport/?${params.toString()}`);
+    console.log('Search API call:', `${API_BASE_URL}/api/capsules/viewport/?${params.toString()}`);
 
     try {
-      const res = await fetch(`/api/capsules/viewport/?${params.toString()}`);
+      const res = await fetch(`${API_BASE_URL}/api/capsules/viewport/?${params.toString()}`);
       if (!res.ok) throw new Error('Search failed');
       const data = await res.json();
       
@@ -319,7 +321,7 @@ export const InfiniteDraggableGrid = ({
     initRef.current = true;
 
     let cancelled = false;
-    fetch('/api/capsules/bounds/')
+    fetch(`${API_BASE_URL}/api/capsules/bounds/`)
       .then(res => res.json())
       .then(data => {
         if (cancelled) return;
@@ -331,9 +333,7 @@ export const InfiniteDraggableGrid = ({
           const maxX = data.max_x + pad;
           const minY = data.min_y - pad;
           const maxY = data.max_y + pad;
-          return fetch(
-            `/api/capsules/viewport/?min_x=${minX}&max_x=${maxX}&min_y=${minY}&max_y=${maxY}`
-          )
+          fetch(`${API_BASE_URL}/api/capsules/viewport/?min_x=${minX}&max_x=${maxX}&min_y=${minY}&max_y=${maxY}`)
             .then(res => res.json())
             .then(capsules => {
               if (cancelled) return;
