@@ -11,6 +11,7 @@ const About = () => {
   });
 
   const [dbGalleryItems, setDbGalleryItems] = useState([]);
+  const [dbCurators, setDbCurators] = useState([]);
 
   useEffect(() => {
     // Inject Google Fonts if not already loaded
@@ -30,6 +31,9 @@ const About = () => {
       .then((resData) => {
         if (resData.status === 'success' && resData.data) {
           setStats(resData.data);
+          if (resData.data.curators && resData.data.curators.length > 0) {
+            setDbCurators(resData.data.curators);
+          }
           if (resData.data.sample_items && resData.data.sample_items.length > 0) {
             const mapped = resData.data.sample_items.map((item, idx) => {
               const fallbackImages = [
@@ -250,15 +254,20 @@ const About = () => {
             Meet the <span>curators</span>
           </h2>
           <div className="about-team-grid">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="about-team-card">
-                <div className="avatar">
-                  <img src={member.img} alt={member.name} loading="lazy" />
+            {(dbCurators.length > 0 ? dbCurators : teamMembers).map((member, index) => {
+              const name = member.name;
+              const role = member.designation || member.role;
+              const img = member.image || member.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face&auto=format';
+              return (
+                <div key={member.id || index} className="about-team-card">
+                  <div className="avatar">
+                    <img src={img} alt={name} loading="lazy" />
+                  </div>
+                  <div className="name">{name}</div>
+                  <div className="role">{role}</div>
                 </div>
-                <div className="name">{member.name}</div>
-                <div className="role">{member.role}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 

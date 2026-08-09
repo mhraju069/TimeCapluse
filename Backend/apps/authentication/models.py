@@ -80,21 +80,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 
-
-class OTP(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_otp', on_delete=models.CASCADE)
-    otp = models.CharField(max_length=6,verbose_name="OTP Code")
+class Curator(models.Model):
+    name = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='curator_images/', blank=True, null=True,)
+    designation = models.CharField(blank=True, null=True, max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"OTP for: {self.user}."
-
-    @staticmethod
-    def generate_otp(user):
-        otp_code = str(random.randint(1000, 9999))
-        return OTP.objects.create(user=user, otp=otp_code)
-
-    def is_expired(self):
-        return self.created_at + timedelta(minutes=3) < timezone.now()
-
+        return self.name
 

@@ -476,13 +476,25 @@ class PublicStatsView(APIView):
 
     def get(self, request):
         from apps.timeline.models import TimeLine
-        from apps.timeline.serializers import TimeLineSerializer
+        from apps.authentication.models import Curator
         from django.contrib.auth import get_user_model
         User = get_user_model()
 
         capsules_count = Capsule.objects.count()
         events_count = TimeLine.objects.count()
-        curators_count = User.objects.filter(is_active=True).count()
+        
+        # Curator Model stats and list
+        db_curators = Curator.objects.all().order_by('-created_at')
+        curators_count = db_curators.count() if db_curators.exists() else User.objects.filter(is_active=True).count()
+
+        curator_list = []
+        for c in db_curators:
+            curator_list.append({
+                'id': c.id,
+                'name': c.name,
+                'designation': c.designation or 'Curator',
+                'image': request.build_absolute_uri(c.image.url) if c.image else None
+            })
 
         # Fetch up to 12 timeline events from DB
         from apps.timeline.models import TimeLineImage
@@ -510,6 +522,7 @@ class PublicStatsView(APIView):
                 'capsules_count': capsules_count,
                 'events_count': events_count,
                 'curators_count': curators_count,
+                'curators': curator_list,
                 'sample_items': sample_items,
             }
         }, status=status.HTTP_200_OK)
