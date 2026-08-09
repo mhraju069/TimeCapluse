@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: timecapsule-backend
+    restart: always
+    command: >
+      sh -c "python manage.py collectstatic --noinput && python manage.py makemigrations && python manage.py migrate && gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --workers 4 --reload"
+    volumes:
+      - ./Backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./Backend/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-https://hecticly-rural-kittie.ngrok-free.dev}
+    container_name: timecapsule-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
