@@ -233,6 +233,23 @@ export default function DomeGallery({
     applyTransform(rotationRef.current.x, rotationRef.current.y);
   }, []);
 
+  // Auto-rotation animation loop
+  useEffect(() => {
+    let autoRotateRAF;
+    const tick = () => {
+      if (!draggingRef.current && !inertiaRAF.current && !focusedElRef.current) {
+        const nextY = wrapAngleSigned(rotationRef.current.y + 0.05); // 0.05 deg per frame speed
+        rotationRef.current = { ...rotationRef.current, y: nextY };
+        applyTransform(rotationRef.current.x, rotationRef.current.y);
+      }
+      autoRotateRAF = requestAnimationFrame(tick);
+    };
+    autoRotateRAF = requestAnimationFrame(tick);
+    return () => {
+      if (autoRotateRAF) cancelAnimationFrame(autoRotateRAF);
+    };
+  }, []);
+
   const stopInertia = useCallback(() => {
     if (inertiaRAF.current) {
       cancelAnimationFrame(inertiaRAF.current);
