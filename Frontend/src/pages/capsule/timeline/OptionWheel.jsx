@@ -44,7 +44,7 @@ const OptionWheel = ({
   loop = true,
   draggable = true,
 
-  soundUrl = '/asset/sounds/click-soft.wav',
+  soundUrl = '/asset/sounds/click-soft.mp3',
   soundVolume = 0.5,
 
   /*
