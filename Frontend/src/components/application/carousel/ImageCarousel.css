@@ -43,7 +43,7 @@
 }
 
 .ic-close:hover {
-    color: #ef4444;
+    color: #ffffff;
     transform: rotate(90deg);
 }
 
@@ -182,7 +182,7 @@
 .ic-dot-active {
     background: var(--primary-color);
     transform: scale(1.25);
-    /* box-shadow: 0 0 0 2px rgba(108, 71, 196, 0.25); */
+    /* box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25); */
 }
 
 /* Responsive */

@@ -12,3 +12,71 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Global Premium Form Styles */
+.premium-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    width: 100%;
+}
+
+.premium-form-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.15em;
+    margin: 0;
+    padding: 0;
+}
+
+.premium-input-wrap {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.premium-form-input {
+    width: 100%;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0 !important;
+    padding: 10px 0 !important;
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 300 !important;
+    outline: none !important;
+    transition: border-color 0.3s ease !important;
+    box-sizing: border-box !important;
+    color-scheme: dark !important;
+}
+
+.premium-form-input:focus {
+    border-color: rgba(255, 255, 255, 0.7) !important;
+    box-shadow: none !important;
+}
+
+.premium-form-input::placeholder {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-weight: 300 !important;
+}
+
+textarea.premium-form-input {
+    resize: vertical;
+    min-height: 44px;
+    padding-top: 10px;
+}
+
+.premium-asterisk {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.65rem;
+    pointer-events: none;
+}

@@ -137,22 +137,22 @@ const AuthCallback = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
+                background: "linear-gradient(135deg, #000000 0%, #000000 100%)",
                 fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
             }}
         >
             <div
                 style={{
                     textAlign: "center",
-                    color: "#d4a574",
+                    color: "#ffffff",
                 }}
             >
                 <div
                     style={{
                         width: "40px",
                         height: "40px",
-                        border: "3px solid rgba(212, 165, 116, 0.2)",
-                        borderTopColor: "#d4a574",
+                        border: "3px solid rgba(255, 255, 255, 0.2)",
+                        borderTopColor: "#ffffff",
                         borderRadius: "50%",
                         animation: "spin 0.6s linear infinite",
                         margin: "0 auto 20px auto",

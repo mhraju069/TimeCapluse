@@ -7,7 +7,7 @@ export default function Home() {
         width: '100%',
         minHeight: '100vh',
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #07070b 0%, #14121b 100%)'
+        background: 'linear-gradient(135deg, #000000 0%, #000000 100%)'
       }}
     >
       <div

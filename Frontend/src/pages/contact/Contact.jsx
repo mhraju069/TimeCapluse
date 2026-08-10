@@ -81,10 +81,12 @@ const Contact = () => {
             )}
 
             {/* Row 1: Full Name */}
-            <div className="contact-form-group">
-              <label htmlFor="full_name">Full Name</label>
-              <div className="input-wrap-with-asterisk">
+            <div className="premium-form-group">
+              <label className="premium-form-label" htmlFor="full_name">Full Name</label>
+              <span className="premium-asterisk">*</span>
+              <div className="premium-input-wrap">
                 <input
+                  className="premium-form-input"
                   type="text"
                   id="full_name"
                   name="full_name"
@@ -92,16 +94,17 @@ const Contact = () => {
                   onChange={handleChange}
                   required
                 />
-                <span className="required-asterisk">*</span>
               </div>
             </div>
 
             {/* Row 2: Email & Phone */}
             <div className="contact-form-row">
-              <div className="contact-form-group half-width">
-                <label htmlFor="email">Email</label>
-                <div className="input-wrap-with-asterisk">
+              <div className="premium-form-group half-width">
+                <label className="premium-form-label" htmlFor="email">Email</label>
+                <span className="premium-asterisk">*</span>
+                <div className="premium-input-wrap">
                   <input
+                    className="premium-form-input"
                     type="email"
                     id="email"
                     name="email"
@@ -109,14 +112,15 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                   />
-                  <span className="required-asterisk">*</span>
                 </div>
               </div>
 
-              <div className="contact-form-group half-width">
-                <label htmlFor="phone">Phone</label>
-                <div className="input-wrap-with-asterisk">
+              <div className="premium-form-group half-width">
+                <label className="premium-form-label" htmlFor="phone">Phone</label>
+                <span className="premium-asterisk">*</span>
+                <div className="premium-input-wrap">
                   <input
+                    className="premium-form-input"
                     type="tel"
                     id="phone"
                     name="phone"
@@ -124,16 +128,17 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                   />
-                  <span className="required-asterisk">*</span>
                 </div>
               </div>
             </div>
 
             {/* Row 3: Message */}
-            <div className="contact-form-group">
-              <label htmlFor="message">Message</label>
-              <div className="input-wrap-with-asterisk">
+            <div className="premium-form-group">
+              <label className="premium-form-label" htmlFor="message">Message</label>
+              <span className="premium-asterisk">*</span>
+              <div className="premium-input-wrap">
                 <textarea
+                  className="premium-form-input"
                   id="message"
                   name="message"
                   value={formData.message}
@@ -141,7 +146,6 @@ const Contact = () => {
                   rows="1"
                   required
                 ></textarea>
-                <span className="required-asterisk">*</span>
               </div>
             </div>
 

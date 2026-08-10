@@ -142,12 +142,12 @@ const Mint = () => {
         return (
             <div style={{
                 minHeight: "100vh",
-                background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
+                background: "linear-gradient(135deg, #000000 0%, #000000 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "#ffffff",
-                fontFamily: "'Verdana', sans-serif"
+                fontFamily: "'Inter', sans-serif"
             }}>
                 <div style={{ textAlign: "center" }}>
                     <div className="loading-spinner" style={{ margin: "0 auto 16px" }} />
@@ -162,12 +162,12 @@ const Mint = () => {
             <div
                 style={{
                     minHeight: "100vh",
-                    background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
+                    background: "linear-gradient(135deg, #000000 0%, #000000 100%)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     padding: "20px",
-                    fontFamily: "'Verdana', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                 }}
             >
                 <div
@@ -177,13 +177,13 @@ const Mint = () => {
                         padding: "40px",
                         background: "rgba(20, 18, 27, 0.7)",
                         backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(212, 165, 116, 0.2)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
                         borderRadius: "24px",
                         textAlign: "center",
                         boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
                     }}
                 >
-                    <div style={{ fontSize: "3rem", color: "#d4a574", marginBottom: "16px" }}>✦</div>
+                    <div style={{ fontSize: "3rem", color: "#ffffff", marginBottom: "16px" }}>✦</div>
                     <h2 style={{ color: "#ffffff", fontSize: "1.8rem", marginBottom: "12px" }}>
                         Capsule Already Created
                     </h2>
@@ -214,12 +214,12 @@ const Mint = () => {
         <div
             style={{
                 minHeight: "100vh",
-                background: "linear-gradient(135deg, #07070b 0%, #14121b 100%)",
+                background: "linear-gradient(135deg, #000000 0%, #000000 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "20px",
-                fontFamily: "'Verdana', sans-serif",
+                fontFamily: "'Inter', sans-serif",
             }}
         >
             <div
@@ -233,225 +233,89 @@ const Mint = () => {
                     borderRadius: "40px",
                     display: "flex",
                     overflow: "hidden",
+                    border: "1px solid rgba(255,255,255,0.1)",
                     transition: "height 0.3s ease",
                 }}
             >
-                {/* LEFT PANEL — Preview & Visuals */}
+                {/* LEFT PANEL — Visuals & Typography */}
                 <div
+                    className="mint-left"
                     style={{
-                        flex: "0 0 40%",
-                        padding: "32px",
+                        flex: "0 0 45%",
+                        padding: "60px 48px",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
                         borderRight: "1px solid rgba(255,255,255,0.06)",
-                        background: "rgba(0,0,0,0.2)",
+                        background: "#000000",
                     }}
                 >
-                    <div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                        {/* Giant Serif Typography */}
+                        <h1 style={{
+                            fontFamily: "'Playfair Display', 'Georgia', serif",
+                            fontSize: "4.5rem",
+                            fontWeight: 400,
+                            lineHeight: 1.05,
+                            color: "#ffffff",
+                            textTransform: "uppercase",
+                            margin: 0
+                        }}>
+                            Mint<br />
+                            Your<br />
+                            Capsule
+                        </h1>
 
-                        <h2
-                            style={{
-                                fontFamily: "'Verdana', sans-serif",
-                                fontSize: "2.4rem",
-                                fontWeight: 400,
-                                lineHeight: 1.1,
-                                margin: "0 0 8px 0",
-                                color: "#ffffff",
-                            }}
-                        >
-                            The <span style={{
-                                fontStyle: "italic",
-                                color: "#d4a574",
-                                fontWeight: 400
-                            }}>millennium</span>
-                        </h2>
-                        <p
-                            style={{
-                                color: "rgba(255,255,255,0.45)",
-                                fontSize: "0.85rem",
-                                lineHeight: 1.6,
-                                margin: "0",
-                                fontFamily: "'Verdana', sans-serif",
-                                paddingBottom: "20px"
-                            }}
-                        >
-                            Preserve your experiences for future generations.
-                        </p>
-                    </div>
-
-                    {/* Live preview card — same design as capsule card details */}
-                    <div
-                        style={{
-                            flex: 1,
-                            overflow: "hidden",
-                            position: "relative",
-                            borderRadius: "20px",
-                            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-                        }}
-                    >
-                        {/* Background — blurred cover */}
-                        <div
-                            style={{
-                                position: "absolute",
-                                inset: 0,
-                                backgroundImage: coverImage ? `url(${coverImage})` : "linear-gradient(135deg, #2a1a3a, #1a1a2e)",
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                zIndex: 0,
-                            }}
-                        />
-
-                        {/* Blur overlay */}
-                        <div
-                            style={{
-                                position: "absolute",
-                                inset: 0,
-                                backdropFilter: "blur(20px)",
-                                WebkitBackdropFilter: "blur(20px)",
-                                background:
-                                    "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0, 0, 0, 1) 100%)",
-                                maskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
-                                WebkitMaskImage:
-                                    "linear-gradient(to bottom, transparent 0%, black 100%)",
-                                zIndex: 1,
-                                borderRadius: "20px",
-                                pointerEvents: "none",
-                            }}
-                        />
-
-                        {/* Content */}
-                        <div style={{ position: "relative", zIndex: 2 }}>
-                            {/* Cover image area */}
-                            <div style={{ position: 'relative', height: '80px', overflowY: 'visible' }}>
-                                <div style={{ position: 'absolute', inset: 0 }} />
-                            </div>
-
-                            {/* Avatar + Like */}
-                            <div style={{
-                                display: 'flex', alignItems: 'flex-end',
-                                justifyContent: 'space-between',
-                                padding: '0 20px',
-                                marginTop: '-36px',
-                                position: 'relative',
-                            }}>
-                                {/* Avatar */}
-                                <div style={{
-                                    width: '72px', height: '72px',
-                                    borderRadius: '50%',
-                                    border: '3px solid rgba(212, 165, 116, 0.3)',
-                                    overflow: 'hidden',
-                                    flexShrink: 0,
-                                    boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                                }}>
-                                    {profileImage ? (
-                                        <img src={profileImage} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    ) : (
-                                        <div style={{ width: '100%', height: '100%', background: 'rgba(212, 165, 116, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(212, 165, 116, 0.6)', fontSize: '1.5rem', fontFamily: "'Verdana', sans-serif" }}>✦</div>
-                                    )}
-                                </div>
-
-                                {/* Like button */}
-                                <button style={{
-                                    display: 'flex', alignItems: 'center', gap: '6px',
-                                    background: 'rgba(212, 165, 116, 0.1)',
-                                    border: '1px solid rgba(212, 165, 116, 0.25)',
-                                    borderRadius: '999px', padding: '7px 14px',
-                                    cursor: 'pointer', color: '#ffffff', fontSize: '0.82rem', fontWeight: 600,
-                                    fontFamily: "'Verdana', sans-serif",
-                                    transition: 'all 0.2s ease',
-                                }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = 'rgba(212, 165, 116, 0.2)';
-                                        e.currentTarget.style.borderColor = 'rgba(212, 165, 116, 0.4)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(212, 165, 116, 0.1)';
-                                        e.currentTarget.style.borderColor = 'rgba(212, 165, 116, 0.25)';
-                                    }}
-                                >
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#d4a574" stroke="#d4a574" strokeWidth="0">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                    </svg>
-                                    Like
-                                </button>
-                            </div>
-
-                            {/* Stats row */}
-                            <div style={{
-                                display: 'flex', justifyContent: 'flex-end', gap: '18px',
-                                padding: '15px 20px 0',
-                                color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.8rem',
-                                fontFamily: "'Verdana', sans-serif",
-                            }}>
-                                <span><strong style={{ color: '#d4a574' }}>—</strong> likes</span>
-                                <span><strong style={{ color: '#d4a574' }}>—</strong> views</span>
-                            </div>
-
-                            {/* Name + bio */}
-                            <div style={{ padding: '0px 20px 0' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <span style={{
-                                        color: '#ffffff',
-                                        fontWeight: 600,
-                                        fontSize: '1.15rem',
-                                        fontFamily: "'Verdana', sans-serif"
-                                    }}>{formData.name || "Your Name"}</span>
-                                </div>
-                                <p style={{
-                                    margin: 0,
-                                    color: 'rgba(255, 255, 255, 0.7)',
-                                    fontSize: '0.875rem',
-                                    lineHeight: 1.6,
-                                    fontFamily: "'Verdana', sans-serif"
-                                }}>{formData.bio || "A short bio"}</p>
-                            </div>
-
-                            {/* DOB */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px 0' }}>
-                                <span style={{
-                                    color: 'rgba(212, 165, 116, 0.6)',
-                                    fontSize: '0.8rem',
-                                    fontFamily: "'Verdana', sans-serif",
-                                    fontStyle: 'italic'
-                                }}>{formData.dob ? `Born: ${new Date(formData.dob).toLocaleDateString()}` : "Date of birth"}</span>
-                            </div>
-
+                        {/* Geometric Shape */}
+                        <div style={{ position: 'relative', width: '120px', height: '120px', marginTop: '10px' }}>
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                                <circle cx="35" cy="35" r="16" fill="#ffffff" />
+                                <path d="M15,50 C15,85 85,85 85,50" stroke="#ffffff" strokeWidth="1" fill="none" transform="rotate(-15 50 50)" />
+                            </svg>
                         </div>
                     </div>
 
-                    {/* Decorative hint */}
-                    <div
-                        style={{
-                            marginTop: "16px",
-                            fontSize: "0.7rem",
-                            color: "rgba(255,255,255,0.2)",
-                            textAlign: "center",
-                            letterSpacing: "0.06em",
-                        }}
-                    >
-                        Live preview updates as you type
+                    {/* Bottom Metadata */}
+                    <div style={{ display: "flex", gap: "40px", color: "#ffffff", textAlign: "left" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <span style={{ fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.9 }}>Decentralized</span>
+                            <span style={{ fontSize: "0.75rem", opacity: 0.5, lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                                Permanent Storage<br />
+                                Arweave Network<br />
+                                Zero Expiry
+                            </span>
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <span style={{ fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.9 }}>Security</span>
+                            <span style={{ fontSize: "0.75rem", opacity: 0.5, lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                                End-to-End Encryption<br />
+                                Private Access Keys<br />
+                                User Owned Data
+                            </span>
+                        </div>
                     </div>
                 </div>
 
                 {/* RIGHT PANEL — Form */}
                 <div
+                    className="mint-right"
                     style={{
                         flex: 1,
-                        padding: "40px 36px",
+                        padding: "60px 48px",
                         overflowY: "auto",
                         display: "flex",
                         flexDirection: "column",
+                        background: "#000000",
                     }}
                 >
                     {error && (
                         <div style={{
-                            background: "rgba(239, 68, 68, 0.1)",
-                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            background: "rgba(255, 255, 255, 0.1)",
+                            border: "1px solid rgba(255, 255, 255, 0.3)",
                             borderRadius: "12px",
                             padding: "12px 16px",
                             marginBottom: "20px",
-                            color: "#ef4444",
+                            color: "#ffffff",
                             fontSize: "0.9rem",
                         }}>
                             {error}
@@ -461,37 +325,25 @@ const Mint = () => {
                     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                         {/* Two‑column grid for fields */}
                         <div
+                            className="mint-grid"
                             style={{
                                 display: "grid",
                                 gridTemplateColumns: "1fr 1fr",
-                                gap: "24px 28px",
+                                gap: "28px 32px",
                                 flex: 1,
                                 alignContent: "start",
                             }}
                         >
                             {/* Profile Image Upload */}
-                            <div>
-                                <label
-                                    style={{
-                                        display: "block",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 500,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.12em",
-                                        color: "#d4a574",
-                                        marginBottom: "8px",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                >
-                                    Profile Image
-                                </label>
+                            <div className="premium-form-group">
+                                <label className="premium-form-label" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.7rem', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Profile Image</label>
                                 <div
                                     style={{
-                                        width: "160px",
-                                        height: "160px",
+                                        width: "120px",
+                                        height: "120px",
                                         borderRadius: "50%",
-                                        background: "rgba(212, 165, 116, 0.08)",
-                                        border: "1px solid rgba(212, 165, 116, 0.25)",
+                                        background: "rgba(255, 255, 255, 0.04)",
+                                        border: "1px dashed rgba(255, 255, 255, 0.15)",
                                         cursor: "pointer",
                                         overflow: "hidden",
                                         display: "flex",
@@ -500,19 +352,19 @@ const Mint = () => {
                                         transition: "all 0.3s ease",
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.borderColor = "rgba(212, 165, 116, 0.5)";
-                                        e.currentTarget.style.background = "rgba(212, 165, 116, 0.12)";
+                                        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.5)";
+                                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.borderColor = "rgba(212, 165, 116, 0.25)";
-                                        e.currentTarget.style.background = "rgba(212, 165, 116, 0.08)";
+                                        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
                                     }}
                                     onClick={() => document.getElementById("profileUpload").click()}
                                 >
                                     {profileImage ? (
                                         <img src={profileImage} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                     ) : (
-                                        <span style={{ color: "rgba(212, 165, 116, 0.5)", fontSize: "1.5rem", fontFamily: "'Verdana', sans-serif" }}>✦</span>
+                                        <span style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "1.2rem" }}>✦</span>
                                     )}
                                     <input
                                         id="profileUpload"
@@ -525,28 +377,15 @@ const Mint = () => {
                             </div>
 
                             {/* Cover Image Upload */}
-                            <div>
-                                <label
-                                    style={{
-                                        display: "block",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 500,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.12em",
-                                        color: "#d4a574",
-                                        marginBottom: "8px",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                >
-                                    Cover Image
-                                </label>
+                            <div className="premium-form-group">
+                                <label className="premium-form-label" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.7rem', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Cover Image</label>
                                 <div
                                     style={{
                                         width: "100%",
-                                        height: "180px",
-                                        borderRadius: "16px",
-                                        background: "rgba(212, 165, 116, 0.08)",
-                                        border: "1px solid rgba(212, 165, 116, 0.25)",
+                                        height: "120px",
+                                        borderRadius: "14px",
+                                        background: "rgba(255, 255, 255, 0.04)",
+                                        border: "1px dashed rgba(255, 255, 255, 0.15)",
                                         cursor: "pointer",
                                         overflow: "hidden",
                                         display: "flex",
@@ -555,19 +394,19 @@ const Mint = () => {
                                         transition: "all 0.3s ease",
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.borderColor = "rgba(212, 165, 116, 0.5)";
-                                        e.currentTarget.style.background = "rgba(212, 165, 116, 0.12)";
+                                        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.5)";
+                                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.borderColor = "rgba(212, 165, 116, 0.25)";
-                                        e.currentTarget.style.background = "rgba(212, 165, 116, 0.08)";
+                                        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
                                     }}
                                     onClick={() => document.getElementById("coverUpload").click()}
                                 >
                                     {coverImage ? (
                                         <img src={coverImage} alt="Cover" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                     ) : (
-                                        <span style={{ color: "rgba(212, 165, 116, 0.5)", fontSize: "0.85rem", fontFamily: "'Verdana', sans-serif", fontStyle: "italic" }}>Upload cover image</span>
+                                        <span style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "0.8rem", fontStyle: "italic" }}>Upload cover</span>
                                     )}
                                     <input
                                         id="coverUpload"
@@ -579,231 +418,57 @@ const Mint = () => {
                                 </div>
                             </div>
 
-                            {/* Name */}
-                            <div>
-                                <label
-                                    style={{
-                                        display: "block",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 500,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.12em",
-                                        color: "#d4a574",
-                                        marginBottom: "8px",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                >
-                                    Name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="Your full name"
-                                    required
-                                    style={{
-                                        width: "100%",
-                                        background: "rgba(212, 165, 116, 0.06)",
-                                        border: "1px solid rgba(212, 165, 116, 0.2)",
-                                        borderRadius: "14px",
-                                        padding: "14px 18px",
-                                        color: "#ffffff",
-                                        fontSize: "0.95rem",
-                                        outline: "none",
-                                        transition: "all 0.2s ease",
-                                        boxSizing: "border-box",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
-                                        e.target.style.boxShadow = "0 0 0 3px rgba(212, 165, 116, 0.1)";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.1)";
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.2)";
-                                        e.target.style.boxShadow = "none";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.06)";
-                                    }}
-                                />
+                            {/* Form Fields */}
+                            <div className="premium-form-group" style={{ gridColumn: 'span 2' }}>
+                                <label className="premium-form-label" htmlFor="name">Name</label>
+                                <span className="premium-asterisk">*</span>
+                                <div className="premium-input-wrap">
+                                    <input name="name" id="name" value={formData.name} onChange={handleChange} placeholder="Your name" className="premium-form-input" required />
+                                </div>
                             </div>
-
-                            {/* Bio */}
-                            <div>
-                                <label
-                                    style={{
-                                        display: "block",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 500,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.12em",
-                                        color: "#d4a574",
-                                        marginBottom: "8px",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                >
-                                    Bio
-                                </label>
-                                <input
-                                    type="text"
-                                    name="bio"
-                                    value={formData.bio}
-                                    onChange={handleChange}
-                                    placeholder="Short bio"
-                                    required
-                                    maxLength={250}
-                                    style={{
-                                        width: "100%",
-                                        background: "rgba(212, 165, 116, 0.06)",
-                                        border: "1px solid rgba(212, 165, 116, 0.2)",
-                                        borderRadius: "14px",
-                                        padding: "14px 18px",
-                                        color: "#ffffff",
-                                        fontSize: "0.95rem",
-                                        outline: "none",
-                                        transition: "all 0.2s ease",
-                                        boxSizing: "border-box",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
-                                        e.target.style.boxShadow = "0 0 0 3px rgba(212, 165, 116, 0.1)";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.1)";
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.2)";
-                                        e.target.style.boxShadow = "none";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.06)";
-                                    }}
-                                />
+                            <div className="premium-form-group" style={{ gridColumn: 'span 2' }}>
+                                <label className="premium-form-label" htmlFor="bio">Bio</label>
+                                <span className="premium-asterisk">*</span>
+                                <div className="premium-input-wrap">
+                                    <input name="bio" id="bio" value={formData.bio} onChange={handleChange} placeholder="Short bio" className="premium-form-input" required maxLength={250} />
+                                </div>
                             </div>
-
-                            {/* Location */}
-                            <div>
-                                <label
-                                    style={{
-                                        display: "block",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 500,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.12em",
-                                        color: "#d4a574",
-                                        marginBottom: "8px",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                >
-                                    Location
-                                </label>
-                                <input
-                                    type="text"
-                                    name="location"
-                                    value={formData.location}
-                                    onChange={handleChange}
-                                    placeholder="City, Country"
-                                    style={{
-                                        width: "100%",
-                                        background: "rgba(212, 165, 116, 0.06)",
-                                        border: "1px solid rgba(212, 165, 116, 0.2)",
-                                        borderRadius: "14px",
-                                        padding: "14px 18px",
-                                        color: "#ffffff",
-                                        fontSize: "0.95rem",
-                                        outline: "none",
-                                        transition: "all 0.2s ease",
-                                        boxSizing: "border-box",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
-                                        e.target.style.boxShadow = "0 0 0 3px rgba(212, 165, 116, 0.1)";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.1)";
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.2)";
-                                        e.target.style.boxShadow = "none";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.06)";
-                                    }}
-                                />
+                            <div className="premium-form-group" style={{ gridColumn: 'span 2' }}>
+                                <label className="premium-form-label" htmlFor="location">Location</label>
+                                <div className="premium-input-wrap">
+                                    <input name="location" id="location" value={formData.location} onChange={handleChange} placeholder="City, Country" className="premium-form-input" />
+                                </div>
                             </div>
-
-                            {/* DOB */}
-                            <div>
-                                <label
-                                    style={{
-                                        display: "block",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 500,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.12em",
-                                        color: "#d4a574",
-                                        marginBottom: "8px",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                >
-                                    Date of Birth
-                                </label>
-                                <input
-                                    type="date"
-                                    name="dob"
-                                    value={formData.dob}
-                                    onChange={handleChange}
-                                    style={{
-                                        width: "100%",
-                                        background: "rgba(212, 165, 116, 0.06)",
-                                        border: "1px solid rgba(212, 165, 116, 0.2)",
-                                        borderRadius: "14px",
-                                        padding: "14px 18px",
-                                        color: "#ffffff",
-                                        fontSize: "0.95rem",
-                                        outline: "none",
-                                        colorScheme: "dark",
-                                        transition: "all 0.2s ease",
-                                        boxSizing: "border-box",
-                                        fontFamily: "'Verdana', sans-serif",
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.5)";
-                                        e.target.style.boxShadow = "0 0 0 3px rgba(212, 165, 116, 0.1)";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.1)";
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = "rgba(212, 165, 116, 0.2)";
-                                        e.target.style.boxShadow = "none";
-                                        e.target.style.background = "rgba(212, 165, 116, 0.06)";
-                                    }}
-                                />
+                            <div className="premium-form-group" style={{ gridColumn: 'span 2' }}>
+                                <label className="premium-form-label" htmlFor="dob">Date of Birth</label>
+                                <div className="premium-input-wrap">
+                                    <input type="date" name="dob" id="dob" value={formData.dob} onChange={handleChange} className="premium-form-input" />
+                                </div>
                             </div>
-
                         </div>
 
-                        {/* Mint Button */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            style={{
-                                marginTop: "32px",
-                                padding: "18px",
-                                background: loading
-                                    ? "linear-gradient(135deg, #888 0%, #666 100%)"
-                                    : "linear-gradient(135deg, #d4a574 0%, #b8956a 100%)",
-                                border: "none",
-                                borderRadius: "20px",
-                                color: "#0a0a0f",
-                                fontSize: "1.1rem",
-                                fontWeight: 600,
-                                cursor: loading ? "not-allowed" : "pointer",
-                                transition: "all 0.3s ease",
-                                boxShadow: loading
-                                    ? "0 4px 24px rgba(136, 136, 136, 0.3)"
-                                    : "0 4px 24px rgba(212, 165, 116, 0.3)",
-                                letterSpacing: "0.05em",
-                                width: "100%",
-                                fontFamily: "'Verdana', sans-serif",
-                                opacity: loading ? 0.7 : 1,
-                            }}
-                        >
-                            {loading ? "Minting..." : "✦ Mint Capsule ✦"}
-                        </button>
+                        {/* Submit Arrow Button */}
+                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "40px" }}>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    color: "#ffffff",
+                                    fontSize: "2.5rem",
+                                    cursor: loading ? "not-allowed" : "pointer",
+                                    transition: "transform 0.3s ease",
+                                    opacity: loading ? 0.5 : 1,
+                                    padding: 0,
+                                    lineHeight: 1
+                                }}
+                                onMouseEnter={(e) => !loading && (e.currentTarget.style.transform = "translateX(8px)")}
+                                onMouseLeave={(e) => !loading && (e.currentTarget.style.transform = "translateX(0)")}
+                            >
+                                {loading ? "..." : "→"}
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

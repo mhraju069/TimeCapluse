@@ -4,7 +4,7 @@
     max-width: 1600px;
     margin: 60px auto;
     padding: 0 20px;
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .timeline-section-title {
@@ -15,7 +15,7 @@
     text-transform: uppercase;
     margin-bottom: 20px;
     text-align: center;
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Loading & Empty states */
@@ -51,7 +51,7 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.2s ease;
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .timeline-add-btn:hover {
@@ -67,7 +67,7 @@
     height: 90vh;
     border-radius: 16px;
     overflow: hidden;
-    background: #1a1a1a;
+    background: #000000;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
 }
 
@@ -108,7 +108,7 @@
 .timeline-bg-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
 }
 
 .timeline-bg-overlay {
@@ -192,7 +192,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .timeline-see-more:hover {
@@ -221,7 +221,7 @@
 .timeline-dots .dot.active {
     background: var(--primary-color);
     transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(212, 160, 36, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* OptionWheel Year Navigation */
@@ -256,14 +256,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(212, 160, 36, 0.4);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
     transition: all 0.2s ease;
 }
 
 .timeline-add-fab:hover {
-    background: #b8891d;
+    background: #ffffff;
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(212, 160, 36, 0.6);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.6);
 }
 
 /* Timeline Header & View Mode Selector */
@@ -319,10 +319,10 @@
 }
 
 .timeline-view-btn.active {
-    background: var(--primary-color, #d4a024);
-    color: #0b111e;
+    background: var(--primary-color, #ffffff);
+    color: #000000;
     font-weight: 600;
-    box-shadow: 0 2px 10px rgba(212, 160, 36, 0.3);
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
 }
 
 /* ==========================================================================
@@ -334,7 +334,7 @@
     flex-direction: column;
     gap: 100px;
     padding: 40px 20px 80px;
-    /* background: linear-gradient(180deg, #0b111e 0%, #0d1627 50%, #090e18 100%); */
+    /* background: linear-gradient(180deg, #000000 0%, #000000 50%, #000000 100%); */
     border-radius: 24px;
     box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6), 0 10px 40px rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -373,7 +373,7 @@
     left: -20px;
     font-size: 6.5rem;
     font-weight: 900;
-    font-family: 'Playfair Display', 'Georgia', serif;
+    font-family: 'Inter', sans-serif;
     color: rgba(255, 255, 255, 0.13);
     line-height: 1;
     pointer-events: none;
@@ -387,12 +387,12 @@
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--primary-color, #d4a024);
+    color: var(--primary-color, #ffffff);
     margin-bottom: 8px;
 }
 
 .classic-item-title {
-    font-family: 'Playfair Display', 'Georgia', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2.2rem;
     font-weight: 700;
     color: #ffffff;
@@ -403,7 +403,7 @@
 }
 
 .classic-item-title:hover {
-    color: var(--primary-color, #d4a024);
+    color: var(--primary-color, #ffffff);
 }
 
 .classic-item-description {
@@ -417,7 +417,7 @@
 .classic-read-more {
     background: transparent;
     border: none;
-    color: var(--primary-color, #d4a024);
+    color: var(--primary-color, #ffffff);
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -450,7 +450,7 @@
 
 .classic-image-block:hover {
     transform: translateY(-6px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 160, 36, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
 .classic-image-wrapper {
@@ -505,7 +505,7 @@
 .classic-dot.active {
     width: 20px;
     border-radius: 10px;
-    background: var(--primary-color, #d4a024);
+    background: var(--primary-color, #ffffff);
 }
 
 .classic-image-placeholder {
@@ -629,7 +629,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
     border-radius: 16px;
-    background: #0d1424;
+    background: #000000;
     /* Smooth scroll */
     scroll-behavior: smooth;
     /* Required so position:sticky children work inside the scrollable container */
@@ -646,7 +646,7 @@
     /* Match wrapper height so it fills the visible area */
     background-size: cover;
     background-position: center;
-    background-color: #0d1424;
+    background-color: #000000;
     z-index: 0;
     /* Negative margin pulls the scroll-area content up to sit on top */
     margin-bottom: -88vh;
@@ -734,7 +734,7 @@
     font-size: 31px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
     color: rgba(255, 255, 255, 0.5);
     border-left: 2px solid rgba(255, 255, 255, 0.45);
     padding-left: 14px;
@@ -753,7 +753,7 @@
     font-size: 31px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
     color: rgba(255, 255, 255, 0.5);
     border-right: 2px solid rgba(255, 255, 255, 0.45);
     padding-right: 14px;
@@ -830,7 +830,7 @@
 }
 
 .scroll-dot.active {
-    background: var(--primary-color, #d4a024);
+    background: var(--primary-color, #ffffff);
     width: 18px;
     border-radius: 10px;
 }
@@ -868,7 +868,7 @@
 }
 
 .scroll-title:hover {
-    color: var(--primary-color, #d4a024);
+    color: var(--primary-color, #ffffff);
 }
 
 .scroll-desc {
@@ -877,14 +877,14 @@
     color: rgba(255, 255, 255, 0.7);
     margin: 0 0 12px;
     padding: 0 10px;
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: normal;
 }
 
 .scroll-readmore {
     background: transparent;
     border: none;
-    color: var(--primary-color, #d4a024);
+    color: var(--primary-color, #ffffff);
     font-size: 0.82rem;
     font-weight: 600;
     letter-spacing: 0.1em;

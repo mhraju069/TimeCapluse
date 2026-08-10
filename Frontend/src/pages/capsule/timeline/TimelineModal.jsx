@@ -113,40 +113,52 @@ const TimelineModal = ({ capsuleId, token, onClose, onSuccess }) => {
                         </div>
                     )}
 
-                    <div className="form-group">
-                        <label htmlFor="title">Event Title *</label>
-                        <input
-                            id="title"
-                            type="text"
-                            placeholder="Enter event title"
-                            value={formData.title}
-                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            required
-                            autoFocus
-                        />
+                    <div className="premium-form-group">
+                        <label className="premium-form-label" htmlFor="title">Event Title</label>
+                        <span className="premium-asterisk">*</span>
+                        <div className="premium-input-wrap">
+                            <input
+                                className="premium-form-input"
+                                id="title"
+                                type="text"
+                                placeholder="Enter event title"
+                                value={formData.title}
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                required
+                                autoFocus
+                            />
+                        </div>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="description">Description *</label>
-                        <textarea
-                            id="description"
-                            placeholder="Describe this event..."
-                            value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            rows="4"
-                            required
-                        />
+                    <div className="premium-form-group">
+                        <label className="premium-form-label" htmlFor="description">Description</label>
+                        <span className="premium-asterisk">*</span>
+                        <div className="premium-input-wrap">
+                            <textarea
+                                className="premium-form-input"
+                                id="description"
+                                placeholder="Describe this event..."
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                rows="4"
+                                required
+                            />
+                        </div>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="event_date">Event Date & Time *</label>
-                        <input
-                            id="event_date"
-                            type="datetime-local"
-                            value={formData.event_date}
-                            onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
-                            required
-                        />
+                    <div className="premium-form-group">
+                        <label className="premium-form-label" htmlFor="event_date">Event Date & Time</label>
+                        <span className="premium-asterisk">*</span>
+                        <div className="premium-input-wrap">
+                            <input
+                                className="premium-form-input"
+                                id="event_date"
+                                type="datetime-local"
+                                value={formData.event_date}
+                                onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
+                                required
+                            />
+                        </div>
                     </div>
 
                     <div className="form-group">

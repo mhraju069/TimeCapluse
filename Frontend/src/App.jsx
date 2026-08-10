@@ -12,7 +12,7 @@ import About from './pages/about/about';
 import Contact from './pages/contact/Contact';
 function App() {
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f14' }}>
+    <div style={{ minHeight: '100vh', background: '#000000' }}>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

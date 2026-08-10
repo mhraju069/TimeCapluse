@@ -224,7 +224,7 @@
 }
 
 .sm-socials-link:focus-visible {
-    outline: 2px solid var(--sm-accent, #ff0000);
+    outline: 2px solid var(--sm-accent, #ffffff);
     outline-offset: 3px;
 }
 
@@ -250,7 +250,7 @@
 }
 
 .sm-socials-link:hover {
-    color: var(--sm-accent, #ff0000);
+    color: var(--sm-accent, #ffffff);
 }
 
 .sm-panel-title {
@@ -273,11 +273,12 @@
 .sm-panel-item {
     position: relative;
     color: #ffffff;
-    font-weight: 600;
-    font-size: 3.5rem;
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-weight: 400;
+    font-size: 3.2rem;
     cursor: pointer;
-    line-height: 1;
-    letter-spacing: -2px;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     transition:
         background 0.25s,
@@ -312,7 +313,7 @@
 }
 
 .sm-panel-item:hover {
-    color: var(--sm-accent, #5227ff);
+    color: var(--sm-accent, #ffffff);
 }
 
 .sm-panel-list[data-numbering] {
@@ -327,7 +328,7 @@
     right: 2.8em;
     font-size: 18px;
     font-weight: 400;
-    color: var(--sm-accent, #5227ff);
+    color: var(--sm-accent, #ffffff);
     letter-spacing: 0;
     pointer-events: none;
     user-select: none;
@@ -388,7 +389,7 @@
     gap: 1rem;
     /* margin-top: 1rem; */
     padding-top: 1.5rem;
-    border-top: 1px solid rgba(212, 165, 116, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .sm-auth-button {
@@ -401,13 +402,13 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     color: #f5f0e8;
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     font-weight: 600;
     letter-spacing: 0.02em;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(212, 165, 116, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
 }
 
 .sm-auth-button:hover {
@@ -435,7 +436,7 @@
     gap: 0.75rem;
     width: 20%;
     color: #f5f0e8;
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: 'Inter', sans-serif;
     letter-spacing: 0.02em;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -443,7 +444,7 @@
 }
 
 .sm-profile-button:hover {
-    border-color: rgba(212, 165, 116, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
 }
 
@@ -471,9 +472,9 @@
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    color: #d4a574;
+    color: #ffffff;
     font-weight: 700;
-    background: linear-gradient(135deg, rgba(212, 165, 116, 0.2), rgba(212, 165, 116, 0.05));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
 }
 
 .sm-profile-name {
@@ -487,7 +488,7 @@
 }
 
 .sm-profile-button:hover .sm-profile-name {
-    color: #d4a574;
+    color: #ffffff;
 }
 
 .sm-profile-button .sm-profile-chevron {

@@ -14,12 +14,17 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .timeline-event-modal {
-    background: #0d121f;
+    background: #000000;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     width: 100%;
@@ -36,6 +41,7 @@
         transform: translateY(40px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -64,8 +70,6 @@
 }
 
 .timeline-event-modal-close-floating:hover {
-    background: rgba(239, 68, 68, 0.9);
-    border-color: #ef4444;
     transform: rotate(90deg);
 }
 
@@ -85,12 +89,10 @@
 .timeline-event-modal-cover-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(13, 18, 31, 0.3) 0%,
-        rgba(13, 18, 31, 0.6) 60%,
-        rgba(13, 18, 31, 0.95) 100%
-    );
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.3) 0%,
+            rgba(0, 0, 0, 0.6) 60%,
+            rgba(0, 0, 0, 0.95) 100%);
     z-index: 1;
 }
 
@@ -109,17 +111,17 @@
     margin: 0 0 16px 0;
     line-height: 1.2;
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.65);
-    font-family: 'Playfair Display', 'Georgia', serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .timeline-event-modal-cover-date {
     font-size: 0.95rem;
-    color: var(--primary-color, #d4a024);
+    color: var(--primary-color, #ffffff);
     font-weight: 600;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Body Content */
@@ -139,7 +141,7 @@
     color: rgba(255, 255, 255, 0.75);
     line-height: 1.85;
     margin: 0;
-    font-family: 'Georgia', serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .timeline-event-modal-description-text::first-letter {
@@ -149,8 +151,8 @@
     line-height: 0.9;
     margin-right: 12px;
     margin-top: 4px;
-    color: var(--primary-color, #d4a024);
-    font-family: 'Playfair Display', 'Georgia', serif;
+    color: var(--primary-color, #ffffff);
+    font-family: 'Inter', sans-serif;
 }
 
 /* Photo Gallery Section */
@@ -166,7 +168,7 @@
     margin: 0 0 20px 0;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    font-family: 'Verdana', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .timeline-event-modal-gallery-grid {
@@ -262,4 +264,3 @@
         gap: 12px;
     }
 }
-

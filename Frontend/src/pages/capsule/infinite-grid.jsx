@@ -557,7 +557,7 @@ export const InfiniteDraggableGrid = ({
       onMouseDown={handleDragStart}
       onTouchStart={handleDragStart}
       style={{
-        background: 'radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%)',
+        background: 'radial-gradient(ellipse at center, #000000 0%, #000000 100%)',
         touchAction: 'none',
         minHeight: '100vh',
         height: '100vh',

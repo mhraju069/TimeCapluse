@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 .contact-page-container {
-    background-color: #0b0b0b;
+    background-color: #000000;
     min-height: 100vh;
     color: #e5e0dc;
     font-family: 'Inter', sans-serif;
@@ -31,7 +31,7 @@
 }
 
 .contact-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 5.8rem;
     font-weight: 400;
     line-height: 1.05;
@@ -99,15 +99,15 @@
 }
 
 .form-status-alert.success {
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    color: #34d399;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
 }
 
 .form-status-alert.error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #f87171;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
 }
 
 .contact-form-group {

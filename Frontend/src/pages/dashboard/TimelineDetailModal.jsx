@@ -189,33 +189,45 @@ const TimelineDetailModal = ({ event, onClose, onUpdate }) => {
                 <div className={editing ? "timeline-detail-edit-content" : "timeline-detail-view-content"}>
                     {editing ? (
                         <form onSubmit={handleSubmit} className="timeline-edit-form">
-                            <div className="form-group">
-                                <label>Date</label>
-                                <input
-                                    type="date"
-                                    value={formData.event_date}
-                                    onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
-                                    required
-                                />
+                            <div className="premium-form-group">
+                                <label className="premium-form-label">Date</label>
+                                <span className="premium-asterisk">*</span>
+                                <div className="premium-input-wrap">
+                                    <input
+                                        className="premium-form-input"
+                                        type="date"
+                                        value={formData.event_date}
+                                        onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
+                                        required
+                                    />
+                                </div>
                             </div>
 
-                            <div className="form-group">
-                                <label>Title</label>
-                                <input
-                                    type="text"
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    required
-                                />
+                            <div className="premium-form-group">
+                                <label className="premium-form-label">Title</label>
+                                <span className="premium-asterisk">*</span>
+                                <div className="premium-input-wrap">
+                                    <input
+                                        className="premium-form-input"
+                                        type="text"
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        required
+                                    />
+                                </div>
                             </div>
 
-                            <div className="form-group">
-                                <label>Description</label>
-                                <textarea
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    required
-                                />
+                            <div className="premium-form-group">
+                                <label className="premium-form-label">Description</label>
+                                <span className="premium-asterisk">*</span>
+                                <div className="premium-input-wrap">
+                                    <textarea
+                                        className="premium-form-input"
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        required
+                                    />
+                                </div>
                             </div>
 
                             {/* Existing Images */}

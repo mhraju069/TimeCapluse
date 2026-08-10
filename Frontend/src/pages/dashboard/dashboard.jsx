@@ -470,49 +470,58 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className="capsule-detail-info" style={{ padding: '0 28px 28px' }}>
-                                    {capsuleError && <div className="capsule-edit-error" style={{ color: '#ef4444', marginBottom: '1rem' }}>{capsuleError}</div>}
+                                    {capsuleError && <div className="capsule-edit-error" style={{ color: '#ffffff', marginBottom: '1rem' }}>{capsuleError}</div>}
 
                                     {editingCapsule ? (
                                         <form onSubmit={handleSaveCapsule} className="capsule-edit-form">
-                                            <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1rem' }}>
-                                                <label style={{ color: '#d4a574', fontSize: '0.85rem', fontWeight: '600' }}>Capsule Name</label>
-                                                <input
-                                                    type="text"
-                                                    value={capsuleFormData.name}
-                                                    onChange={(e) => setCapsuleFormData({ ...capsuleFormData, name: e.target.value })}
-                                                    required
-                                                    style={{ padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,165,116,0.2)', borderRadius: '8px', color: '#fff' }}
-                                                />
+                                            <div className="premium-form-group">
+                                                <label className="premium-form-label">Capsule Name</label>
+                                                <span className="premium-asterisk">*</span>
+                                                <div className="premium-input-wrap">
+                                                    <input
+                                                        className="premium-form-input"
+                                                        type="text"
+                                                        value={capsuleFormData.name}
+                                                        onChange={(e) => setCapsuleFormData({ ...capsuleFormData, name: e.target.value })}
+                                                        required
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1rem' }}>
-                                                <label style={{ color: '#d4a574', fontSize: '0.85rem', fontWeight: '600' }}>Bio</label>
-                                                <textarea
-                                                    value={capsuleFormData.bio}
-                                                    onChange={(e) => setCapsuleFormData({ ...capsuleFormData, bio: e.target.value })}
-                                                    rows="3"
-                                                    maxLength={250}
-                                                    style={{ padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,165,116,0.2)', borderRadius: '8px', color: '#fff', resize: 'vertical' }}
-                                                />
+                                            <div className="premium-form-group">
+                                                <label className="premium-form-label">Bio</label>
+                                                <div className="premium-input-wrap">
+                                                    <textarea
+                                                        className="premium-form-input"
+                                                        value={capsuleFormData.bio}
+                                                        onChange={(e) => setCapsuleFormData({ ...capsuleFormData, bio: e.target.value })}
+                                                        rows="3"
+                                                        maxLength={250}
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1rem' }}>
-                                                <label style={{ color: '#d4a574', fontSize: '0.85rem', fontWeight: '600' }}>Location</label>
-                                                <input
-                                                    type="text"
-                                                    value={capsuleFormData.location}
-                                                    onChange={(e) => setCapsuleFormData({ ...capsuleFormData, location: e.target.value })}
-                                                    style={{ padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,165,116,0.2)', borderRadius: '8px', color: '#fff' }}
-                                                />
+                                            <div className="premium-form-group">
+                                                <label className="premium-form-label">Location</label>
+                                                <div className="premium-input-wrap">
+                                                    <input
+                                                        className="premium-form-input"
+                                                        type="text"
+                                                        value={capsuleFormData.location}
+                                                        onChange={(e) => setCapsuleFormData({ ...capsuleFormData, location: e.target.value })}
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1rem' }}>
-                                                <label style={{ color: '#d4a574', fontSize: '0.85rem', fontWeight: '600' }}>Date of Birth</label>
-                                                <input
-                                                    type="date"
-                                                    value={capsuleFormData.dob}
-                                                    onChange={(e) => setCapsuleFormData({ ...capsuleFormData, dob: e.target.value })}
-                                                    style={{ padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,165,116,0.2)', borderRadius: '8px', color: '#fff' }}
-                                                />
+                                            <div className="premium-form-group">
+                                                <label className="premium-form-label">Date of Birth</label>
+                                                <div className="premium-input-wrap">
+                                                    <input
+                                                        className="premium-form-input"
+                                                        type="date"
+                                                        value={capsuleFormData.dob}
+                                                        onChange={(e) => setCapsuleFormData({ ...capsuleFormData, dob: e.target.value })}
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="form-group checkbox-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.5rem' }}>
+                                            <div className="form-group checkbox-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.5rem', marginTop: '16px' }}>
                                                 <input
                                                     type="checkbox"
                                                     id="is_public_dash"
@@ -626,8 +635,8 @@ const Dashboard = () => {
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="empty-state" style={{ padding: '40px 20px', background: 'rgba(255, 255, 255, 0.02)', border: '1px dashed rgba(212, 165, 116, 0.25)', borderRadius: '20px' }}>
-                                            <div className="empty-icon" style={{ fontSize: '2.5rem', color: '#d4a574', marginBottom: '14px' }}>✦</div>
+                                        <div className="empty-state" style={{ padding: '40px 20px', background: 'rgba(255, 255, 255, 0.02)', border: '1px dashed rgba(255, 255, 255, 0.25)', borderRadius: '20px' }}>
+                                            <div className="empty-icon" style={{ fontSize: '2.5rem', color: '#ffffff', marginBottom: '14px' }}>✦</div>
                                             <h3 style={{ color: '#fff', fontSize: '1.25rem', marginBottom: '8px' }}>No timeline events yet</h3>
                                             <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.9rem', marginBottom: '20px' }}>Start adding timeline events to your capsule.</p>
                                             <button
