@@ -36,7 +36,7 @@ const TimelineEventModal = ({ event, onClose }) => {
                 </button>
 
                 {/* Hero Cover Header */}
-                <div 
+                <div
                     className="timeline-event-modal-cover"
                     style={{ backgroundImage: coverImage ? `url(${coverImage})` : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' }}
                 >
@@ -61,7 +61,7 @@ const TimelineEventModal = ({ event, onClose }) => {
                             <h4 className="timeline-event-modal-gallery-title">Photos</h4>
                             <div className="timeline-event-modal-gallery-grid">
                                 {event.images.map((img, index) => (
-                                    <div 
+                                    <div
                                         key={index}
                                         className="timeline-event-modal-gallery-item"
                                         onClick={(e) => {
