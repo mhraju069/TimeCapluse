@@ -367,14 +367,6 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                 <h2 className="timeline-section-title">Timeline</h2>
                 <div className="timeline-empty">
                     <p>No timeline events added yet for {capsuleName}.</p>
-                    {isOwner && (
-                        <button
-                            className="timeline-add-btn"
-                            onClick={() => setShowModal(true)}
-                        >
-                            + Add Timeline Event
-                        </button>
-                    )}
                 </div>
 
                 {showModal && (

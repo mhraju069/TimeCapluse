@@ -631,15 +631,10 @@ const Dashboard = () => {
                                             <h3 style={{ color: '#fff', fontSize: '1.25rem', marginBottom: '8px' }}>No timeline events yet</h3>
                                             <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.9rem', marginBottom: '20px' }}>Start adding timeline events to your capsule.</p>
                                             <button
-                                                className="btn-save"
+                                                className="timeline-add-btn"
                                                 onClick={() => setShowAddModal(true)}
-                                                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', background: 'var(--primary-color)', border: 'none', color: '#fff', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 15px rgba(212, 160, 36, 0.2)' }}
                                             >
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                    <line x1="12" y1="5" x2="12" y2="19" />
-                                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                                </svg>
-                                                Add New Event
+                                                + Add Timeline Event
                                             </button>
                                         </div>
                                     )}
