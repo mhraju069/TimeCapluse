@@ -108,101 +108,92 @@ const GoogleLogin = () => {
         <div
             style={{
                 minHeight: "100vh",
+                background: "linear-gradient(135deg, #000000 0%, #000000 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "linear-gradient(135deg, #000000 0%, #000000 100%)",
-                fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
-                position: "relative",
-                overflow: "hidden",
                 padding: "20px",
+                fontFamily: "'Inter', sans-serif",
             }}
         >
-            {/* Subtle background pattern */}
-            <div
-                style={{
-                    position: "absolute",
-                    inset: 0,
-                    backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%)",
-                    pointerEvents: "none",
-                }}
-            />
-
-            {/* Main Card */}
             <div
                 style={{
                     width: "100%",
-                    maxWidth: "440px",
-                    padding: "48px 40px",
-                    background: "rgba(0, 0, 0, 0.3)",
-                    backdropFilter: "blur(24px)",
-                    WebkitBackdropFilter: "blur(24px)",
-                    border: "1px solid rgba(255, 255, 255, 0.15)",
-                    borderRadius: "32px",
-                    boxShadow: "0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                    position: "relative",
-                    zIndex: 10,
+                    maxWidth: "1000px",
+                    height: "80vh",
+                    maxHeight: "600px",
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                    borderRadius: "40px",
+                    display: "flex",
+                    overflow: "hidden",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    transition: "height 0.3s ease",
                 }}
             >
-                {/* Logo/Icon */}
+                {/* LEFT PANEL — Visuals & Typography */}
                 <div
                     style={{
+                        flex: "0 0 45%",
+                        padding: "60px 48px",
                         display: "flex",
-                        justifyContent: "center",
-                        marginBottom: "24px",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        borderRight: "1px solid rgba(255,255,255,0.06)",
+                        background: "#000000",
                     }}
                 >
-                    <div
-                        style={{
-                            width: "64px",
-                            height: "64px",
-                            borderRadius: "50%",
-                            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05))",
-                            border: "1px solid rgba(255, 255, 255, 0.3)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "32px",
-                            boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                        {/* Giant Serif Typography */}
+                        <h1 style={{
+                            fontFamily: "'Playfair Display', 'Georgia', serif",
+                            fontSize: "4rem",
+                            fontWeight: 400,
+                            lineHeight: 1.05,
                             color: "#ffffff",
-                            fontFamily: "'Georgia', serif",
-                        }}
-                    >
-                        ✦
+                            textTransform: "uppercase",
+                            margin: 0
+                        }}>
+                            Let's<br />
+                            Preserve<br />
+                            Stories
+                        </h1>
+
+                        {/* Geometric Shape */}
+                        <div style={{ position: 'relative', width: '120px', height: '120px', marginTop: '10px' }}>
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                                <circle cx="35" cy="35" r="16" fill="#ffffff" />
+                                <path d="M15,50 C15,85 85,85 85,50" stroke="#ffffff" strokeWidth="1" fill="none" transform="rotate(-15 50 50)" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    {/* Bottom Metadata */}
+                    <div style={{ display: "flex", gap: "40px", color: "#ffffff", textAlign: "left" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <span style={{ fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.9 }}>Archiving</span>
+                            <span style={{ fontSize: "0.75rem", opacity: 0.5, lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                                Secure Credentials<br />
+                                Permanent Records<br />
+                                Direct Navigation
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Title */}
-                <h1
+                {/* RIGHT PANEL — Form */}
+                <div
                     style={{
-                        fontFamily: "'Georgia', 'Times New Roman', serif",
-                        color: "#f5f0e8",
-                        fontSize: "2.4rem",
-                        fontWeight: 400,
-                        textAlign: "center",
-                        margin: "0 0 8px 0",
-                        letterSpacing: "-0.02em",
+                        flex: 1,
+                        padding: "60px 48px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        background: "#000000",
                     }}
                 >
-                    Welcome
-                </h1>
-                <p
-                    style={{
-                        color: "rgba(245, 240, 232, 0.5)",
-                        textAlign: "center",
-                        fontSize: "0.95rem",
-                        margin: "0 0 36px 0",
-                        fontFamily: "'Georgia', 'Times New Roman', serif",
-                        fontStyle: "italic",
-                    }}
-                >
-                    Sign in to preserve your story
-                </p>
-
-                {/* Error Message */}
-                {error && (
-                    <div
-                        style={{
+                    {error && (
+                        <div style={{
                             background: "rgba(255, 255, 255, 0.1)",
                             border: "1px solid rgba(255, 255, 255, 0.3)",
                             borderRadius: "12px",
@@ -210,176 +201,80 @@ const GoogleLogin = () => {
                             marginBottom: "20px",
                             color: "#ffffff",
                             fontSize: "0.9rem",
-                            textAlign: "center",
-                        }}
-                    >
-                        {error}
-                    </div>
-                )}
-
-                {/* Google Login Button */}
-                <button
-                    onClick={handleGoogleLogin}
-                    disabled={isLoading}
-                    style={{
-                        width: "100%",
-                        padding: "16px 24px",
-                        background: "rgba(255, 255, 255, 0.1)",
-                        border: "1px solid rgba(255, 255, 255, 0.3)",
-                        borderRadius: "16px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "12px",
-                        cursor: isLoading ? "not-allowed" : "pointer",
-                        transition: "all 0.3s ease",
-                        boxShadow: "0 4px 20px rgba(255, 255, 255, 0.2)",
-                        opacity: isLoading ? 0.6 : 1,
-                        position: "relative",
-                    }}
-                    onMouseEnter={(e) => {
-                        if (!isLoading) {
-                            e.currentTarget.style.transform = "translateY(-2px)";
-                            e.currentTarget.style.boxShadow = "0 8px 32px rgba(255, 255, 255, 0.35)";
-                            e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
-                            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.5)";
-                        }
-                    }}
-                    onMouseLeave={(e) => {
-                        if (!isLoading) {
-                            e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.boxShadow = "0 4px 20px rgba(255, 255, 255, 0.2)";
-                            e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-                            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
-                        }
-                    }}
-                >
-                    {/* Google Icon */}
-                    <svg width="20" height="20" viewBox="0 0 48 48">
-                        <path
-                            fill="#EA4335"
-                            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-                        />
-                        <path
-                            fill="#4285F4"
-                            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-                        />
-                        <path
-                            fill="#FBBC05"
-                            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-                        />
-                        <path
-                            fill="#34A853"
-                            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-                        />
-                    </svg>
-
-                    <span
-                        style={{
-                            color: "#f5f0e8",
-                            fontSize: "1rem",
-                            fontWeight: 600,
-                            letterSpacing: "0.01em",
-                            fontFamily: "'Georgia', 'Times New Roman', serif",
-                        }}
-                    >
-                        {isLoading ? "Signing in..." : "Continue with Google"}
-                    </span>
-
-                    {isLoading && (
-                        <div
-                            style={{
-                                width: "20px",
-                                height: "20px",
-                                border: "2px solid rgba(255, 255, 255, 0.2)",
-                                borderTopColor: "#ffffff",
-                                borderRadius: "50%",
-                                animation: "spin 0.6s linear infinite",
-                                position: "absolute",
-                                right: "20px",
-                            }}
-                        />
+                        }}>
+                            {error}
+                        </div>
                     )}
-                </button>
 
-                {/* Divider */}
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "16px",
-                        margin: "28px 0 20px 0",
-                    }}
-                >
-                    <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.15)" }} />
-                    <span style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.1em" }}>
-                        CURATED AUTHENTICATION
-                    </span>
-                    <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.15)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                        <div className="premium-form-group">
+                            <label className="premium-form-label" htmlFor="provider">Authentication Provider</label>
+                            <span className="premium-asterisk">*</span>
+                            <div className="premium-input-wrap">
+                                <input
+                                    type="text"
+                                    id="provider"
+                                    value="Google Account Login"
+                                    readOnly
+                                    className="premium-form-input"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={handleGoogleLogin}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Submit Arrow Button */}
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <span style={{ fontSize: "0.8rem", color: "rgba(255, 255, 255, 0.4)", fontFamily: "'Inter', sans-serif" }}>
+                                {isLoading ? "Connecting to Google..." : "Click input or arrow to continue"}
+                            </span>
+                            <button
+                                onClick={handleGoogleLogin}
+                                disabled={isLoading}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    color: "#ffffff",
+                                    fontSize: "2.5rem",
+                                    cursor: isLoading ? "not-allowed" : "pointer",
+                                    transition: "transform 0.3s ease",
+                                    opacity: isLoading ? 0.5 : 1,
+                                    padding: 0,
+                                    lineHeight: 1
+                                }}
+                                onMouseEnter={(e) => !isLoading && (e.currentTarget.style.transform = "translateX(8px)")}
+                                onMouseLeave={(e) => !isLoading && (e.currentTarget.style.transform = "translateX(0)")}
+                            >
+                                {isLoading ? "..." : "→"}
+                            </button>
+                        </div>
+                    </div>
                 </div>
-
-                {/* Features */}
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        gap: "24px",
-                        fontSize: "0.75rem",
-                        color: "rgba(255, 255, 255, 0.4)",
-                        letterSpacing: "0.02em",
-                    }}
-                >
-                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <span style={{ color: "rgba(255, 255, 255, 0.3)" }}>✦</span>
-                        Encrypted
-                    </span>
-                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <span style={{ color: "rgba(255, 255, 255, 0.3)" }}>✦</span>
-                        Private
-                    </span>
-                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <span style={{ color: "rgba(255, 255, 255, 0.3)" }}>✦</span>
-                        Secure
-                    </span>
-                </div>
-            </div>
-
-            {/* Footer */}
-            <div
-                style={{
-                    position: "absolute",
-                    bottom: "24px",
-                    left: 0,
-                    right: 0,
-                    textAlign: "center",
-                    color: "rgba(255, 255, 255, 0.3)",
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.04em",
-                    zIndex: 10,
-                    fontFamily: "'Georgia', 'Times New Roman', serif",
-                    fontStyle: "italic",
-                }}
-            >
-                <span>✦ Preserving memories for future generations</span>
             </div>
 
             {/* Keyframes for animations */}
             <style>
                 {`
-          @keyframes float {
-            0%, 100% {
-              transform: translateY(0px) scale(1);
-              opacity: 0.3;
-            }
-            50% {
-              transform: translateY(-30px) scale(1.5);
-              opacity: 0.6;
-            }
-          }
           @keyframes spin {
             to {
               transform: rotate(360deg);
             }
+          }
+          @media (max-width: 768px) {
+             div[style*="max-width: 1000px"] {
+                 flex-direction: column !important;
+                 height: auto !important;
+                 max-height: none !important;
+             }
+             div[style*="flex: 0 0 45%"] {
+                 flex: 1 1 auto !important;
+                 border-right: none !important;
+                 border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+                 padding: 40px 24px !important;
+             }
+             div[style*="padding: 60px 48px"] {
+                 padding: 40px 24px !important;
+             }
           }
         `}
             </style>
