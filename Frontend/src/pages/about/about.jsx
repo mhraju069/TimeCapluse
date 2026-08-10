@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './about.css';
 
+import photographerHeader from '../../assets/aboutus.jpg';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const About = () => {
@@ -48,7 +50,7 @@ const About = () => {
                 img: item.image_url || fallbackImages[idx % fallbackImages.length],
               };
             });
-            
+
             if (mapped.length > 0) {
               setDbGalleryItems(mapped);
             }
@@ -128,6 +130,14 @@ const About = () => {
 
   return (
     <div className="about-page-wrapper">
+      {/* ─── HEADER BANNER ─── */}
+      <section className="about-header-banner">
+        <div className="about-header-banner-image" style={{ backgroundImage: `url(${photographerHeader})` }}>
+          <div className="about-header-banner-overlay" />
+          <h1 className="about-header-banner-title">ABOUT US</h1>
+        </div>
+      </section>
+
       <div className="about-container">
         {/* ─── HERO / ABOUT ─── */}
         <section className="about-hero">

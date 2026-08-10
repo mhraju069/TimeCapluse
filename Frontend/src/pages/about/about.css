@@ -16,15 +16,59 @@
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
-  padding: 6rem 1.5rem 5rem;
+  padding: 0 0 5rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.about-container {
-  max-width: 1280px;
+.about-header-banner {
   width: 100%;
+  height: 70vh;
+  min-height: 350px;
+  max-height: 600px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 5rem;
+}
+
+.about-header-banner-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.about-header-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.3) 60%,
+      rgba(0, 0, 0, 0.6) 80%,
+      rgba(0, 0, 0, 0.95) 100%);
+  z-index: 1;
+}
+
+.about-header-banner-title {
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 5rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.18em !important;
+  position: relative;
+  z-index: 2;
+  margin: 0 !important;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.9);
+}
+
+.about-container {
+  max-width: 1600px;
+  width: 100%;
+  padding: 0 2rem;
 }
 
 /* ── Hero About ── */
@@ -458,9 +502,6 @@
 }
 
 @media (max-width: 640px) {
-  .about-page-wrapper {
-    padding: 5rem 1.2rem 3rem;
-  }
 
   .about-hero-text h1 {
     font-size: 2.2rem;
