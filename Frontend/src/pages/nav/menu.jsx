@@ -1,4 +1,5 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import './StaggeredMenu.css';
 
@@ -25,6 +26,7 @@ export const StaggeredMenu = ({
     onLogoutClick,
     onAuthClick
 }) => {
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const openRef = useRef(false);
     const panelRef = useRef(null);
@@ -420,9 +422,9 @@ export const StaggeredMenu = ({
                         {items && items.length ? (
                             items.map((it, idx) => (
                                 <li className="sm-panel-itemWrap" key={it.label + idx}>
-                                    <a className="sm-panel-item" href={it.link} aria-label={it.ariaLabel} data-index={idx + 1}>
+                                    <Link className="sm-panel-item" to={it.link} aria-label={it.ariaLabel} data-index={idx + 1} onClick={() => closeMenu()}>
                                         <span className="sm-panel-itemLabel">{it.label}</span>
-                                    </a>
+                                    </Link>
                                 </li>
                             ))
                         ) : (
@@ -456,7 +458,7 @@ export const StaggeredMenu = ({
                                 onClick={() => {
                                     onAuthClick?.();
                                     setTimeout(() => closeMenu(), 100);
-                                    window.location.href = '/dashboard';
+                                    navigate('/dashboard');
                                 }}
                                 type="button"
                                 aria-label="Go to dashboard"

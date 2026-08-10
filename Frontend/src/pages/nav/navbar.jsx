@@ -64,7 +64,7 @@ const Navbar = () => {
 
     const handleLoginClick = () => {
         // Navigation will be handled by the menu component after closing
-        window.location.href = '/auth';
+        navigate('/auth');
     };
 
     const handleLogoutClick = () => {
@@ -78,7 +78,7 @@ const Navbar = () => {
         setUser(null);
 
         // Redirect to home
-        window.location.href = '/';
+        navigate('/');
     };
 
     const handleAuthClick = () => {
