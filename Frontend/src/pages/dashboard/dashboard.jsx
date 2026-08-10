@@ -602,9 +602,9 @@ const Dashboard = () => {
                                         <span className="section-count" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>{stats.timeline_count || 0} events</span>
                                     </div>
                                     <button
-                                        className="btn-add-new-event"
+                                        className="btn-edit"
                                         onClick={() => setShowAddModal(true)}
-                                        style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', gap: '8px', padding: '8px 16px', borderRadius: '5px', border: '1px solid var(--border-color)', fontWeight: '600', cursor: 'pointer', fontSize: '0.85rem', boxShadow: '0 4px 15px rgba(212, 160, 36, 0.2)', transition: 'all 0.3s ease' }}
+                                        style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', gap: '8px', padding: '10px 16px', borderRadius: '10px', border: '1px solid var(--border-color)', fontWeight: '600', cursor: 'pointer', fontSize: '0.95rem', transition: 'all 0.5s ease' }}
                                     >
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                             <line x1="12" y1="5" x2="12" y2="19" />
