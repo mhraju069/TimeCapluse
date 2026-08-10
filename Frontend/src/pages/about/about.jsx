@@ -277,7 +277,7 @@ const About = () => {
                   <div className="card-overlay" />
 
                   {/* Collapsed Info */}
-                  <div className="collapsed-info">
+                  <div className="collapsed-info" style={{ '--card-img': `url(${img})` }}>
                     {role}
                   </div>
 

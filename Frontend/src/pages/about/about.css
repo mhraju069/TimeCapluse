@@ -404,7 +404,7 @@
   display: flex;
   gap: 15px;
   width: 100%;
-  height: 520px;
+  height: 720px;
   overflow: hidden;
 }
 
@@ -418,6 +418,8 @@
   border: 1px solid var(--border);
   transition: flex 0.7s cubic-bezier(0.25, 1, 0.3, 1), border-color 0.3s;
   cursor: pointer;
+  max-width: 15%;
+  transition: all 1s cubic-bezier(0.25, 1, 0.3, 1);
 }
 
 .about-team-card .avatar {
@@ -436,34 +438,55 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.7s cubic-bezier(0.25, 1, 0.3, 1), filter 0.5s ease;
-  filter: grayscale(100%);
+  /* Desaturated + dark base — text will punch through with full color */
+  filter: grayscale(90%) brightness(0.55) contrast(1.1);
 }
 
 .about-team-card .card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%);
-  z-index: 1;
-  opacity: 0.8;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0.55) 60%,
+      rgba(0, 0, 0, 0.85) 100%);
+  z-index: 2;
   transition: opacity 0.5s ease;
 }
 
-/* Collapsed Info - Vertical text */
+/* Collapsed Info - Transparent text revealing colorful image (Photoshop cutout effect) */
 .about-team-card .collapsed-info {
   position: absolute;
-  bottom: 60px;
+  /* Span full card height so text is naturally contained */
+  top: 0;
+  bottom: 0;
   left: 50%;
-  transform: translateX(-50%) rotate(-90deg);
-  transform-origin: center;
+
+  /* writing-mode: vertical-lr  →  chars rotate 90°CW, text flows top→bottom
+     rotate(180°)               →  flips element: chars become 90°CCW (same visual as rotate(-90deg))
+                                   AND text flows bottom→top (first char at visual bottom) ✓
+     translateX(-50%)           →  center horizontally */
+  writing-mode: vertical-lr;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  overflow: hidden;
+  transform: translateX(85%) rotate(180deg);
+  transform-origin: center center;
+
+  /* The image shows through the letter shapes */
+  color: transparent;
+  background-image: var(--card-img, linear-gradient(135deg, #d4a024 0%, #e8c060 50%, #c9843a 100%));
+  background-size: cover;
+  background-position: center center;
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  font-size: clamp(2.5rem, 1.9vh, 1.75rem);
+  font-weight: 900;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   transition: opacity 0.4s ease;
-  z-index: 2;
+  z-index: 5;
   pointer-events: none;
+  mix-blend-mode: normal;
 }
 
 /* Hovered Info - Horizontal details */
@@ -509,12 +532,13 @@
 /* Hover States */
 .about-team-card:hover {
   flex: 3.5;
+  max-width: 100%;
   border-color: var(--accent);
 }
 
 .about-team-card:hover .avatar img {
   transform: scale(1.05);
-  filter: grayscale(0%);
+  filter: grayscale(0%) brightness(1) contrast(1);
 }
 
 .about-team-card:hover .card-overlay {
@@ -610,6 +634,7 @@
     height: 700px;
     gap: 10px;
   }
+
   .about-team-card .collapsed-info {
     bottom: auto;
     left: 24px;
