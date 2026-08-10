@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from apps.capsule.models import Capsule
 
@@ -5,6 +6,7 @@ from apps.capsule.models import Capsule
 
 
 class TimeLine(models.Model):
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     capsule = models.ForeignKey(Capsule, on_delete=models.CASCADE, related_name='timeline')
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -17,6 +19,7 @@ class TimeLine(models.Model):
     
     
 class TimeLineImage(models.Model):
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     timeline = models.ForeignKey(TimeLine, on_delete=models.CASCADE, related_name='timeline_images')
     image = models.ImageField(upload_to='timeline_images', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
