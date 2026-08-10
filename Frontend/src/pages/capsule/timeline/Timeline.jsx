@@ -558,7 +558,10 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                     {timelines.map((item, idx) => {
                         const eventYear = item.event_date ? new Date(item.event_date).getFullYear() : '';
                         const formattedDateStr = formatDate(item.event_date);
-                        const indexNum = (idx + 1).toString().padStart(2, '0');
+                        const eventDateObj = item.event_date ? new Date(item.event_date) : null;
+                        const ghostDay = eventDateObj ? eventDateObj.getDate().toString().padStart(2, '0') : '';
+                        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+                        const taglineDate = eventDateObj ? `${months[eventDateObj.getMonth()]} ${eventDateObj.getFullYear()}` : '';
                         const hasImages = item.images && item.images.length > 0;
                         const activeImgIdx = imageIndexes[item.id] || 0;
                         const activeImage = hasImages
@@ -574,9 +577,9 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                                 {/* Text Content Block */}
                                 <div className="classic-content-block">
                                     <div className="classic-number-badge">
-                                        <span className="classic-ghost-number">{indexNum}</span>
+                                        <span className="classic-ghost-number">{ghostDay}</span>
                                         <span className="classic-tagline">
-                                            {formattedDateStr}
+                                            {taglineDate}
                                         </span>
                                     </div>
                                     <h3
