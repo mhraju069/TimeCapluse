@@ -173,7 +173,7 @@ const Dashboard = () => {
             formDataToSend.append('location', capsuleFormData.location);
             formDataToSend.append('dob', capsuleFormData.dob);
             formDataToSend.append('is_public', capsuleFormData.is_public);
-            
+
             if (capsuleProfileFile) {
                 formDataToSend.append('profile', capsuleProfileFile);
             }
@@ -409,7 +409,7 @@ const Dashboard = () => {
                 {/* Main Content Grid — Timeline display */}
                 <div className="dashboard-main-grid">
                     <section className="dashboard-section capsules-section" style={{ padding: '24px 0 0 0' }}>
-                        
+
                         {/* Capsule Details Section */}
                         {has_capsule && capsule && (
                             <div className="dashboard-capsule-detail-card">
@@ -471,7 +471,7 @@ const Dashboard = () => {
 
                                 <div className="capsule-detail-info" style={{ padding: '0 28px 28px' }}>
                                     {capsuleError && <div className="capsule-edit-error" style={{ color: '#ef4444', marginBottom: '1rem' }}>{capsuleError}</div>}
-                                    
+
                                     {editingCapsule ? (
                                         <form onSubmit={handleSaveCapsule} className="capsule-edit-form">
                                             <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1rem' }}>
@@ -596,9 +596,22 @@ const Dashboard = () => {
 
                         {has_capsule && capsule_id ? (
                             <>
-                                <div className="section-header" style={{ marginBottom: '24px', marginTop: '40px', padding: '0 2px' }}>
-                                    <h2 className="section-title">My Timeline Events</h2>
-                                    <span className="section-count">{stats.timeline_count || 0} events</span>
+                                <div className="section-header" style={{ marginBottom: '24px', marginTop: '40px', padding: '0 2px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                                        <h2 className="section-title" style={{ margin: 0 }}>My Timeline Events</h2>
+                                        <span className="section-count" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>{stats.timeline_count || 0} events</span>
+                                    </div>
+                                    <button
+                                        className="btn-add-new-event"
+                                        onClick={() => setShowAddModal(true)}
+                                        style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', gap: '8px', padding: '8px 16px', borderRadius: '5px', border: '1px solid var(--border-color)', fontWeight: '600', cursor: 'pointer', fontSize: '0.85rem', boxShadow: '0 4px 15px rgba(212, 160, 36, 0.2)', transition: 'all 0.3s ease' }}
+                                    >
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <line x1="12" y1="5" x2="12" y2="19" />
+                                            <line x1="5" y1="12" x2="19" y2="12" />
+                                        </svg>
+                                        Add Event
+                                    </button>
                                 </div>
 
                                 <div>
@@ -617,8 +630,8 @@ const Dashboard = () => {
                                             <div className="empty-icon" style={{ fontSize: '2.5rem', color: '#d4a574', marginBottom: '14px' }}>✦</div>
                                             <h3 style={{ color: '#fff', fontSize: '1.25rem', marginBottom: '8px' }}>No timeline events yet</h3>
                                             <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.9rem', marginBottom: '20px' }}>Start adding timeline events to your capsule.</p>
-                                            <button 
-                                                className="btn-save" 
+                                            <button
+                                                className="btn-save"
                                                 onClick={() => setShowAddModal(true)}
                                                 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', background: 'var(--primary-color)', border: 'none', color: '#fff', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 15px rgba(212, 160, 36, 0.2)' }}
                                             >

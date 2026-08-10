@@ -11,6 +11,8 @@ export default defineConfig({
     host: "0.0.0.0",
     allowedHosts: [
       "ape-in-eft.ngrok-free.app",
+      "hecticly-rural-kittie.ngrok-free.dev",
+      ""
     ],
     proxy: {
       '/api': {

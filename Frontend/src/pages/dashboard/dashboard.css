@@ -852,6 +852,16 @@
     transform: translateY(-2px);
 }
 
+.btn-add-new-event:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--primary-color);
+}
+
+.btn-add-new-event:hover svg {
+    stroke: var(--primary-color);
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);

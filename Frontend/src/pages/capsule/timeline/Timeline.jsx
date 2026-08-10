@@ -261,7 +261,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
         <div className="timeline-section">
             <div className="timeline-header">
                 <h2 className="timeline-section-title">Timeline</h2>
-                
+
                 <div className="timeline-controls-group">
                     <div className="timeline-view-switch">
                         <button
@@ -270,8 +270,8 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                             onClick={() => handleViewModeChange('modern')}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <circle cx="12" cy="12" r="10"/>
-                                <path d="M12 2a10 10 0 0 1 10 10"/>
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 2a10 10 0 0 1 10 10" />
                             </svg>
                             Modern
                         </button>
@@ -281,21 +281,12 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                             onClick={() => handleViewModeChange('classic')}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                <path d="M3 9h18M9 21V9"/>
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <path d="M3 9h18M9 21V9" />
                             </svg>
                             Classic
                         </button>
                     </div>
-
-                    {isOwner && (
-                        <button
-                            className="timeline-add-btn"
-                            onClick={() => setShowModal(true)}
-                        >
-                            + Add Timeline Event
-                        </button>
-                    )}
                 </div>
             </div>
 
@@ -339,7 +330,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                         <p className="timeline-description">
                             {truncateText(displayData.description)}
                             {displayData.description && displayData.description.split(' ').length > 70 && (
-                                <span 
+                                <span
                                     className="timeline-see-more"
                                     onClick={() => handleSeeMore(currentTimeline)}
                                 >
@@ -417,7 +408,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                                             {eventYear ? `${eventYear} • ` : ''}{formattedDateStr.toUpperCase()}
                                         </span>
                                     </div>
-                                    <h3 
+                                    <h3
                                         className="classic-item-title"
                                         onClick={() => handleSeeMore(item)}
                                     >
@@ -426,7 +417,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                                     <p className="classic-item-description">
                                         {truncateText(item.description, 50)}
                                     </p>
-                                    <button 
+                                    <button
                                         type="button"
                                         className="classic-read-more"
                                         onClick={() => handleSeeMore(item)}
@@ -436,7 +427,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                                 </div>
 
                                 {/* Image Block with Auto Smooth Carousel */}
-                                <div 
+                                <div
                                     className="classic-image-block"
                                     onClick={() => handleSeeMore(item)}
                                 >
@@ -476,9 +467,9 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                                     ) : (
                                         <div className="classic-image-placeholder">
                                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                                <polyline points="21 15 16 10 5 21"/>
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                                <polyline points="21 15 16 10 5 21" />
                                             </svg>
                                         </div>
                                     )}
