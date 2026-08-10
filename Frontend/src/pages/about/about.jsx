@@ -268,13 +268,25 @@ const About = () => {
               const name = member.name;
               const role = member.designation || member.role;
               const img = member.image || member.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face&auto=format';
+              const numStr = String(index + 1).padStart(2, '0');
               return (
                 <div key={member.id || index} className="about-team-card">
                   <div className="avatar">
                     <img src={img} alt={name} loading="lazy" />
                   </div>
-                  <div className="name">{name}</div>
-                  <div className="role">{role}</div>
+                  <div className="card-overlay" />
+
+                  {/* Collapsed Info */}
+                  <div className="collapsed-info">
+                    {role}
+                  </div>
+
+                  {/* Hovered Info */}
+                  <div className="hovered-info">
+                    <div className="card-number">{numStr}</div>
+                    <div className="name">{name}</div>
+                    <div className="role">{role}</div>
+                  </div>
                 </div>
               );
             })}
