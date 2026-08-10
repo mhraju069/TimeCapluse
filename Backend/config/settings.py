@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'apps.authentication',
     'apps.capsule',
     'apps.timeline',
+    'apps.contact',
 
 ]
 
