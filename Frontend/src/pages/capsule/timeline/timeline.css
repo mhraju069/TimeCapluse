@@ -1,4 +1,4 @@
-/* Timeline Section */
+﻿/* Timeline Section */
 .timeline-section {
     width: 100%;
     max-width: 1600px;
@@ -278,6 +278,7 @@
 
 .timeline-header .timeline-section-title {
     margin-bottom: 0;
+    padding-left: 20px;
     text-align: left;
 }
 
@@ -333,7 +334,7 @@
     flex-direction: column;
     gap: 100px;
     padding: 40px 20px 80px;
-    background: linear-gradient(180deg, #0b111e 0%, #0d1627 50%, #090e18 100%);
+    /* background: linear-gradient(180deg, #0b111e 0%, #0d1627 50%, #090e18 100%); */
     border-radius: 24px;
     box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6), 0 10px 40px rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -368,12 +369,12 @@
 
 .classic-ghost-number {
     position: absolute;
-    top: -45px;
+    top: -65px;
     left: -20px;
     font-size: 6.5rem;
     font-weight: 900;
     font-family: 'Playfair Display', 'Georgia', serif;
-    color: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.13);
     line-height: 1;
     pointer-events: none;
     user-select: none;
@@ -605,5 +606,333 @@
 
     .timeline-option-wheel {
         height: 150px;
+    }
+}
+
+
+/* ==========================================================================
+   Classic 2 Timeline View
+   Scroll-driven blurred alternating layout.
+   Background is fixed-positioned and updated by JS as the user scrolls.
+   Each item has min-height so one item fills ~the viewport Ã¢â‚¬â€ giving the
+   IntersectionObserver clean trigger points.
+   ========================================================================== */
+
+/* Outer wrapper â€” IS the scroll container */
+.scroll-wrapper {
+    position: relative;
+    width: 100%;
+    /* Fixed height so the user scrolls within this box,
+       not the page. The background sticks inside this container. */
+    height: 88vh;
+    min-height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-radius: 16px;
+    background: #0d1424;
+    /* Smooth scroll */
+    scroll-behavior: smooth;
+    /* Required so position:sticky children work inside the scrollable container */
+    scroll-snap-type: y proximity;
+}
+
+/* Sticky background that sticks to top of the scroll box */
+.scroll-background {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 88vh;
+    /* Match wrapper height so it fills the visible area */
+    background-size: cover;
+    background-position: center;
+    background-color: #0d1424;
+    z-index: 0;
+    /* Negative margin pulls the scroll-area content up to sit on top */
+    margin-bottom: -88vh;
+    pointer-events: none;
+    filter: grayscale(100%);
+}
+
+.scroll-bg-overlay {
+    position: absolute;
+    inset: 0;
+    /* Dark overlay Ã¢â‚¬â€ matches the original 80% grey */
+    background: rgba(20, 20, 30, 0.479);
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Scroll area Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+.scroll-scroll-area {
+    position: relative;
+    z-index: 1;
+    /* Sits on top of fixed background */
+    padding: 60px 0 160px;
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Vertical center line */
+.scroll-center-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-1px);
+    width: 2px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Individual timeline item Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+.scroll-item {
+    position: relative;
+    box-sizing: border-box;
+    padding: 60px 0;
+    /* Give each item enough height that you must scroll through it Ã¢â‚¬â€ 
+       this is what makes the IntersectionObserver fire at the right moment */
+    min-height: 60vh;
+
+    /* Each item occupies half the track width */
+    width: calc(50% - 44px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    /* Ã¢â€â‚¬Ã¢â€â‚¬ Base (inactive) state: blurred + faded, NO translateY on the item
+       itself Ã¢â‚¬â€ transforming the item shifts its bounding box and confuses
+       IntersectionObserver. We transform the inner content instead. Ã¢â€â‚¬Ã¢â€â‚¬ */
+    opacity: 0.25;
+    filter: blur(2px);
+    transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+/* Left-side (odd indexes, 0-based) */
+.scroll-item--left {
+    align-self: flex-start;
+    text-align: right;
+    align-items: flex-end;
+}
+
+/* Right-side (even indexes, 0-based) */
+.scroll-item--right {
+    align-self: flex-end;
+    text-align: left;
+    align-items: flex-start;
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬ data-label connector line (appears on OPPOSITE side when active) Ã¢â€â‚¬Ã¢â€â‚¬ */
+.scroll-item--left::before {
+    content: attr(data-label);
+    position: absolute;
+    right: calc(-100% - 52px);
+    top: 58%;
+    margin-top: -6px;
+    width: 100%;
+    text-align: left;
+    font-size: 31px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Verdana', sans-serif;
+    color: rgba(255, 255, 255, 0.5);
+    border-left: 2px solid rgba(255, 255, 255, 0.45);
+    padding-left: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.25s, top 0.3s ease 0.25s;
+}
+
+.scroll-item--right::before {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(-100% - 52px);
+    top: 58%;
+    margin-top: -6px;
+    width: 100%;
+    text-align: right;
+    font-size: 31px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Verdana', sans-serif;
+    color: rgba(255, 255, 255, 0.5);
+    border-right: 2px solid rgba(255, 255, 255, 0.45);
+    padding-right: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.25s, top 0.3s ease 0.25s;
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Active state Ã¢â€â‚¬Ã¢â€â‚¬ */
+.scroll-item--active {
+    opacity: 1;
+    filter: blur(0);
+}
+
+.scroll-item--active::before {
+    opacity: 1;
+    top: 50%;
+}
+
+/* The inner content slides up into view when activated */
+.scroll-content {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    transform: translateY(30px);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-item--active .scroll-content {
+    transform: translateY(0);
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Image wrapper Ã¢â€â‚¬Ã¢â€â‚¬ */
+.scroll-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
+
+.scroll-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.scroll-img.active {
+    opacity: 1;
+}
+
+.scroll-img-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 3;
+}
+
+.scroll-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.scroll-dot.active {
+    background: var(--primary-color, #d4a024);
+    width: 18px;
+    border-radius: 10px;
+}
+
+/* â”€â”€ Year â”€â”€ large heading like the original's 66px title â”€â”€ */
+.scroll-year {
+    font-size: 32px;
+    font-weight: normal;
+    margin: -12px 0 10px 0;
+    line-height: 1.2;
+    color: #fff;
+    padding: 0 10px;
+    box-sizing: border-box;
+    width: 100%;
+    white-space: nowrap;
+
+    /* transition matches original: .4s on font-related properties */
+    transition: margin 0.4s ease;
+    z-index: 5;
+}
+
+.scroll-item--active .scroll-year {
+    margin-top: -30px;
+    margin-bottom: 16px;
+}
+
+.scroll-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 10px;
+    cursor: pointer;
+    padding: 0 10px;
+    transition: color 0.3s ease;
+}
+
+.scroll-title:hover {
+    color: var(--primary-color, #d4a024);
+}
+
+.scroll-desc {
+    font-size: 14px;
+    line-height: 25px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 12px;
+    padding: 0 10px;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-weight: normal;
+}
+
+.scroll-readmore {
+    background: transparent;
+    border: none;
+    color: var(--primary-color, #d4a024);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 0 10px;
+    font-family: inherit;
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.scroll-readmore:hover {
+    transform: translateX(5px);
+    color: #fff;
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Responsive: single column on mobile Ã¢â€â‚¬Ã¢â€â‚¬ */
+@media screen and (max-width: 700px) {
+    .scroll-scroll-area {
+        padding: 40px 16px 100px;
+    }
+
+    .scroll-center-line {
+        left: 36px;
+    }
+
+    .scroll-item,
+    .scroll-item--left,
+    .scroll-item--right {
+        width: 100%;
+        align-self: auto;
+        text-align: left;
+        align-items: flex-start;
+        padding: 40px 16px 80px 70px;
+        min-height: 50vh;
+    }
+
+    .scroll-item--left::before,
+    .scroll-item--right::before {
+        left: 6px !important;
+        right: auto !important;
+        top: 36px;
+        text-align: left !important;
+        width: 48px;
+        border: none !important;
+        padding: 0 !important;
+        font-size: 9px;
+    }
+
+    .scroll-year {
+        font-size: 42px;
     }
 }

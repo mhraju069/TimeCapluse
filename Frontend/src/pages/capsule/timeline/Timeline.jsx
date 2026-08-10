@@ -16,8 +16,148 @@ const getApiHeaders = (token = null) => {
     return headers;
 };
 
+// Scroll Sub-Component
+// Replicates the scroll-activated blurred alternating timeline from the
+// jQuery reference: items start faded/blurred/translated, scroll into view
+// triggers active state, background image updates to active item's image.
+// ─────────────────────────────────────────────────────────────────────────────
+const ScrollTimeline = ({
+    timelines,
+    formatDate,
+    truncateText,
+    imageIndexes,
+    setImageIndexes,
+    handleSeeMore,
+    activeIndex,
+    setActiveIndex,
+    bgImage,
+    setBgImage,
+    itemRefs,
+}) => {
+    const scrollBoxRef = useRef(null);
+
+    // IntersectionObserver with the scroll box as root
+    useEffect(() => {
+        if (!timelines.length || !scrollBoxRef.current) return;
+
+        const root = scrollBoxRef.current;
+        const observers = [];
+
+        timelines.forEach((item, idx) => {
+            const el = itemRefs.current[idx];
+            if (!el) return;
+
+            const obs = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+                            setActiveIndex(idx);
+                            const imgArr = item.images;
+                            const imgObj = imgArr && imgArr.length > 0 ? imgArr[imageIndexes[item.id] || 0] : null;
+                            const url = imgObj ? (imgObj.image_url || imgObj.image) : null;
+                            if (url) setBgImage(url);
+                        }
+                    });
+                },
+                { root, threshold: 0.4, rootMargin: '-5% 0px -5% 0px' }
+            );
+
+            obs.observe(el);
+            observers.push(obs);
+        });
+
+        return () => observers.forEach((o) => o.disconnect());
+    }, [timelines, imageIndexes, scrollBoxRef.current]);
+
+    // Init to first item
+    useEffect(() => {
+        if (timelines.length > 0) {
+            const first = timelines[0];
+            const imgObj = first.images && first.images.length > 0 ? first.images[0] : null;
+            setBgImage(imgObj ? (imgObj.image_url || imgObj.image) : null);
+            setActiveIndex(0);
+        }
+    }, [timelines]);
+
+    return (
+        <div className="scroll-wrapper" ref={scrollBoxRef}>
+            {/* Background image: sticky inside the scroll box */}
+            <div
+                className="scroll-background"
+                style={{ backgroundImage: bgImage ? `url(${bgImage})` : 'none' }}
+            >
+                <div className="scroll-bg-overlay" />
+            </div>
+
+            {/* Timeline items */}
+            <div className="scroll-scroll-area">
+                <div className="scroll-center-line" />
+
+                {timelines.map((item, idx) => {
+                    const isActive = idx === activeIndex;
+                    const isRight = idx % 2 === 1;
+                    const formattedDate = formatDate(item.event_date);
+                    const year = item.event_date ? new Date(item.event_date).getFullYear() : '';
+                    const activeImgIdx = imageIndexes[item.id] || 0;
+                    const hasImages = item.images && item.images.length > 0;
+
+                    return (
+                        <div
+                            key={item.id || idx}
+                            ref={(el) => { itemRefs.current[idx] = el; }}
+                            className={`scroll-item ${isRight ? 'scroll-item--right' : 'scroll-item--left'} ${isActive ? 'scroll-item--active' : ''}`}
+                            data-label={item.title ? item.title.toUpperCase() : ''}
+                        >
+                            <div className="scroll-content">
+                                {hasImages && (
+                                    <div className="scroll-img-wrapper">
+                                        {item.images.map((imgObj, i) => {
+                                            const url = imgObj.image_url || imgObj.image;
+                                            return (
+                                                <img
+                                                    key={imgObj.id || i}
+                                                    src={url}
+                                                    alt={item.title}
+                                                    className={`scroll-img ${i === activeImgIdx ? 'active' : ''}`}
+                                                />
+                                            );
+                                        })}
+                                        {item.images.length > 1 && (
+                                            <div className="scroll-img-dots">
+                                                {item.images.map((_, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className={`scroll-dot ${i === activeImgIdx ? 'active' : ''}`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setImageIndexes(prev => ({ ...prev, [item.id]: i }));
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                <h2 className="scroll-year">{formattedDate}</h2>
+                                <p className="scroll-desc">{truncateText(item.description, 60)}</p>
+                                {item.description && item.description.split(' ').length > 60 && (
+                                    <button className="scroll-readmore" onClick={() => handleSeeMore(item)}>
+                                        Read more →
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+
 const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
     const [timelines, setTimelines] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [token] = useState(localStorage.getItem('access_token'));
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -35,8 +175,11 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
         imageCount: 0
     });
     const [viewMode, setViewMode] = useState(() => {
-        return localStorage.getItem('timeline_view_mode') || 'modern';
+        return localStorage.getItem('timeline_view_mode') || 'wheel';
     });
+    const [scrollActiveIndex, setScrollActiveIndex] = useState(0);
+    const [scrollBgImage, setScrollBgImage] = useState(null);
+    const scrollItemRefs = useRef([]);
     const animationTimeoutRef = useRef(null);
 
     const fetchTimeline = async () => {
@@ -266,32 +409,60 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                     <div className="timeline-view-switch">
                         <button
                             type="button"
-                            className={`timeline-view-btn ${viewMode === 'modern' ? 'active' : ''}`}
-                            onClick={() => handleViewModeChange('modern')}
+                            className={`timeline-view-btn ${viewMode === 'wheel' ? 'active' : ''}`}
+                            onClick={() => handleViewModeChange('wheel')}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <circle cx="12" cy="12" r="10" />
                                 <path d="M12 2a10 10 0 0 1 10 10" />
                             </svg>
-                            Modern
+                            Wheel
                         </button>
                         <button
                             type="button"
-                            className={`timeline-view-btn ${viewMode === 'classic' ? 'active' : ''}`}
-                            onClick={() => handleViewModeChange('classic')}
+                            className={`timeline-view-btn ${viewMode === 'scroll' ? 'active' : ''}`}
+                            onClick={() => handleViewModeChange('scroll')}
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <line x1="3" y1="12" x2="21" y2="12" />
+                                <circle cx="12" cy="12" r="3" />
+                                <line x1="12" y1="3" x2="12" y2="9" />
+                                <line x1="12" y1="15" x2="12" y2="21" />
+                            </svg>
+                            Scroll
+                        </button>
+                        <button
+                            type="button"
+                            className={`timeline-view-btn ${viewMode === 'static' ? 'active' : ''}`}
+                            onClick={() => handleViewModeChange('static')}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="3" y="3" width="18" height="18" rx="2" />
                                 <path d="M3 9h18M9 21V9" />
                             </svg>
-                            Classic
+                            Static
                         </button>
                     </div>
                 </div>
             </div>
 
-            {viewMode === 'modern' ? (
-                /* Modern View (Original Wheel & Full-screen background layout) */
+            {viewMode === 'scroll' ? (
+                /* Scroll View — Scroll-driven blurred alternating timeline (jQuery reference port) */
+                <ScrollTimeline
+                    timelines={timelines}
+                    formatDate={formatDate}
+                    truncateText={truncateText}
+                    imageIndexes={imageIndexes}
+                    setImageIndexes={setImageIndexes}
+                    handleSeeMore={handleSeeMore}
+                    activeIndex={scrollActiveIndex}
+                    setActiveIndex={setScrollActiveIndex}
+                    bgImage={scrollBgImage}
+                    setBgImage={setScrollBgImage}
+                    itemRefs={scrollItemRefs}
+                />
+            ) : viewMode === 'wheel' ? (
+                /* Wheel View (Original Wheel & Full-screen background layout) */
                 <div className="timeline-container">
                     {/* Background Image */}
                     <div className={`timeline-bg ${isAnimating ? 'fade-out' : 'fade-in'}`}>
@@ -405,7 +576,7 @@ const Timeline = ({ capsuleId, capsuleName, isOwner }) => {
                                     <div className="classic-number-badge">
                                         <span className="classic-ghost-number">{indexNum}</span>
                                         <span className="classic-tagline">
-                                            {eventYear ? `${eventYear} • ` : ''}{formattedDateStr.toUpperCase()}
+                                            {formattedDateStr}
                                         </span>
                                     </div>
                                     <h3
