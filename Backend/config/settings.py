@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'apps.timeline',
     'apps.contact',
     'apps.faq',
+    'apps.reviews',
 
 ]
 

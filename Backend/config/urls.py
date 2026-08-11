@@ -15,6 +15,7 @@ urlpatterns = [
     path('', include('apps.timeline.urls')),
     path('', include('apps.contact.urls')),
     path('', include('apps.faq.urls')),
+    path('', include('apps.reviews.urls')),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     # path("docs/", swagger.schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),

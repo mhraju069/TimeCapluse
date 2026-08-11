@@ -1,0 +1,351 @@
+/* ── Modal Overlay ── */
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 2rem;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Modal Container ── */
+.review-modal-container {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 4.5rem;
+  max-width: 960px;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.95);
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Close Button ── */
+.review-modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-modal-close:hover {
+  color: #ffffff;
+  transform: rotate(90deg);
+}
+
+/* ── Two-Column Layout ── */
+.review-modal-layout {
+  display: flex;
+  gap: 5.5rem;
+  align-items: stretch;
+}
+
+/* ── Left Panel ── */
+.review-modal-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.touch-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 4.2rem;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -1.5px;
+}
+
+.touch-graphic {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 3.5rem;
+}
+
+.touch-graphic .dot {
+  width: 28px;
+  height: 28px;
+  background: #fdfcf7;
+  border-radius: 50%;
+}
+
+.touch-graphic .half-circle {
+  margin-left: -0.2rem;
+  opacity: 0.75;
+}
+
+/* ── Right Panel ── */
+.review-modal-right {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Messages */
+.review-modal-message {
+  padding: 0.8rem 1rem;
+  border-radius: 2px;
+  margin-bottom: 2rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.review-modal-message.success {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #4ade80;
+}
+
+.review-modal-message.error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+/* ── Form Inputs ── */
+.touch-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+}
+
+.touch-form-group {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 0.4rem;
+  transition: border-bottom-color 0.3s ease;
+}
+
+.touch-form-group:focus-within {
+  border-bottom-color: rgba(255, 255, 255, 0.6);
+}
+
+.touch-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.touch-label-row label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.required-asterisk {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.72rem;
+}
+
+.touch-form-group input,
+.touch-form-group textarea {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.4rem 0 0.1rem 0;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  width: 100%;
+}
+
+.touch-form-group textarea {
+  resize: none;
+  min-height: 50px;
+}
+
+/* Row wrapper for side-by-side elements */
+.touch-form-row {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.half-width {
+  flex: 1;
+}
+
+/* ── Rating Selector Line ── */
+.rating-select-line {
+  display: flex;
+  gap: 1.2rem;
+  padding: 0.2rem 0;
+}
+
+.rating-number-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.25);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.rating-number-btn.active {
+  color: #ffffff;
+  transform: scale(1.15);
+}
+
+.rating-number-btn:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── Submit Arrow ── */
+.touch-submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.touch-submit-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.touch-submit-btn:hover:not(:disabled) {
+  transform: translateX(6px);
+}
+
+.touch-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.submit-loading-dots {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Footer Address Block ── */
+.touch-footer-info {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 4.5rem;
+}
+
+.info-block {
+  flex: 1;
+}
+
+.info-block h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 0.5px;
+}
+
+.info-block p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0.2rem 0;
+  line-height: 1.4;
+}
+
+.touch-file-upload-btn:hover {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Custom Scrollbar for container */
+.review-modal-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.review-modal-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.review-modal-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+/* ── Responsive styling ── */
+@media (max-width: 900px) {
+  .review-modal-container {
+    padding: 3rem 2rem;
+  }
+
+  .review-modal-layout {
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  .touch-title {
+    font-size: 3rem;
+  }
+
+  .touch-graphic {
+    margin-top: 2rem;
+  }
+
+  .touch-footer-info {
+    margin-top: 3rem;
+    flex-direction: column;
+    gap: 2rem;
+  }
+}

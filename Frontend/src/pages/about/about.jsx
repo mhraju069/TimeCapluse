@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './about.css';
 import Footer from '../../components/Footer/Footer';
+import ReviewModal from '../../components/ReviewModal/ReviewModal';
 
 import photographerHeader from '../../assets/aboutus.jpg';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const About = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     capsules_count: null,
     events_count: null,
@@ -17,6 +20,12 @@ const About = () => {
   const [dbCurators, setDbCurators] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [virtualIndex, setVirtualIndex] = useState(0);
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
+  const [reviewDirection, setReviewDirection] = useState('right'); // 'left' | 'right'
+  const [reviewAnimating, setReviewAnimating] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const fallbackFAQs = [
     {
@@ -43,6 +52,65 @@ const About = () => {
       id: 'f5',
       question: 'What if I don\'t like the design?',
       answer: 'Customer satisfaction is our priority. We offer unlimited revisions under our active subscription, meaning we will continue to refine and adjust the design until it matches your vision perfectly.'
+    }
+  ];
+
+  const fallbackReviews = [
+    {
+      id: 'r1',
+      user_name: 'Andy Law',
+      review: 'Allows you to collaborate, experiment, and test much more effectively and efficiently.',
+      user_image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 5
+    },
+    {
+      id: 'r2',
+      user_name: 'Sarah Jenkins',
+      review: 'The absolute best archival tool I have ever used. Simple, beautiful, and extremely performant.',
+      user_image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 5
+    },
+    {
+      id: 'r3',
+      user_name: 'Marcus Brody',
+      review: 'Our team is able to showcase our physical history in a modern digital way. Highly recommended!',
+      user_image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 4
+    },
+    {
+      id: 'r4',
+      user_name: 'Clara Oswald',
+      review: 'Stunning design aesthetics combined with powerful back-end utilities. A dream to work with.',
+      user_image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 5
+    },
+    {
+      id: 'r5',
+      user_name: 'David Tennant',
+      review: 'An incredible tool that has transformed how we capture and preserve life timelines.',
+      user_image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 5
+    },
+    {
+      id: 'r6',
+      user_name: 'Amelia Pond',
+      review: 'Working with this archive has been like traveling through time itself. Brilliant user interface and design.',
+      user_image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 5
+    },
+    {
+      id: 'r7',
+      user_name: 'Rory Williams',
+      review: 'The attention to detail in Relic is amazing. It has made capturing our family history incredibly simple.',
+      user_image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 5
+    },
+    {
+      id: 'r8',
+      user_name: 'Rose Tyler',
+      review: 'A beautiful way to save files and look back at old memories. Truly outstanding performance.',
+      user_image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=500&fit=crop&crop=face&auto=format',
+      rating: 5
     }
   ];
 
@@ -105,6 +173,21 @@ const About = () => {
       .catch((err) => {
         console.error('Failed to fetch FAQs, using fallback data:', err);
         setFaqs(fallbackFAQs);
+      });
+
+    // Fetch Reviews
+    fetch(`${API_BASE_URL}/api/reviews/`)
+      .then((res) => res.json())
+      .then((resData) => {
+        if (resData.status === 'success' && resData.data && resData.data.length > 0) {
+          setReviews(resData.data);
+        } else {
+          setReviews(fallbackReviews);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch reviews, using fallback data:', err);
+        setReviews(fallbackReviews);
       });
   }, []);
 
@@ -177,6 +260,32 @@ const About = () => {
       img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face&auto=format',
     },
   ];
+  // Initialize virtualIndex to start at the middle copy of reviews
+  useEffect(() => {
+    if (reviews.length > 0 && virtualIndex === 0) {
+      setVirtualIndex(reviews.length);
+    }
+  }, [reviews, virtualIndex]);
+
+  // Handle snapping back to middle copy without transitions when sliding out of bounds
+  useEffect(() => {
+    if (reviews.length === 0) return;
+    const N = reviews.length;
+
+    if (virtualIndex < N) {
+      const timer = setTimeout(() => {
+        setTransitionEnabled(false);
+        setVirtualIndex(virtualIndex + N);
+      }, 600);
+      return () => clearTimeout(timer);
+    } else if (virtualIndex >= 2 * N) {
+      const timer = setTimeout(() => {
+        setTransitionEnabled(false);
+        setVirtualIndex(virtualIndex - N);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [virtualIndex, reviews.length]);
 
   return (
     <div className="about-page-wrapper">
@@ -307,6 +416,122 @@ const About = () => {
             ))}
           </div>
         </section>
+
+        {/* ─── REVIEWS SECTION ─── */}
+        <section className="about-reviews-section">
+          <div className="reviews-layout">
+            {/* Left Vertical Label */}
+            <div className="reviews-vertical-label">
+              <h2>Reviews</h2>
+            </div>
+
+            {/* Add Review Button - Plus Icon */}
+            <button
+              className="add-review-btn"
+              onClick={() => setIsReviewModalOpen(true)}
+              aria-label="Add Review"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+
+            {/* Reviews list in a row */}
+            <div
+              className="reviews-list-container"
+              style={{
+                transform: `translateX(${(1 - virtualIndex) * (150 + 32)}px)`,
+                transition: transitionEnabled ? 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1)' : 'none'
+              }}
+            >
+              {[...reviews, ...reviews, ...reviews].map((r, index) => {
+                if (reviews.length === 0) return null;
+                const isActive = index === virtualIndex;
+                const originalIndex = index % reviews.length;
+                const userImage = r.user_image || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&h=500&fit=crop&crop=face&auto=format';
+
+                return (
+                  <div
+                    key={index}
+                    className={`review-card-wrapper ${isActive ? 'active' : 'inactive'}`}
+                    onClick={() => {
+                      if (!isActive && !reviewAnimating) {
+                        const dir = index > virtualIndex ? 'right' : 'left';
+                        setReviewDirection(dir);
+                        setReviewAnimating(true);
+                        setTransitionEnabled(true);
+                        setVirtualIndex(index);
+                        setTimeout(() => setReviewAnimating(false), 600);
+                      }
+                    }}
+                  >
+                    <div className="review-card-media">
+                      <img src={userImage} alt={r.user_name} />
+
+                      {isActive && (
+                        <>
+                          {/* Navigation Arrows */}
+                          <button
+                            className="review-nav-btn prev-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!reviewAnimating) {
+                                setReviewDirection('left');
+                                setReviewAnimating(true);
+                                setTransitionEnabled(true);
+                                setVirtualIndex((prev) => prev - 1);
+                                setTimeout(() => setReviewAnimating(false), 600);
+                              }
+                            }}
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                          </button>
+                          <button
+                            className="review-nav-btn next-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!reviewAnimating) {
+                                setReviewDirection('right');
+                                setReviewAnimating(true);
+                                setTransitionEnabled(true);
+                                setVirtualIndex((prev) => prev + 1);
+                                setTimeout(() => setReviewAnimating(false), 600);
+                              }
+                            }}
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {isActive && (
+                      <div className={`active-details slide-in-${reviewDirection}`}>
+                        <h3 className="review-username">{r.user_name || r.user_email || 'Anonymous'}</h3>
+                        <span className="review-num">
+                          {r.rating}
+                          <svg width="30px" height="30px" fill='currentColor' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m6.516 14.323-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z" /></svg>
+                        </span>
+                        <p className="review-text">{r.review}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Review Modal */}
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+        />
 
         {/* ─── FAQ SECTION ─── */}
         <section className="about-faq-section">

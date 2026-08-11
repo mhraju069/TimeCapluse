@@ -287,6 +287,8 @@
 /* ── Gallery / Archive Section ── */
 .about-gallery-section {
   margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--border);
 }
 
 .about-section-label {
@@ -589,14 +591,308 @@
 }
 
 
+
+/* ── Reviews Section ── */
+.about-reviews-section {
+  min-height: 680px;
+  position: relative;
+  padding-top: 4rem;
+  margin-top: 8rem;
+  margin-bottom: 8rem;
+  width: 100%;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.reviews-layout {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+
+
+}
+
+.reviews-vertical-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  position: absolute;
+  left: 0;
+  bottom: 41%;
+  z-index: 2;
+  align-self: flex-start;
+  margin-top: 1.5rem;
+  margin-left: -1rem;
+
+
+}
+
+.reviews-vertical-label h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 4rem;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+}
+
+/* ── Add Review Button ── */
+.add-review-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 01s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+  padding: 0;
+}
+
+.add-review-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: rotate(90deg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.add-review-btn:active {
+  transform: rotate(90deg);
+}
+
+.reviews-list-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  align-items: flex-end;
+  margin-left: 0;
+  gap: 32px;
+  /* transition is set inline via JS */
+  will-change: transform;
+}
+
+.review-card-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.review-card-media {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #111;
+  transition: width 0.65s cubic-bezier(0.25, 1, 0.5, 1),
+    height 0.65s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.65s ease;
+}
+
+/* Inactive State */
+.review-card-wrapper.inactive .review-card-media {
+  width: 150px;
+  height: 200px;
+}
+
+.review-card-wrapper.inactive .review-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  opacity: 0.55;
+  transition: filter 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+}
+
+.review-card-wrapper.inactive .review-card-media:hover img {
+  filter: grayscale(40%);
+  opacity: 0.85;
+  transform: scale(1.04);
+}
+
+/* Active State */
+.review-card-wrapper.active .review-card-media {
+  width: 450px;
+  height: 560px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+}
+
+.review-card-wrapper.active .review-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0%);
+  animation: imgScaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Nav buttons overlaying active image */
+.review-nav-btn {
+  position: absolute;
+  bottom: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 30;
+  outline: none;
+  padding: 0;
+}
+
+.review-nav-btn:hover {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  transform: scale(1.08);
+}
+
+.review-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.prev-btn {
+  left: 30px;
+}
+
+.next-btn {
+  right: 30px;
+}
+
+.active-details {
+  position: absolute;
+  left: calc(100% + 3.5rem);
+  top: 3rem;
+  width: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.active-details.slide-in-right {
+  animation: slideFromRight 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.active-details.slide-in-left {
+  animation: slideFromLeft 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.review-num {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.15);
+  margin-bottom: 0.4rem;
+  opacity: 0;
+  animation: slideInText 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.05s;
+}
+
+.review-username {
+  font-family: 'Inter', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  opacity: 0;
+  animation: slideInText 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.15s;
+}
+
+.review-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0;
+  animation: slideInText 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.25s;
+}
+
+@keyframes slideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes imgScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInText {
+  from {
+    opacity: 0;
+    transform: translateX(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* ── FAQ Section ── */
 .about-faq-section {
-  margin-top: 6rem;
+  margin-top: 2rem;
+  padding-top: 4rem;
   margin-bottom: 6rem;
   width: 100%;
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
+  border-top: 1px solid var(--border);
 }
 
 .faq-main-title {
