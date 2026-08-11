@@ -456,22 +456,25 @@
 /* Collapsed Info - Transparent text revealing colorful image (Photoshop cutout effect) */
 .about-team-card .collapsed-info {
   position: absolute;
-  /* Span full card height so text is naturally contained */
+  /* Span the FULL card — so background-size:cover matches avatar img exactly */
   top: 0;
   bottom: 0;
-  left: 50%;
+  left: 0;
+  right: 0;
 
-  /* writing-mode: vertical-lr  →  chars rotate 90°CW, text flows top→bottom
-     rotate(180°)               →  flips element: chars become 90°CCW (same visual as rotate(-90deg))
-                                   AND text flows bottom→top (first char at visual bottom) ✓
-     translateX(-50%)           →  center horizontally */
-  writing-mode: vertical-lr;
+  /* writing-mode: sideways-lr
+     → chars natively 90°CCW (no transform needed, so background stays correct ✓)
+     → text flows BOTTOM → TOP  ✓
+     → read by tilting head RIGHT ✓
+     justify-content: flex-start → text starts from inline-start = BOTTOM ✓ */
+  writing-mode: sideways-lr;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   white-space: nowrap;
   overflow: hidden;
-  transform: translateX(85%) rotate(180deg);
-  transform-origin: center center;
 
-  /* The image shows through the letter shapes */
+  /* Background covers full card = same crop/scale as avatar img ✓ */
   color: transparent;
   background-image: var(--card-img, linear-gradient(135deg, #d4a024 0%, #e8c060 50%, #c9843a 100%));
   background-size: cover;
@@ -479,8 +482,8 @@
   -webkit-background-clip: text;
   background-clip: text;
 
-  font-size: clamp(2.5rem, 1.9vh, 1.75rem);
-  font-weight: 900;
+  font-size: clamp(2.4rem, 2.5vh, 3rem);
+  font-weight: 1000;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   transition: opacity 0.4s ease;
