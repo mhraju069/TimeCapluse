@@ -2,6 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './pages/nav/navbar';
 import Home from './pages/home/home';
+import Masonary from './pages/home/home2'
 import Mint from './pages/mint/mint';
 import Gallery from './pages/capsule/gallery';
 import GoogleLogin from './pages/auth.jsx/login.jsx';
@@ -16,7 +17,8 @@ function App() {
     <div style={{ minHeight: '100vh', background: '#000000' }}>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path='/' element={<Masonary />} />
+        {/* <Route path="/" element={<Home />} /> */}
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/mint" element={<Mint />} />
