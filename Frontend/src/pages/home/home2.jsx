@@ -1,5 +1,5 @@
 "use client";
-
+import { FloatingButterfly } from '../../components/FloatingButterfly';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ const GridItem = ({ item }) => {
 
 const MasonryGrid = ({ items }) => {
     return <div className="columns-2 gap-0 sm:columns-3 md:columns-4 lg:columns-6 xl:columns-8 2xl:columns-10" style={{
-        columnWidth: '160px'
+        columnWidth: '320px'
     }}>
         {items.map((item, idx) => <GridItem key={idx} item={item} />)}
     </div>;
@@ -111,14 +111,16 @@ export default function Masonary() {
                     </p>
                     <div className="flex gap-4 mt-8">
                         <button className="px-8 py-3.5 rounded-full border border-white/20 bg-black/40 text-white font-medium hover:bg-white/10 transition-all text-sm md:text-base cursor-pointer" onClick={() => navigate('/capsule')}>
-                            Capsule
+                            CAPSULE
                         </button>
                         <button className="px-8 py-3.5 rounded-full bg-white text-black font-medium hover:bg-white/90 transition-all text-sm md:text-base cursor-pointer" onClick={() => navigate('/mint')}>
-                            Mint
+                            MINT
                         </button>
                     </div>
                 </div>
             </div>
+            {/* Global Floating Flying Butterfly */}
+            <FloatingButterfly />
         </div >
     );
 }

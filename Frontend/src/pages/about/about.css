@@ -475,6 +475,7 @@
   justify-content: flex-start;
   white-space: nowrap;
   overflow: hidden;
+  transform: scaleX(1.5);
 
   /* Background covers full card = same crop/scale as avatar img ✓ */
   color: transparent;

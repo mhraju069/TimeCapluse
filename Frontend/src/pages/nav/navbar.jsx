@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { StaggeredMenu } from './menu';
 import logo from '../../logo.svg';
+import { FloatingButterfly } from '../../components/FloatingButterfly';
 
 const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
