@@ -15,6 +15,36 @@ const About = () => {
 
   const [dbGalleryItems, setDbGalleryItems] = useState([]);
   const [dbCurators, setDbCurators] = useState([]);
+  const [faqs, setFaqs] = useState([]);
+  const [expandedFaq, setExpandedFaq] = useState(null);
+
+  const fallbackFAQs = [
+    {
+      id: 'f1',
+      question: 'How much does a website cost?',
+      answer: 'The cost of a website depends on various factors such as design complexity, functionality, features, and the time required to build it. We offer custom packages tailored to fit different budgets and business needs.'
+    },
+    {
+      id: 'f2',
+      question: 'How does the subscription work?',
+      answer: 'Our subscription service provides continuous access to design resources, updates, and maintenance. You pay a flat monthly rate and can submit design requests as needed, which are queued and delivered sequentially.'
+    },
+    {
+      id: 'f3',
+      question: 'How do I pause or cancel?',
+      answer: 'You can pause or cancel your subscription at any time through your dashboard. When paused, you will not be billed for the next cycle, and any remaining days in your current cycle will be preserved for when you resume.'
+    },
+    {
+      id: 'f4',
+      question: 'How do I communicate with you?',
+      answer: 'We coordinate mainly through our dedicated platform dashboard, Slack, and email to ensure swift communication and organized tracking of all your projects and requests.'
+    },
+    {
+      id: 'f5',
+      question: 'What if I don\'t like the design?',
+      answer: 'Customer satisfaction is our priority. We offer unlimited revisions under our active subscription, meaning we will continue to refine and adjust the design until it matches your vision perfectly.'
+    }
+  ];
 
   useEffect(() => {
     // Inject Google Fonts if not already loaded
@@ -61,7 +91,26 @@ const About = () => {
       .catch((err) => {
         console.error('Failed to fetch public stats:', err);
       });
+
+    // Fetch FAQs
+    fetch(`${API_BASE_URL}/api/faq/`)
+      .then((res) => res.json())
+      .then((resData) => {
+        if (resData.status === 'success' && resData.data && resData.data.length > 0) {
+          setFaqs(resData.data);
+        } else {
+          setFaqs(fallbackFAQs);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch FAQs, using fallback data:', err);
+        setFaqs(fallbackFAQs);
+      });
   }, []);
+
+  const toggleFaq = (index) => {
+    setExpandedFaq(expandedFaq === index ? null : index);
+  };
 
   const galleryItems = [
     {
@@ -187,7 +236,7 @@ const About = () => {
         <section className="about-guide-section">
           <div className="about-section-label">
             <h2>
-              How <span>Relic</span> Works
+              How Relic Works
             </h2>
             <p>⌘ Preserving your legacy step by step</p>
           </div>
@@ -253,6 +302,31 @@ const About = () => {
                 <div className="overlay">
                   <div className="title">{item.title}</div>
                   <div className="sub">{item.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── FAQ SECTION ─── */}
+        <section className="about-faq-section">
+          <h2 className="faq-main-title">FAQ's</h2>
+          <div className="faq-list">
+            {faqs.map((faq, index) => (
+              <div
+                key={faq.id || index}
+                className={`faq-item ${expandedFaq === index ? 'active' : ''}`}
+              >
+                <div className="faq-question-row" onClick={() => toggleFaq(index)}>
+                  <h3>{faq.question}</h3>
+                  <span className="faq-toggle-icon">
+                    {expandedFaq === index ? '−' : '+'}
+                  </span>
+                </div>
+                <div className="faq-answer-container">
+                  <div className="faq-answer">
+                    <p>{faq.answer}</p>
+                  </div>
                 </div>
               </div>
             ))}
