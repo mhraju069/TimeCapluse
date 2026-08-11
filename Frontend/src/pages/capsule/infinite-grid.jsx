@@ -637,6 +637,7 @@ export const InfiniteDraggableGrid = ({
             fontSize: '0.9rem',
             fontWeight: 500,
             letterSpacing: '0.02em',
+            paddingLeft: "15px"
           }}>
             {searchTopic}
           </span>

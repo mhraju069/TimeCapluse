@@ -58,334 +58,302 @@ const AdvancedSearchModal = ({ filters, onChange, onApply, onClose }) => {
 
   return (
     <>
-      {/* Backdrop — same as sm-backdrop.active */}
+      {/* Backdrop */}
       <div
         onClick={onClose}
         style={{
           position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.45)',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
+          background: 'rgba(0,0,0,0.5)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
           zIndex: 40,
         }}
       />
 
-      {/* Panel — same as staggered-menu-panel */}
+      {/* Main Container */}
       <div
         onMouseDown={e => e.stopPropagation()}
         onTouchStart={e => e.stopPropagation()}
         style={{
           position: 'fixed',
-          top: 0, right: 0,
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           width: '100%',
-          height: '100%',
-          background: 'rgba(0,0,0,0)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: '0 0 20px rgba(0,0,0,1)',
-          zIndex: 50,
+          maxWidth: '700px',
+          height: '90vh',
+          maxHeight: '900px',
+          background: 'transparent',
+          borderRadius: '40px',
           display: 'flex',
-          flexDirection: 'column',
-          padding: "10% 30% 10% 30%",
-          overflowY: 'auto',
-          animation: 'FadeIn 0.5s ease-in-out ',
+          overflow: 'hidden',
+          // border: '1px solid rgba(255,255,255,0.1)',
+          zIndex: 50,
+          // boxShadow: '0 30px 80px rgba(0,0,0,0.8)',
+          animation: 'FadeIn 0.35s ease-out',
         }}
       >
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.8rem' }}>
-          <h2 style={{ margin: 0, color: '#fff', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            Search Capsule
-          </h2>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: 'rgba(255,255,255,0.5)', padding: '4px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Filter Sections */}
-        <div style={{ flex: 1 }}>
-
-          {/* Text Search */}
-          <FilterSection label="Search Text" defaultOpen>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '8px', padding: '10px 14px',
-            }}>
-              <svg width="15" height="15" fill="none" stroke="rgba(255,255,255,0.4)" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                autoFocus
-                type="text"
-                placeholder="Search by title…"
-                value={localFilters.text}
-                onChange={e => set('text', e.target.value)}
-                style={{
-                  background: 'none', border: 'none', outline: 'none',
-                  color: '#fff', fontSize: '0.875rem', width: '100%',
-                }}
-              />
-              {localFilters.text && (
-                <button onClick={() => set('text', '')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'rgba(255,255,255,0.4)', display: 'flex' }}>
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </FilterSection>
-
-          {/* Location */}
-          <FilterSection label="Location">
-            <input
-              type="text"
-              placeholder="Enter location name…"
-              value={localFilters.location}
-              onChange={e => set('location', e.target.value)}
+        {/* RIGHT PANEL — Form */}
+        <div
+          style={{
+            flex: 1,
+            padding: '60px 48px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            background: 'transparent',
+            overflowY: 'auto',
+          }}
+        >
+          {/* Header Close button */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              onClick={onClose}
               style={{
-                width: '100%', boxSizing: 'border-box',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px', padding: '10px 14px',
-                color: '#fff', fontSize: '0.875rem', outline: 'none',
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'rgba(255,255,255,0.5)', padding: '4px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'color 0.2s',
               }}
-            />
-          </FilterSection>
-
-          {/* Year */}
-          <FilterSection label="Year">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <input
-                type="number"
-                placeholder="e.g. 2024"
-                min="1900"
-                max={new Date().getFullYear()}
-                value={localFilters.year}
-                onChange={e => set('year', e.target.value)}
-                style={{
-                  flex: 1, boxSizing: 'border-box',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px', padding: '10px 14px',
-                  color: '#fff', fontSize: '0.875rem', outline: 'none',
-                }}
-              />
-              {localFilters.year && (
-                <button onClick={() => set('year', '')} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 10px', cursor: 'pointer', color: 'rgba(255,255,255,0.5)', display: 'flex' }}>
-                  <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </FilterSection>
-
-          {/* Month */}
-          <FilterSection label="Month">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
-              {MONTHS.map((m, i) => (
-                <button
-                  key={m}
-                  onClick={() => set('month', localFilters.month === i + 1 ? '' : i + 1)}
-                  style={{
-                    padding: '7px 4px', borderRadius: '6px', fontSize: '0.75rem',
-                    cursor: 'pointer', fontWeight: 500, transition: 'all 0.15s',
-                    background: localFilters.month === i + 1 ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.04)',
-                    border: localFilters.month === i + 1 ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.08)',
-                    color: localFilters.month === i + 1 ? '#fff' : 'rgba(255,255,255,0.5)',
-                  }}
-                >
-                  {m.slice(0, 3)}
-                </button>
-              ))}
-            </div>
-          </FilterSection>
-
-          {/* Date Range */}
-          <FilterSection label="Date">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '6px' }}>From</label>
-                <input
-                  type="date"
-                  value={localFilters.dateFrom}
-                  onChange={e => set('dateFrom', e.target.value)}
-                  style={{
-                    width: '100%', boxSizing: 'border-box',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '8px', padding: '10px 14px',
-                    color: '#fff', fontSize: '0.875rem', outline: 'none',
-                    colorScheme: 'dark',
-                  }}
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '6px' }}>To</label>
-                <input
-                  type="date"
-                  value={localFilters.dateTo}
-                  min={localFilters.dateFrom || undefined}
-                  onChange={e => set('dateTo', e.target.value)}
-                  style={{
-                    width: '100%', boxSizing: 'border-box',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '8px', padding: '10px 14px',
-                    color: '#fff', fontSize: '0.875rem', outline: 'none',
-                    colorScheme: 'dark',
-                  }}
-                />
-              </div>
-              {(localFilters.dateFrom || localFilters.dateTo) && (
-                <button
-                  onClick={() => { set('dateFrom', ''); set('dateTo', ''); }}
-                  style={{
-                    alignSelf: 'flex-start', background: 'none', border: 'none',
-                    cursor: 'pointer', color: 'rgba(255,255,255,0.4)',
-                    fontSize: '0.78rem', padding: 0,
-                  }}
-                >
-                  Clear dates
-                </button>
-              )}
-            </div>
-          </FilterSection>
-
-          {/* Image Search */}
-          <FilterSection label="Search by Image">
-            <div
-              onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={e => {
-                e.preventDefault();
-                setDragOver(false);
-                handleImageFile(e.dataTransfer.files[0]);
-              }}
-              onClick={() => imgInputRef.current?.click()}
-              style={{
-                border: dragOver ? '1.5px dashed rgba(255,255,255,0.55)' : '1.5px dashed rgba(255,255,255,0.15)',
-                borderRadius: '10px',
-                padding: localFilters.imagePreview ? '8px' : '28px 16px',
-                textAlign: 'center',
-                cursor: 'pointer',
-                background: dragOver ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
-                transition: 'all 0.2s',
-                position: 'relative',
-              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
             >
-              <input
-                ref={imgInputRef}
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={e => handleImageFile(e.target.files[0])}
-              />
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-              {localFilters.imagePreview ? (
-                <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <img
-                    src={localFilters.imagePreview}
-                    alt="Search reference"
-                    style={{
-                      width: '100%', maxHeight: '140px',
-                      objectFit: 'cover', borderRadius: '7px', display: 'block',
-                    }}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', flex: 1, justifyContent: 'center' }}>
+            {/* Search Text */}
+            <div className="premium-form-group">
+              <label className="premium-form-label" htmlFor="searchText">Keyword</label>
+              <div className="premium-input-wrap">
+                <input
+                  type="text"
+                  id="searchText"
+                  placeholder="Search by name or title…"
+                  value={localFilters.text}
+                  onChange={e => set('text', e.target.value)}
+                  className="premium-form-input"
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            {/* Location */}
+            <div className="premium-form-group">
+              <label className="premium-form-label" htmlFor="searchLocation">Location</label>
+              <div className="premium-input-wrap">
+                <input
+                  type="text"
+                  id="searchLocation"
+                  placeholder="Enter location name…"
+                  value={localFilters.location}
+                  onChange={e => set('location', e.target.value)}
+                  className="premium-form-input"
+                />
+              </div>
+            </div>
+
+            {/* Year */}
+            <div className="premium-form-group">
+              <label className="premium-form-label" htmlFor="searchYear">Year</label>
+              <div className="premium-input-wrap">
+                <input
+                  type="number"
+                  id="searchYear"
+                  placeholder="e.g. 2024"
+                  min="1900"
+                  max={new Date().getFullYear()}
+                  value={localFilters.year}
+                  onChange={e => set('year', e.target.value)}
+                  className="premium-form-input"
+                />
+              </div>
+            </div>
+
+            {/* Month */}
+            <div className="premium-form-group">
+              <label className="premium-form-label" htmlFor="searchMonth">Month</label>
+              <div className="premium-input-wrap">
+                <select
+                  id="searchMonth"
+                  value={localFilters.month}
+                  onChange={e => set('month', e.target.value)}
+                  className="premium-form-input"
+                  style={{
+                    background: '#000000',
+                    color: '#ffffff',
+                    border: 'none',
+                    outline: 'none',
+                    width: '100%',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="" style={{ background: '#000000', color: 'rgba(255,255,255,0.4)' }}>Select month…</option>
+                  {MONTHS.map((m, i) => (
+                    <option key={m} value={i + 1} style={{ background: '#000000', color: '#ffffff' }}>
+                      {m}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Date Range */}
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <div className="premium-form-group" style={{ flex: 1 }}>
+                <label className="premium-form-label" htmlFor="dateFrom">From Date</label>
+                <div className="premium-input-wrap">
+                  <input
+                    type="date"
+                    id="dateFrom"
+                    value={localFilters.dateFrom}
+                    onChange={e => set('dateFrom', e.target.value)}
+                    className="premium-form-input"
+                    style={{ colorScheme: 'dark' }}
                   />
-                  <button
-                    onClick={e => {
-                      e.stopPropagation();
-                      set('imageFile', null);
-                      set('imagePreview', '');
-                    }}
-                    style={{
-                      position: 'absolute', top: '6px', right: '6px',
-                      background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.2)',
-                      borderRadius: '50%', width: '24px', height: '24px',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer', color: '#fff',
-                    }}
-                  >
-                    <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                  <p style={{ margin: '8px 0 0', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>Click to change image</p>
                 </div>
-              ) : (
-                <>
-                  <svg width="32" height="32" fill="none" stroke="rgba(255,255,255,0.25)" viewBox="0 0 24 24" style={{ margin: '0 auto 10px' }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
-                    Drag &amp; drop an image here<br />
-                    <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.75rem' }}>or click to browse</span>
-                  </p>
-                </>
+              </div>
+              <div className="premium-form-group" style={{ flex: 1 }}>
+                <label className="premium-form-label" htmlFor="dateTo">To Date</label>
+                <div className="premium-input-wrap">
+                  <input
+                    type="date"
+                    id="dateTo"
+                    min={localFilters.dateFrom || undefined}
+                    onChange={e => set('dateTo', e.target.value)}
+                    value={localFilters.dateTo}
+                    className="premium-form-input"
+                    style={{ colorScheme: 'dark' }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '20px' }}>
+            <div>
+              {hasActiveFilters && (
+                <button
+                  onClick={() => {
+                    const reset = { text: '', location: '', year: '', month: '', dateFrom: '', dateTo: '', imageFile: null, imagePreview: '' };
+                    setLocalFilters(reset);
+                    onChange(reset);
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: 'rgba(255,255,255,0.4)',
+                    fontSize: '0.85rem',
+                    fontFamily: "'Inter', sans-serif",
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    padding: 0,
+                    transition: 'color 0.2s',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
+                >
+                  Clear Filters
+                </button>
               )}
             </div>
-          </FilterSection>
 
-        </div>
-
-        {/* Action buttons */}
-        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {hasActiveFilters && (
             <button
               onClick={() => {
-                const reset = { text: '', location: '', year: '', month: '', dateFrom: '', dateTo: '', imageFile: null, imagePreview: '' };
-                setLocalFilters(reset);
-                onChange(reset);
+                onApply(localFilters);
+                onClose();
               }}
               style={{
-                padding: '11px', borderRadius: '8px', cursor: 'pointer',
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                color: 'rgba(255,255,255,0.65)', fontSize: '0.85rem', fontWeight: 500,
+                background: 'none',
+                border: 'none',
+                color: '#ffffff',
+                fontSize: '2.5rem',
+                cursor: 'pointer',
+                transition: 'transform 0.3s ease',
+                padding: 0,
+                lineHeight: 1
               }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'translateX(8px)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'translateX(0)'}
             >
-              Clear All Filters
+              →
             </button>
-          )}
-          <button
-            onClick={() => {
-              onApply(localFilters);
-              onClose();
-            }}
-            style={{
-              padding: '12px', borderRadius: '8px', cursor: 'pointer',
-              background: 'rgba(255,255,255,0.92)',
-              border: 'none',
-              color: '#000', fontSize: '0.9rem', fontWeight: 600,
-              letterSpacing: '0.02em',
-            }}
-          >
-            Apply Filters
-          </button>
+          </div>
         </div>
       </div>
 
       <style>{`
         @keyframes FadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
+          from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+          to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
-        input[type=date]::-webkit-calendar-picker-indicator { filter: invert(0.7) brightness(1.2); cursor: pointer; }
-        .csearch-input::placeholder { color: rgba(255,255,255,0.35); }
+        
+        .custum-file-upload {
+          height: 160px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          cursor: pointer;
+          align-items: center;
+          justify-content: center;
+          border: 1px dashed rgba(255, 255, 255, 0.15);
+          background-color: #000000;
+          padding: 1.5rem;
+          border-radius: 14px;
+          transition: all 0.3s ease;
+          box-sizing: border-box;
+        }
+
+        .custum-file-upload .icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .custum-file-upload .icon svg {
+          height: 48px;
+          fill: rgba(255, 255, 255, 0.4);
+        }
+
+        .custum-file-upload .text {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .custum-file-upload .text span {
+          font-weight: 400;
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.5);
+          font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+           div[style*="max-width: 1000px"] {
+               flex-direction: column !important;
+               height: auto !important;
+               max-height: none !important;
+               width: 90% !important;
+           }
+           div[style*="flex: 0 0 45%"] {
+               flex: 1 1 auto !important;
+               border-right: none !important;
+               border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+               padding: 40px 24px !important;
+           }
+           div[style*="padding: 60px 48px"] {
+               padding: 40px 24px !important;
+           }
+        }
       `}</style>
     </>
   );
