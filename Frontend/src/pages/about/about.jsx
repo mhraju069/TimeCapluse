@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './about.css';
+import Footer from '../../components/Footer/Footer';
 
 import photographerHeader from '../../assets/aboutus.jpg';
 
@@ -292,23 +293,9 @@ const About = () => {
             })}
           </div>
         </section>
-
-        {/* ─── FOOTER ─── */}
-        <footer className="about-footer">
-          <span>&copy; 2026 Relic · all rights reserved</span>
-          <div className="socials">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer">
-              Instagram
-            </a>
-            <a href="https://x.com" target="_blank" rel="noreferrer">
-              X
-            </a>
-            <a href="https://github.com" target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-          </div>
-        </footer>
       </div>
+
+      <Footer />
     </div>
   );
 };
