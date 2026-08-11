@@ -10,6 +10,7 @@ import Dashboard from './pages/dashboard/dashboard';
 import CapsuleDetail from './pages/capsule/capsuleDetail';
 import About from './pages/about/about';
 import Contact from './pages/contact/Contact';
+import NotFound from './pages/NotFound/NotFound';
 function App() {
   return (
     <div style={{ minHeight: '100vh', background: '#000000' }}>
@@ -24,6 +25,7 @@ function App() {
         <Route path="/auth" element={<GoogleLogin />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
