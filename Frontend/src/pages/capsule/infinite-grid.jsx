@@ -4,7 +4,7 @@ import { CapsuleDetailModal, Card } from './cardDetails';
 import AdvancedSearchModal from './search';
 
 const CARD_WIDTH = 320;
-const CARD_HEIGHT = 220;
+const CARD_HEIGHT = 400;
 const NEIGHBOURS = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, 1], [-1, 1], [-1, -1], [1, -1]];
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -84,6 +84,7 @@ const mapServerCapsule = (capsule) => ({
   name: capsule.name || capsule.title,
   grid_x: capsule.grid_x,
   grid_y: capsule.grid_y,
+  dob: capsule.dob,
   isServer: true,
 });
 
@@ -134,13 +135,13 @@ export const InfiniteDraggableGrid = ({
     }
 
     const params = new URLSearchParams();
-    
+
     // Always include viewport bounds (large range) so backend doesn't reject
     params.append('min_x', '0');
     params.append('max_x', '100');
     params.append('min_y', '0');
     params.append('max_y', '100');
-    
+
     // Include filter params
     if (searchFilters.text) params.append('text', searchFilters.text);
     if (searchFilters.location) params.append('location', searchFilters.location);
@@ -155,7 +156,7 @@ export const InfiniteDraggableGrid = ({
       const res = await fetch(`${API_BASE_URL}/api/capsules/viewport/?${params.toString()}`);
       if (!res.ok) throw new Error('Search failed');
       const data = await res.json();
-      
+
       // Convert search results to server capsules format
       if (Array.isArray(data)) {
         const capsuleMap = {};
@@ -163,7 +164,7 @@ export const InfiniteDraggableGrid = ({
           const key = `${capsule.grid_x}:${capsule.grid_y}`;
           capsuleMap[key] = mapServerCapsule(capsule);
         });
-        
+
         if (data.length === 0) {
           // No results found - keep old capsules visible with blur overlay
           setNoResults(true);
@@ -176,9 +177,9 @@ export const InfiniteDraggableGrid = ({
         setIsSearchMode(true);
         console.log('Search results:', data.length);
       }
-      
+
       // Set search topic for display
-      const topic = searchFilters.text || searchFilters.location || 
+      const topic = searchFilters.text || searchFilters.location ||
         (searchFilters.year ? `Year: ${searchFilters.year}` : '') ||
         (searchFilters.month ? `Month: ${MONTHS[searchFilters.month - 1]}` : '') || 'Search Results';
       setSearchTopic(topic);

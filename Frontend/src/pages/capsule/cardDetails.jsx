@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 const CARD_WIDTH = 320;
-const CARD_HEIGHT = 220;
+const CARD_HEIGHT = 400;
 const StarRating = ({ rating, max = 5 }) => (
     <div style={{ display: 'flex', gap: '2px' }}>
         {Array.from({ length: max }, (_, i) => (
@@ -61,9 +61,10 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
         views: serverData.views ?? '—',
         rating: serverData.average_rating || 0,
         reviewCount: serverData.total_reviews || 0,
+        dob: serverData.dob || descriptor?.dob || null,
         skills: [],
         seeMoreHref: '#',
-    } : STATIC_CAPSULE;
+    } : { ...STATIC_CAPSULE, dob: STATIC_CAPSULE.dob || '1995-10-15' };
     // Cover background uses the real cover image (detail.cover), falling back to the grid thumbnail
     const cover = isServer
         ? (serverData.cover || descriptor?.full_src || descriptor?.thumb_src)
@@ -208,13 +209,26 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
 
                         {/* Name, username, bio */}
                         <div style={{ padding: '0px 20px 0' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <span style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem' }}>{data.name}</span>
-                                {data.verified && (
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#3b82f6">
-                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="none" />
-                                        <path d="M9 12l2 2 4-4" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem' }}>{data.name}</span>
+                                    {data.verified && (
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#3b82f6">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="none" />
+                                            <path d="M9 12l2 2 4-4" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    )}
+                                </div>
+                                {data.dob && (
+                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }} title="Date of Birth">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#fff' }}>
+                                            <rect x="3" y="12" width="18" height="9" rx="2" />
+                                            <path d="M5 12V9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3" />
+                                            <path d="M12 7V3" />
+                                            <path d="M12 3c-.5 0-1 .5-1 1s.5 1 1 1 1-.5 1-1-.5-1-1-1z" />
+                                        </svg>
+                                        <span>{new Date(data.dob).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })}</span>
+                                    </div>
                                 )}
                             </div>
                             <p style={{ margin: 0, color: 'rgba(255,255,255,0.75)', fontSize: '0.875rem', lineHeight: 1.55 }}>{data.bio}</p>
