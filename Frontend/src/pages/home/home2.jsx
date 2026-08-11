@@ -20,7 +20,7 @@ const initialItems = Array.from({ length: 80 }, (_, i) => {
 const GridItem = ({
     item
 }) => {
-    return <div className="mb-0 break-inside-avoid relative cursor-pointer">
+    return <div className="mb-0 break-inside-avoid relative">
         <img src={item.imageUrl} alt={item.title} className="w-full h-auto shadow-lg" onError={e => {
             const target = e.target;
             target.onerror = null;
@@ -38,8 +38,8 @@ const MasonryGrid = ({
     </div>;
 };
 export default function Masonary() {
-    return <div className="font-sans transition-colors" style={{ minHeight: '100vh', width: '100%', background: '#000000', display: 'flex', flexDirection: 'column' }}>
-        <div className="w-full " style={{ flex: 1, maxWidth: '100%' }}>
+    return <div className="font-sans transition-colors" style={{ maxHeight: '100vh', width: '100%', background: '#000000', display: 'flex', flexDirection: 'column' }}>
+        <div className="w-full " style={{ flex: 1, maxWidth: '100%', overflow: 'hidden' }}>
             <main>
                 <MasonryGrid items={initialItems} />
             </main>
