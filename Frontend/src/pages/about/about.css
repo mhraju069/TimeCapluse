@@ -535,27 +535,32 @@
   text-transform: uppercase;
 }
 
-/* Hover States */
-.about-team-card:hover {
+/* Hover & Active States */
+.about-team-card:hover,
+.about-team-card.active {
   flex: 3.5;
   max-width: 100%;
   border-color: var(--accent);
 }
 
-.about-team-card:hover .avatar img {
+.about-team-card:hover .avatar img,
+.about-team-card.active .avatar img {
   transform: scale(1.05);
   filter: grayscale(0%) brightness(1) contrast(1);
 }
 
-.about-team-card:hover .card-overlay {
+.about-team-card:hover .card-overlay,
+.about-team-card.active .card-overlay {
   opacity: 1;
 }
 
-.about-team-card:hover .collapsed-info {
+.about-team-card:hover .collapsed-info,
+.about-team-card.active .collapsed-info {
   opacity: 0;
 }
 
-.about-team-card:hover .hovered-info {
+.about-team-card:hover .hovered-info,
+.about-team-card.active .hovered-info {
   opacity: 1;
   transform: translateY(0);
 }
