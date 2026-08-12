@@ -13,7 +13,7 @@ class CapsuleGridSerializer(serializers.ModelSerializer):
 
     def get_thumbnail(self, obj):
         request = self.context.get('request')
-        image = obj.cover_thumbnail if obj.cover_thumbnail else obj.cover
+        image = obj.profile
         if image and request:
             return request.build_absolute_uri(image.url)
         return None
@@ -141,7 +141,7 @@ class MyCapsuleSerializer(serializers.ModelSerializer):
 
     def get_thumbnail(self, obj):
         request = self.context.get('request')
-        image = obj.cover_thumbnail if obj.cover_thumbnail else obj.cover
+        image = obj.profile
         if image and request:
             return request.build_absolute_uri(image.url)
         return None
@@ -247,9 +247,7 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
             cover=compressed_cover
         )
         
-        # Generate cover thumbnail
-        thumbnail = compress_image_to_webp_thumbnail(profile_image, quality=90, max_width=400)
-        capsule.cover_thumbnail = thumbnail
+        # Cover thumbnail generation removed (using profile directly)
         
         capsule.save()
         return capsule
