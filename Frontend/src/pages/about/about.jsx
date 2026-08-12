@@ -8,6 +8,38 @@ import photographerHeader from '../../assets/aboutus.jpg';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
+const ReviewText = ({ text }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const words = text ? text.split(/\s+/) : [];
+
+  return (
+    <p
+      className={`review-text ${isHovered ? 'hovered' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {!isHovered ? (
+        text
+      ) : (
+        words.map((word, idx) => (
+          <span
+            key={idx}
+            style={{
+              opacity: 0,
+              animation: 'fadeInWord 0.25s ease forwards',
+              animationDelay: `${idx * 0.02}s`,
+              display: 'inline-block',
+              marginRight: '6px'
+            }}
+          >
+            {word}
+          </span>
+        ))
+      )}
+    </p>
+  );
+};
+
 const About = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
@@ -357,7 +389,7 @@ const About = () => {
             <div className="about-guide-card">
               <div className="step-number">01</div>
               <div className="icon-wrap">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
               </div>
@@ -520,7 +552,7 @@ const About = () => {
                           {r.rating}
                           <svg width="30px" height="30px" fill='currentColor' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m6.516 14.323-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z" /></svg>
                         </span>
-                        <p className="review-text">{r.review}</p>
+                        <ReviewText text={r.review} />
                       </div>
                     )}
                   </div>
@@ -566,7 +598,7 @@ const About = () => {
           <h2>
             Meet the <span>curators</span>
           </h2>
-          <div 
+          <div
             className="about-team-grid"
             onMouseLeave={() => setActiveCuratorIndex(0)}
           >
@@ -577,8 +609,8 @@ const About = () => {
               const numStr = String(index + 1).padStart(2, '0');
               const isActive = activeCuratorIndex === index;
               return (
-                <div 
-                  key={member.id || index} 
+                <div
+                  key={member.id || index}
                   className={`about-team-card ${isActive ? 'active' : ''}`}
                   onMouseEnter={() => setActiveCuratorIndex(index)}
                 >

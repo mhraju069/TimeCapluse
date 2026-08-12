@@ -16,7 +16,10 @@ const menuItems = [
 const socialItems = [
     { label: 'Twitter', link: 'https://twitter.com' },
     { label: 'GitHub', link: 'https://github.com' },
-    { label: 'LinkedIn', link: 'https://linkedin.com' }
+    { label: 'LinkedIn', link: 'https://linkedin.com' },
+    { label: 'Facebook', link: 'https://facebook.com' },
+    { label: 'Instagram', link: 'https://instagram.com' },
+    { label: 'TikTok', link: 'https://tiktok.com' }
 ];
 
 const Navbar = () => {

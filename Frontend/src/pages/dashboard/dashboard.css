@@ -157,14 +157,10 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
 }
 
 .header-btn:hover {
     border-color: var(--border-color);
-    background: var(--background-color);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(255, 255, 255, 0.3);
     color: var(--primary-color);
 }
 

@@ -195,7 +195,6 @@ const ReviewModal = ({ isOpen, onClose }) => {
               <div className="touch-form-group">
                 <div className="touch-label-row">
                   <label htmlFor="name">NAME</label>
-                  <span className="required-asterisk">*</span>
                 </div>
                 <input
                   type="text"
@@ -212,7 +211,6 @@ const ReviewModal = ({ isOpen, onClose }) => {
               <div className="touch-form-group">
                 <div className="touch-label-row">
                   <label htmlFor="email">EMAIL</label>
-                  <span className="required-asterisk">*</span>
                 </div>
                 <input
                   type="email"
@@ -229,7 +227,6 @@ const ReviewModal = ({ isOpen, onClose }) => {
                 <div className="touch-form-group">
                   <div className="touch-label-row">
                     <label>RATING</label>
-                    <span className="required-asterisk">*</span>
                   </div>
                   <div className="rating-select-line">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -249,7 +246,6 @@ const ReviewModal = ({ isOpen, onClose }) => {
                 <div className="touch-form-group">
                   <div className="touch-label-row">
                     <label htmlFor="image">IMAGE</label>
-                    <span className="required-asterisk">*</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.2rem' }}>
                     <input
@@ -280,7 +276,6 @@ const ReviewModal = ({ isOpen, onClose }) => {
               <div className="touch-form-group">
                 <div className="touch-label-row">
                   <label htmlFor="review">REVIEW</label>
-                  <span className="required-asterisk">*</span>
                 </div>
                 <textarea
                   id="review"
@@ -316,16 +311,8 @@ const ReviewModal = ({ isOpen, onClose }) => {
             {/* Footer Address Info */}
             <div className="touch-footer-info">
               <div className="info-block">
-                <h4>LEDUC</h4>
-                <p>100, 5306-50 ST</p>
-                <p>LEDUC, AB T9E 6Z6</p>
-                <p>780.986.8946</p>
-              </div>
-              <div className="info-block">
-                <h4>SPRUCE GROVE</h4>
-                <p>203 CHURCH ROAD | P.O. BOX 3038</p>
-                <p>SPRUCE GROVE, AB T7X 3A4</p>
-                <p>780.962.3311</p>
+                <h4>YOUR VOICE MATTERS</h4>
+                <p>Reviews help us create better experiences for our community.</p>
               </div>
             </div>
           </div>

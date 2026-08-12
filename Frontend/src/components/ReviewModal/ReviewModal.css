@@ -25,8 +25,8 @@
 
 /* ── Modal Container ── */
 .review-modal-container {
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* background: #0a0a0a; */
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
   border-radius: 4px;
   padding: 4.5rem;
   max-width: 960px;
@@ -34,7 +34,6 @@
   max-height: 92vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.95);
   animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

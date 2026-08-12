@@ -306,7 +306,7 @@ const Mint = () => {
             <div
                 style={{
                     width: "100%",
-                    maxWidth: "100vw",
+                    maxWidth: "90vw",
                     height: "90vh",
                     maxHeight: "900px",
                     backdropFilter: "blur(20px)",
@@ -314,7 +314,6 @@ const Mint = () => {
                     borderRadius: "40px",
                     display: "flex",
                     overflow: "hidden",
-                    border: "1px solid rgba(255,255,255,0.1)",
                     transition: "height 0.3s ease",
                 }}
             >
@@ -322,12 +321,13 @@ const Mint = () => {
                 <div
                     className="mint-left"
                     style={{
-                        flex: "0 0 45%",
+                        flex: "0 0 40%",
                         padding: "60px 48px",
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "space-between",
-                        borderRight: "1px solid rgba(255,255,255,0.06)",
+                        justifyContent: "space-evenly",
+                        alignItems: "center",
+                        borderRight: "1px solid rgba(245, 0, 0, 0.06)",
                         background: "#000000",
                     }}
                 >
@@ -385,7 +385,7 @@ const Mint = () => {
                     className="mint-right"
                     style={{
                         flex: 1,
-                        padding: "60px 48px",
+                        padding: "60px 250px 60px 0",
                         overflowY: "auto",
                         display: "flex",
                         flexDirection: "column",

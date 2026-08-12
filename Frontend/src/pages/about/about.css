@@ -679,7 +679,6 @@
   position: absolute;
   bottom: 0;
   left: 0;
-
   display: flex;
   align-items: flex-end;
   margin-left: 0;
@@ -693,6 +692,14 @@
   display: flex;
   align-items: flex-end;
   flex-shrink: 0;
+}
+
+.review-card-wrapper.active {
+  z-index: 100;
+}
+
+.review-card-wrapper.inactive {
+  z-index: 1;
 }
 
 .review-card-media {
@@ -791,6 +798,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  transition: all 0.3s ease;
 }
 
 .active-details.slide-in-right {
@@ -839,6 +847,35 @@
   opacity: 0;
   animation: slideInText 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: 0.25s;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.active-details:has(.review-text:hover) {
+  width: 900px;
+  top: 0;
+}
+
+.review-text.hovered {
+  display: block !important;
+  overflow: visible !important;
+  -webkit-line-clamp: unset !important;
+}
+
+@keyframes fadeInWord {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideFromRight {
