@@ -180,7 +180,6 @@ const Mint = () => {
                         borderRadius: "40px",
                         display: "flex",
                         overflow: "hidden",
-                        border: "1px solid rgba(255,255,255,0.1)",
                     }}
                 >
                     {/* LEFT PANEL */}

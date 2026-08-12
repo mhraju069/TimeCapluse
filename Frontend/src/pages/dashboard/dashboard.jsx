@@ -551,7 +551,7 @@ const Dashboard = () => {
                                                     type="submit"
                                                     className="btn-save"
                                                     disabled={savingCapsule}
-                                                    style={{ padding: '8px 16px', background: 'var(--primary-color)', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: '600', cursor: 'pointer' }}
+                                                    style={{ padding: '8px 16px', background: 'var(--primary-color)', border: 'none', borderRadius: '8px', color: '#000000ff', fontWeight: '600', cursor: 'pointer' }}
                                                 >
                                                     {savingCapsule ? 'Saving...' : 'Save Changes'}
                                                 </button>
