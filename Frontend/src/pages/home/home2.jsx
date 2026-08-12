@@ -29,7 +29,7 @@ const GridItem = ({ item }) => {
 
 const MasonryGrid = ({ items }) => {
     return <div className="columns-2 gap-0 sm:columns-3 md:columns-4 lg:columns-6 xl:columns-8 2xl:columns-10" style={{
-        columnWidth: '320px'
+        columnWidth: '20px'
     }}>
         {items.map((item, idx) => <GridItem key={idx} item={item} />)}
     </div>;
@@ -106,8 +106,10 @@ export default function Masonary() {
                         RELIC
                     </h1>
 
-                    <p className="text-white/60 italic text-base md:text-3xl font-light tracking-wide max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-family)" }}>
-                        Where moments find a place to live.
+                    <p className="text-white/60 italic text-base md:text-xl font-light tracking-wide max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-family)" }}>
+                        Relic is a digital home for the moments that matter. <br />
+                        Collect your memories, tell your stories, and <br />keep a piece of your life close — forever.
+
                     </p>
                     <div className="flex gap-4 mt-8">
                         <button className="px-8 py-3.5 rounded-full border border-white/20 bg-black/40 text-white font-medium hover:bg-white/10 transition-all text-sm md:text-base cursor-pointer" onClick={() => navigate('/capsule')}>
