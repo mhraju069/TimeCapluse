@@ -3,12 +3,12 @@
  * 
  * @param {File} file - The original image file.
  * @param {Object} options - Compression options.
- * @param {number} [options.quality=0.8] - WebP quality standard between 0 and 1.
+ * @param {number} [options.quality=0.95] - WebP quality standard between 0 and 1.
  * @param {number} [options.maxWidth=1920] - Maximum width constraint for the output image.
  * @param {number} [options.maxHeight=1920] - Maximum height constraint for the output image.
  * @returns {Promise<File>} - Resolves with converted WebP file.
  */
-export const convertToWebP = (file, { quality = 0.8, maxWidth = 1920, maxHeight = 1920 } = {}) => {
+export const convertToWebP = (file, { quality = 0.95, maxWidth = 1920, maxHeight = 1920 } = {}) => {
   return new Promise((resolve, reject) => {
     // If file is not an image or is already webp (optional check, but user asked to convert to webp)
     if (!file || !file.type.startsWith('image/')) {

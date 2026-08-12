@@ -4,7 +4,7 @@ from PIL import Image
 from django.core.files.base import ContentFile
 
 
-def compress_image_to_webp(image_file, quality=85, max_width=1920):
+def compress_image_to_webp(image_file, quality=95, max_width=1920):
 
     # Open the image
     img = Image.open(image_file)
@@ -39,6 +39,6 @@ def compress_image_to_webp(image_file, quality=85, max_width=1920):
     return ContentFile(output.read(), name=webp_name)
 
 
-def compress_image_to_webp_thumbnail(image_file, quality=80, max_width=400):
+def compress_image_to_webp_thumbnail(image_file, quality=90, max_width=400):
 
     return compress_image_to_webp(image_file, quality=quality, max_width=max_width)

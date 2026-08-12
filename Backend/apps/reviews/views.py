@@ -38,7 +38,7 @@ class ReviewsListCreateView(APIView):
                 
                 # Save to BytesIO in WebP format
                 output = io.BytesIO()
-                img.save(output, format='WebP', quality=85)
+                img.save(output, format='WebP', quality=95)
                 output.seek(0)
                 
                 # Create a new InMemoryUploadedFile

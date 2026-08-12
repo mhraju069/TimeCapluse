@@ -236,8 +236,8 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
         validated_data['grid_y'] = grid_y
         
         # Compress images to WebP
-        compressed_profile = compress_image_to_webp(profile_image, quality=85, max_width=800)
-        compressed_cover = compress_image_to_webp(cover_image, quality=85, max_width=1920)
+        compressed_profile = compress_image_to_webp(profile_image, quality=95, max_width=800)
+        compressed_cover = compress_image_to_webp(cover_image, quality=95, max_width=1920)
         
         # Create capsule instance
         capsule = Capsule(
@@ -248,7 +248,7 @@ class CapsuleCreateSerializer(serializers.ModelSerializer):
         )
         
         # Generate cover thumbnail
-        thumbnail = compress_image_to_webp_thumbnail(profile_image, quality=80, max_width=400)
+        thumbnail = compress_image_to_webp_thumbnail(profile_image, quality=90, max_width=400)
         capsule.cover_thumbnail = thumbnail
         
         capsule.save()
