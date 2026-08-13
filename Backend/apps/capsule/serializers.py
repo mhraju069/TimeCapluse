@@ -5,17 +5,16 @@ from .models import Capsule, Review, Like
 
 
 class CapsuleGridSerializer(serializers.ModelSerializer):
-    thumbnail = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
 
     class Meta:
         model = Capsule
-        fields = ['id', 'grid_x', 'grid_y', 'name', 'thumbnail']
+        fields = ['id', 'grid_x', 'grid_y', 'name', 'profile']
 
-    def get_thumbnail(self, obj):
+    def get_profile(self, obj):
         request = self.context.get('request')
-        image = obj.profile
-        if image and request:
-            return request.build_absolute_uri(image.url)
+        if obj.profile and request:
+            return request.build_absolute_uri(obj.profile.url)
         return None
 
 
@@ -110,9 +109,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def get_capsule_cover(self, obj):
         request = self.context.get('request')
-        if obj.capsule.cover_thumbnail and request:
-            return request.build_absolute_uri(obj.capsule.cover_thumbnail.url)
-        elif obj.capsule.cover and request:
+        if obj.capsule.cover and request:
             return request.build_absolute_uri(obj.capsule.cover.url)
         return None
 
@@ -125,7 +122,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class MyCapsuleSerializer(serializers.ModelSerializer):
     """Serializer for user's own capsules in dashboard"""
-    thumbnail = serializers.SerializerMethodField()
     profile = serializers.SerializerMethodField()
     review_count = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
@@ -134,17 +130,10 @@ class MyCapsuleSerializer(serializers.ModelSerializer):
         model = Capsule
         fields = [
             'id', 'name', 'bio', 'location', 'dob','cover',
-            'thumbnail', 'profile', 'grid_x', 'grid_y',
+            'profile', 'grid_x', 'grid_y',
             'views', 'likes', 'is_public', 'created_at',
             'review_count', 'average_rating',
         ]
-
-    def get_thumbnail(self, obj):
-        request = self.context.get('request')
-        image = obj.profile
-        if image and request:
-            return request.build_absolute_uri(image.url)
-        return None
 
     def get_profile(self, obj):
         request = self.context.get('request')

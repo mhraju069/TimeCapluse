@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './about.css';
 import Footer from '../../components/Footer/Footer';
 import ReviewModal from '../../components/ReviewModal/ReviewModal';
@@ -8,16 +8,11 @@ import photographerHeader from '../../assets/aboutus.jpg';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-const ReviewText = ({ text }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const ReviewText = ({ text, isHovered }) => {
   const words = text ? text.split(/\s+/) : [];
 
   return (
-    <p
-      className={`review-text ${isHovered ? 'hovered' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <p className={`review-text ${isHovered ? 'hovered' : ''}`}>
       {!isHovered ? (
         text
       ) : (
@@ -61,6 +56,7 @@ const About = () => {
 
   // Expanded state for curators/team grid (0 is the first, leftmost card)
   const [activeCuratorIndex, setActiveCuratorIndex] = useState(0);
+  const [isDetailsHovered, setIsDetailsHovered] = useState(false);
 
   const fallbackFAQs = [
     {
@@ -298,7 +294,7 @@ const About = () => {
   // Initialize virtualIndex to start at the middle copy of reviews
   useEffect(() => {
     if (reviews.length > 0 && virtualIndex === 0) {
-      setVirtualIndex(reviews.length);
+      setVirtualIndex(reviews.length * 5);
     }
   }, [reviews, virtualIndex]);
 
@@ -307,20 +303,30 @@ const About = () => {
     if (reviews.length === 0) return;
     const N = reviews.length;
 
-    if (virtualIndex < N) {
+    if (virtualIndex < N * 3) {
       const timer = setTimeout(() => {
         setTransitionEnabled(false);
-        setVirtualIndex(virtualIndex + N);
-      }, 600);
+        setVirtualIndex(virtualIndex + N * 4);
+        setTimeout(() => {
+          setTransitionEnabled(true);
+        }, 50);
+      }, 655);
       return () => clearTimeout(timer);
-    } else if (virtualIndex >= 2 * N) {
+    } else if (virtualIndex >= N * 7) {
       const timer = setTimeout(() => {
         setTransitionEnabled(false);
-        setVirtualIndex(virtualIndex - N);
-      }, 600);
+        setVirtualIndex(virtualIndex - N * 4);
+        setTimeout(() => {
+          setTransitionEnabled(true);
+        }, 50);
+      }, 655);
       return () => clearTimeout(timer);
     }
   }, [virtualIndex, reviews.length]);
+
+  useEffect(() => {
+    setIsDetailsHovered(false);
+  }, [virtualIndex]);
 
   return (
     <div className="about-page-wrapper">
@@ -345,15 +351,15 @@ const About = () => {
             </p>
             <div className="about-stat-grid">
               <div className="about-stat">
-                <h3>{stats.events_count !== null ? stats.events_count : '...'}</h3>
+                <h3>{stats.events_count !== null && stats.events_count !== undefined ? stats.events_count : '...'}</h3>
                 <p>Events</p>
               </div>
               <div className="about-stat">
-                <h3>{stats.capsules_count !== null ? stats.capsules_count : '...'}</h3>
+                <h3>{stats.capsules_count !== null && stats.capsules_count !== undefined ? stats.capsules_count : '...'}</h3>
                 <p>Capsules</p>
               </div>
               <div className="about-stat">
-                <h3>{stats.curators_count !== null ? stats.curators_count : '...'}</h3>
+                <h3>{stats.curators_count !== null && stats.curators_count !== undefined ? stats.curators_count : '...'}</h3>
                 <p>Curators</p>
               </div>
             </div>
@@ -436,7 +442,9 @@ const About = () => {
             <h2>
               From the <span>archive</span>
             </h2>
-            <p>⌘ Explore preserved memories &amp; public capsules</p>
+            <Link to="/capsule" className="explore-link" style={{ transition: "all 0.3s ease" }}>
+              ⌘ Explore all public Capsules →
+            </Link>
           </div>
 
           <div className="about-gallery-grid">
@@ -474,13 +482,13 @@ const About = () => {
 
             {/* Reviews list in a row */}
             <div
-              className="reviews-list-container"
+              className={`reviews-list-container ${!transitionEnabled ? 'no-transition' : ''}`}
               style={{
                 transform: `translateX(${(1 - virtualIndex) * (150 + 32)}px)`,
                 transition: transitionEnabled ? 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1)' : 'none'
               }}
             >
-              {[...reviews, ...reviews, ...reviews].map((r, index) => {
+              {Array(10).fill(reviews).flat().map((r, index) => {
                 if (reviews.length === 0) return null;
                 const isActive = index === virtualIndex;
                 const originalIndex = index % reviews.length;
@@ -497,7 +505,7 @@ const About = () => {
                         setReviewAnimating(true);
                         setTransitionEnabled(true);
                         setVirtualIndex(index);
-                        setTimeout(() => setReviewAnimating(false), 600);
+                        setTimeout(() => setReviewAnimating(false), 650);
                       }
                     }}
                   >
@@ -516,7 +524,7 @@ const About = () => {
                                 setReviewAnimating(true);
                                 setTransitionEnabled(true);
                                 setVirtualIndex((prev) => prev - 1);
-                                setTimeout(() => setReviewAnimating(false), 600);
+                                setTimeout(() => setReviewAnimating(false), 650);
                               }
                             }}
                           >
@@ -533,7 +541,7 @@ const About = () => {
                                 setReviewAnimating(true);
                                 setTransitionEnabled(true);
                                 setVirtualIndex((prev) => prev + 1);
-                                setTimeout(() => setReviewAnimating(false), 600);
+                                setTimeout(() => setReviewAnimating(false), 650);
                               }
                             }}
                           >
@@ -546,13 +554,17 @@ const About = () => {
                     </div>
 
                     {isActive && (
-                      <div className={`active-details slide-in-${reviewDirection}`}>
+                      <div
+                        className={`active-details slide-in-${reviewDirection}`}
+                        onMouseEnter={() => setIsDetailsHovered(true)}
+                        onMouseLeave={() => setIsDetailsHovered(false)}
+                      >
                         <h3 className="review-username">{r.user_name || r.user_email || 'Anonymous'}</h3>
                         <span className="review-num">
                           {r.rating}
                           <svg width="30px" height="30px" fill='currentColor' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m6.516 14.323-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z" /></svg>
                         </span>
-                        <ReviewText text={r.review} />
+                        <ReviewText text={r.review} isHovered={isDetailsHovered} />
                       </div>
                     )}
                   </div>

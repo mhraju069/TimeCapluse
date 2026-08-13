@@ -183,19 +183,10 @@ const Contact = () => {
           {/* Footer Locations */}
           <div className="contact-locations-footer">
             <div className="location-card">
-              <h4 className="location-name">Leduc</h4>
+              <h4 className="location-name">STAY CONNECTED</h4>
               <p className="location-address">
-                100, 5306-50 St<br />
-                Leduc, AB T9E 6Z6<br />
-                780.986.8946
-              </p>
-            </div>
-            <div className="location-card">
-              <h4 className="location-name">Spruce Grove</h4>
-              <p className="location-address">
-                203 Church Road | P.O. Box 3038<br />
-                Spruce Grove, AB T7X 3A4<br />
-                780.962.3311
+                Have a question, idea, or just want to say hello?<br />
+                We'd love to hear from you.
               </p>
             </div>
           </div>

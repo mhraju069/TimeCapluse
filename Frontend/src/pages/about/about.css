@@ -294,6 +294,7 @@
 .about-section-label {
   display: flex;
   justify-content: space-between;
+  text-transform: uppercase;
   align-items: flex-end;
   margin-bottom: 2.5rem;
   flex-wrap: wrap;
@@ -315,6 +316,18 @@
   color: var(--text-muted);
   font-size: 0.95rem;
   letter-spacing: 0.4px;
+  text-transform: capitalize;
+}
+
+.about-section-label .explore-link {
+  text-transform: capitalize;
+  color: var(--text-muted);
+}
+
+.explore-link:hover {
+  color: var(--accent);
+  transform: translateX(5px);
+  transition: all 0.3s ease;
 }
 
 .about-gallery-grid {
@@ -386,6 +399,7 @@
 /* ── Team Section ── */
 .about-team-section {
   margin-top: 6rem;
+  text-transform: uppercase;
   padding-top: 4rem;
   border-top: 1px solid var(--border);
 }
@@ -713,6 +727,21 @@
     box-shadow 0.65s ease;
 }
 
+.reviews-list-container.no-transition,
+.reviews-list-container.no-transition .review-card-media,
+.reviews-list-container.no-transition .review-card-media img {
+  transition: none !important;
+  animation: none !important;
+}
+
+.reviews-list-container.no-transition .active-details,
+.reviews-list-container.no-transition .active-details * {
+  transition: none !important;
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 /* Inactive State */
 .review-card-wrapper.inactive .review-card-media {
   width: 150px;
@@ -794,6 +823,7 @@
   position: absolute;
   left: calc(100% + 3.5rem);
   top: 3rem;
+  min-height: 350px;
   width: 580px;
   display: flex;
   flex-direction: column;
@@ -855,7 +885,7 @@
   cursor: pointer;
 }
 
-.active-details:has(.review-text:hover) {
+.active-details:hover {
   width: 900px;
   top: 0;
 }

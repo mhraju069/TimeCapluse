@@ -17,9 +17,6 @@ class Capsule(models.Model):
 
     profile = models.ImageField(upload_to='capsule_profiles')
     cover = models.ImageField(upload_to='capsule_covers')
-    cover_thumbnail = models.ImageField(
-        upload_to='capsule_covers/thumbnails', blank=True, null=True
-    )
 
     grid_x = models.IntegerField(default=0)
     grid_y = models.IntegerField(default=0)

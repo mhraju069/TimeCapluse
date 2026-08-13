@@ -485,7 +485,7 @@ class PublicStatsView(APIView):
         
         # Curator Model stats and list
         db_curators = Curator.objects.all().order_by('-created_at')
-        curators_count = db_curators.count() if db_curators.exists() else User.objects.filter(is_active=True).count()
+        curators_count = db_curators.count()
 
         curator_list = []
         for c in db_curators:

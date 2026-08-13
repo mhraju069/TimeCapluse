@@ -78,8 +78,8 @@ async function fetchViewport(minX, maxX, minY, maxY) {
 // Map backend capsule to frontend descriptor format
 const mapServerCapsule = (capsule) => ({
   id: capsule.id,
-  thumb_src: capsule.thumbnail,
-  full_src: capsule.thumbnail,
+  thumb_src: capsule.profile,
+  full_src: capsule.profile,
   title: capsule.name || capsule.title,
   name: capsule.name || capsule.title,
   grid_x: capsule.grid_x,
