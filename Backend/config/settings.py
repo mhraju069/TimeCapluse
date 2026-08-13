@@ -1,3 +1,4 @@
+import os
 from .env import *
 from datetime import timedelta
 
@@ -141,6 +142,12 @@ REST_FRAMEWORK = {
         ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
     'PAGE_SIZE': None,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'config.throttling.SafeIPRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'ip_limit': os.getenv('RATE_LIMIT_PER_MIN', '50/min'),
+    },
     }
 
 
