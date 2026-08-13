@@ -46,13 +46,37 @@ export default function Masonary() {
         link.rel = 'stylesheet';
         document.head.appendChild(link);
 
-        const timer = setTimeout(() => {
+        // Preload the first 24 images (the visible viewport area)
+        const itemsToPreload = initialItems.slice(0, 24);
+        let loadedCount = 0;
+
+        if (itemsToPreload.length === 0) {
             setIsLoading(false);
-        }, 1500);
+        } else {
+            // Set a fallback max timeout (e.g. 5 seconds) so it doesn't spin forever on slow networks
+            const fallbackTimer = setTimeout(() => {
+                setIsLoading(false);
+            }, 5000);
+
+            itemsToPreload.forEach(item => {
+                const img = new Image();
+                img.src = item.imageUrl;
+                
+                const handleImageLoad = () => {
+                    loadedCount++;
+                    if (loadedCount >= itemsToPreload.length) {
+                        clearTimeout(fallbackTimer);
+                        setIsLoading(false);
+                    }
+                };
+
+                img.onload = handleImageLoad;
+                img.onerror = handleImageLoad;
+            });
+        }
 
         return () => {
             document.head.removeChild(link);
-            clearTimeout(timer);
         };
     }, []);
 
