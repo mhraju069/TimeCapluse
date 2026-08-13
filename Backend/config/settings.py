@@ -78,6 +78,13 @@ else:
         }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache_table',
+    }
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -146,7 +153,7 @@ REST_FRAMEWORK = {
         'config.throttling.SafeIPRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'ip_limit': os.getenv('RATE_LIMIT_PER_MIN', '50/min'),
+        'ip_limit': os.getenv('RATE_LIMIT', '60/min'),
     },
     }
 
