@@ -52,7 +52,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    padding-right: 3rem;
+    /* padding-right: 3rem; */
     background: transparent;
     border: none;
     cursor: pointer;

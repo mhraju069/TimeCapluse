@@ -366,6 +366,13 @@ export const StaggeredMenu = ({
         >
             <div
                 className={`sm-backdrop ${open ? 'active' : ''}`}
+                style={{
+                    backgroundColor: open ? 'rgba(0, 0, 0, 0.45)' : 'rgba(0, 0, 0, 0)',
+                    backdropFilter: open ? 'blur(4px)' : 'blur(0px)',
+                    WebkitBackdropFilter: open ? 'blur(4px)' : 'blur(0px)',
+                    pointerEvents: open ? 'auto' : 'none',
+                    transition: 'background-color 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease',
+                }}
                 onClick={closeMenu}
                 aria-hidden="true"
             />
@@ -416,7 +423,17 @@ export const StaggeredMenu = ({
                 </button>
             </header>
 
-            <aside id="staggered-menu-panel" ref={panelRef} className="staggered-menu-panel" aria-hidden={!open}>
+            <aside
+                id="staggered-menu-panel"
+                ref={panelRef}
+                className="staggered-menu-panel"
+                aria-hidden={!open}
+                style={{
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.01)',
+                }}
+            >
                 <div className="sm-panel-inner">
                     <ul className="sm-panel-list" role="list" data-numbering={displayItemNumbering || undefined}>
                         {items && items.length ? (
