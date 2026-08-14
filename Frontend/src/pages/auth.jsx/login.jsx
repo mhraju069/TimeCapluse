@@ -114,44 +114,24 @@ const GoogleLogin = () => {
                 justifyContent: "center",
                 padding: "20px",
                 fontFamily: "'Inter', sans-serif",
+                border: "none",
+                overflow: "hidden"
             }}
         >
-            <div
-                style={{
-                    width: "100%",
-                    maxWidth: "1000px",
-                    height: "80vh",
-                    maxHeight: "600px",
-                    backdropFilter: "blur(20px)",
-                    WebkitBackdropFilter: "blur(20px)",
-                    borderRadius: "40px",
-                    display: "flex",
-                    overflow: "hidden",
-                    transition: "height 0.3s ease",
-                }}
-            >
+            <div className="auth-container">
                 {/* LEFT PANEL — Visuals & Typography */}
-                <div
-                    style={{
-                        flex: "0 0 45%",
-                        padding: "60px 48px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-evenly",
-                        borderRight: "1px solid rgba(255,255,255,0.06)",
-                        background: "#000000",
-                    }}
-                >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                <div className="auth-left">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', }}>
                         {/* Giant Serif Typography */}
                         <h1 style={{
-                            fontFamily: "'Playfair Display', 'Georgia', serif",
+                            fontFamily: "var(--font-main)",
                             fontSize: "4rem",
                             fontWeight: 400,
                             lineHeight: 1.05,
                             color: "#ffffff",
                             textTransform: "uppercase",
-                            margin: 0
+                            margin: 0,
+
                         }}>
                             Let's<br />
                             Preserve<br />
@@ -173,20 +153,11 @@ const GoogleLogin = () => {
                 </div>
 
                 {/* RIGHT PANEL — Form */}
-                <div
-                    style={{
-                        flex: 1,
-                        padding: "60px 48px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        background: "#000000",
-                    }}
-                >
+                <div className="auth-right">
                     {error && (
                         <div style={{
                             background: "rgba(255, 255, 255, 0.1)",
-                            border: "1px solid rgba(255, 255, 255, 0.3)",
+                            // border: "1px solid rgba(255, 255, 255, 0.3)",
                             borderRadius: "12px",
                             padding: "12px 16px",
                             marginBottom: "20px",
@@ -209,9 +180,12 @@ const GoogleLogin = () => {
                                 disabled={isLoading}
                                 style={{
                                     background: "none",
+
+                                    width: "100%",
                                     border: "none",
                                     color: "#ffffff",
-                                    fontSize: "2rem",
+                                    fontSize: "2.3rem",
+                                    textAlign: "left",
                                     cursor: isLoading ? "not-allowed" : "pointer",
                                     transition: "transform 0.3s ease",
                                     opacity: isLoading ? 0.5 : 1,
@@ -231,26 +205,60 @@ const GoogleLogin = () => {
             {/* Keyframes for animations */}
             <style>
                 {`
+          .auth-container {
+              width: 100%;
+              max-width: 1000px;
+              height: 80vh;
+              max-height: 600px;
+              backdrop-filter: blur(20px);
+              -webkit-backdrop-filter: blur(20px);
+              border-radius: 40px;
+              display: flex;
+              transition: height 0.3s ease;
+          }
+          .auth-left {
+              flex: 0 0 45%;
+              padding: 60px 48px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-evenly;
+              border-right: 1px solid rgba(255,255,255,0.06);
+              background: #000000;
+          }
+          .auth-right {
+              flex: 1;
+              padding: 60px 48px;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              background: #000000;
+          }
           @keyframes spin {
             to {
               transform: rotate(360deg);
             }
           }
           @media (max-width: 768px) {
-             div[style*="max-width: 1000px"] {
+             .auth-container {
                  flex-direction: column !important;
                  height: auto !important;
                  max-height: none !important;
+                 border-radius: 24px !important;
+                 margin: 20px 0;
              }
-             div[style*="flex: 0 0 45%"] {
+            .auth-left h1{
+                font-weight:600;
+                font-size:3.3rem;
+            }
+             .auth-left {
                  flex: 1 1 auto !important;
                  border-right: none !important;
                  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
                  padding: 40px 24px !important;
              }
-             div[style*="padding: 60px 48px"] {
+            .auth-right {
                  padding: 40px 24px !important;
-             }
+            }
           }
         `}
             </style>

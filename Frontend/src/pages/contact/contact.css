@@ -251,17 +251,17 @@
     .contact-title {
         font-size: 4.8rem;
     }
-    
+
     .contact-graphic {
         width: 60px;
         height: 60px;
     }
-    
+
     .semicircle-outline {
         width: 60px;
         height: 30px;
     }
-    
+
     .circle-dot {
         width: 24px;
         height: 24px;
@@ -279,16 +279,16 @@
         font-size: 4.2rem;
         text-align: left;
     }
-    
+
     .contact-right-section {
         gap: 48px;
     }
-    
+
     .contact-form-row {
         flex-direction: column;
         gap: 36px;
     }
-    
+
     .contact-locations-footer {
         grid-template-columns: 1fr 1fr;
         padding-top: 36px;
@@ -297,9 +297,9 @@
 
 @media screen and (max-width: 480px) {
     .contact-page-container {
-        padding: 60px 20px;
+        padding: 120px 20px 20px;
     }
-    
+
     .contact-title {
         font-size: 3.2rem;
     }
@@ -309,19 +309,19 @@
         height: 48px;
         margin-left: 12px;
     }
-    
+
     .semicircle-outline {
         width: 48px;
         height: 24px;
         top: 10px;
     }
-    
+
     .circle-dot {
         width: 20px;
         height: 20px;
         left: 8px;
     }
-    
+
     .contact-locations-footer {
         grid-template-columns: 1fr;
         gap: 32px;

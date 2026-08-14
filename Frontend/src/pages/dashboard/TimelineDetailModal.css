@@ -723,6 +723,20 @@
     }
 }
 
+@media screen and (max-width: 450px) {
+    .timeline-detail-view-actions {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* .timeline-detail-view-actions button {
+        width: 80%;
+        text-align: center;
+    } */
+
+}
+
 /* Actions Section Below Image */
 .timeline-detail-view-actions {
     display: flex;

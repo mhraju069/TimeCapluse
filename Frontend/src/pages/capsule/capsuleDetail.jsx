@@ -295,7 +295,7 @@ const CapsuleDetail = () => {
                     </svg>
                 </button>
 
-                <div className='details-content' style={{ display: 'flex', gap: '1rem', justifyContent: 'center', maxHeight: '750px', }}>
+                <div className='details-content'>
                     <div className="capsule-detail-card">
                         <div className="capsule-detail-page-cover-wrap">
                             {capsule.cover ? (

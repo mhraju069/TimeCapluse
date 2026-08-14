@@ -463,22 +463,24 @@ const About = () => {
         {/* ─── REVIEWS SECTION ─── */}
         <section className="about-reviews-section">
           <div className="reviews-layout">
-            {/* Left Vertical Label */}
-            <div className="reviews-vertical-label">
-              <h2>Reviews</h2>
-            </div>
+            {/* Reviews Header (Label & Button) */}
+            <div className="reviews-header">
+              <div className="reviews-vertical-label">
+                <h2>Reviews</h2>
+              </div>
 
-            {/* Add Review Button - Plus Icon */}
-            <button
-              className="add-review-btn"
-              onClick={() => setIsReviewModalOpen(true)}
-              aria-label="Add Review"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-            </button>
+              {/* Add Review Button - Plus Icon */}
+              <button
+                className="add-review-btn"
+                onClick={() => setIsReviewModalOpen(true)}
+                aria-label="Add Review"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
 
             {/* Reviews list in a row */}
             <div
@@ -610,33 +612,18 @@ const About = () => {
           <h2>
             Meet the <span>curators</span>
           </h2>
-          <div
-            className="about-team-grid"
-            onMouseLeave={() => setActiveCuratorIndex(0)}
-          >
+          <div className="about-team-grid">
             {(dbCurators.length > 0 ? dbCurators : teamMembers).map((member, index) => {
               const name = member.name;
               const role = member.designation || member.role;
               const img = member.image || member.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face&auto=format';
               const numStr = String(index + 1).padStart(2, '0');
-              const isActive = activeCuratorIndex === index;
               return (
-                <div
-                  key={member.id || index}
-                  className={`about-team-card ${isActive ? 'active' : ''}`}
-                  onMouseEnter={() => setActiveCuratorIndex(index)}
-                >
+                <div key={member.id || index} className="about-team-card">
                   <div className="avatar">
                     <img src={img} alt={name} loading="lazy" />
                   </div>
                   <div className="card-overlay" />
-
-                  {/* Collapsed Info */}
-                  <div className="collapsed-info" style={{ '--card-img': `url(${img})` }}>
-                    {role}
-                  </div>
-
-                  {/* Hovered Info */}
                   <div className="hovered-info">
                     <div className="card-number">{numStr}</div>
                     <div className="name">{name}</div>

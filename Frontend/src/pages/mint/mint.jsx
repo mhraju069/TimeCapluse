@@ -168,32 +168,10 @@ const Mint = () => {
                     justifyContent: "center",
                     padding: "20px",
                     fontFamily: "'Inter', sans-serif",
-                }}
-            >
-                <div
-                    style={{
-                        width: "100%",
-                        maxWidth: "1280px",
-                        height: "90vh",
-                        maxHeight: "900px",
-                        background: "#000000",
-                        borderRadius: "40px",
-                        display: "flex",
-                        overflow: "hidden",
-                    }}
-                >
+                }}>
+                <div className="mint-container">
                     {/* LEFT PANEL */}
-                    <div
-                        style={{
-                            flex: "0 0 45%",
-                            padding: "60px 48px",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            borderRight: "1px solid rgba(255,255,255,0.06)",
-                            background: "#000000",
-                        }}
-                    >
+                    <div className="mint-left" style={{ justifyContent: "space-between" }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
                             <h1 style={{
                                 fontFamily: "'Playfair Display', 'Georgia', serif",
@@ -231,16 +209,7 @@ const Mint = () => {
                     </div>
 
                     {/* RIGHT PANEL */}
-                    <div
-                        style={{
-                            flex: 1,
-                            padding: "60px 48px",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            background: "#000000",
-                        }}
-                    >
+                    <div className="mint-right" style={{ justifyContent: "center" }}>
                         <div /> {/* Spacer */}
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -302,34 +271,9 @@ const Mint = () => {
                 fontFamily: "'Inter', sans-serif",
             }}
         >
-            <div
-                style={{
-                    width: "100%",
-                    maxWidth: "90vw",
-                    height: "90vh",
-                    maxHeight: "900px",
-                    backdropFilter: "blur(20px)",
-                    WebkitBackdropFilter: "blur(20px)",
-                    borderRadius: "40px",
-                    display: "flex",
-                    overflow: "hidden",
-                    transition: "height 0.3s ease",
-                }}
-            >
+            <div className="mint-container" style={{ maxWidth: "90vw", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}>
                 {/* LEFT PANEL — Visuals & Typography */}
-                <div
-                    className="mint-left"
-                    style={{
-                        flex: "0 0 40%",
-                        padding: "60px 48px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-evenly",
-                        alignItems: "center",
-                        borderRight: "1px solid rgba(245, 0, 0, 0.06)",
-                        background: "#000000",
-                    }}
-                >
+                <div className="mint-left">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
                         {/* Giant Serif Typography */}
                         <h1 style={{
@@ -359,7 +303,7 @@ const Mint = () => {
                     </div>
 
                     {/* Bottom Metadata */}
-                    <div style={{ display: "flex", gap: "40px", color: "#ffffff", textAlign: "left" }}>
+                    <div className="metadata" style={{ display: "flex", gap: "40px", color: "#ffffff", textAlign: "left" }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                             <span style={{ fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", opacity: 0.9 }}>Decentralized</span>
                             <span style={{ fontSize: "0.75rem", opacity: 0.5, lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
@@ -380,17 +324,7 @@ const Mint = () => {
                 </div>
 
                 {/* RIGHT PANEL — Form */}
-                <div
-                    className="mint-right"
-                    style={{
-                        flex: 1,
-                        padding: "60px 250px 60px 0",
-                        overflowY: "auto",
-                        display: "flex",
-                        flexDirection: "column",
-                        background: "#000000",
-                    }}
-                >
+                <div className="mint-right">
                     {error && (
                         <div style={{
                             background: "rgba(255, 255, 255, 0.1)",
@@ -558,51 +492,81 @@ const Mint = () => {
 
             {/* Responsive adjustments via media queries in a style tag */}
             <style>{`
+        .mint-container {
+            width: 100%;
+            max-width: 1280px;
+            height: 90vh;
+            max-height: 900px;
+            background: #000000;
+            border-radius: 40px;
+            display: flex;
+            overflow: hidden;
+            transition: height 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .mint-left {
+            flex: 0 0 40%;
+            padding: 60px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            background: #000000;
+        }
+        .mint-right {
+            flex: 1;
+            padding: 60px 120px 60px 48px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: #000000;
+        }
         @media (max-width: 1024px) {
           .mint-container {
             height: auto !important;
             max-height: none !important;
             flex-direction: column !important;
-            border-radius: 28px !important;
+            border-radius: 24px !important;
+            margin: 20px 0;
           }
           .mint-left {
-            flex: 1 !important;
+            flex: 1 1 auto !important;
+            width: 100% !important;
             border-right: none !important;
             border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-            padding: 24px !important;
+            padding: 40px 24px !important;
+            gap: 30px !important;
           }
-          .mint-right {
-            padding: 28px 20px !important;
+          .mint-left h1{
+            text-align: center !important;
+            margin-bottom: -50% !important;
           }
-          .mint-grid {
-            grid-template-columns: 1fr !important;
-            gap: 18px !important;
+          .mint-left svg{
+            display: none !important;
           }
-          .mint-story {
-            grid-column: 1 !important;
-          }
-        }
-        @media (max-width: 600px) {
-          .mint-left {
+          .mint-left .metadata{ 
             display: none !important;
           }
           .mint-right {
-            padding: 20px 16px !important;
-          }
-          .mint-container {
-            height: 90vh !important;
-            border-radius: 20px !important;
+            width: 100% !important;
+            padding: 40px 24px !important;
           }
           .mint-grid {
-            gap: 14px !important;
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
           }
-          input, textarea {
-            font-size: 0.9rem !important;
-            padding: 12px 14px !important;
+        }
+        @media (max-width: 640px) {
+          .mint-left {
+            padding: 30px 20px !important;
           }
-          button {
-            font-size: 1rem !important;
-            padding: 14px !important;
+          .mint-left h1 {
+            margin-bottom: -80% !important;
+            font-size: 2.8rem !important;
+          }
+          .mint-right {
+            padding: 30px 20px !important;
           }
         }
       `}</style>

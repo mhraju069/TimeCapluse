@@ -605,22 +605,21 @@ const Dashboard = () => {
 
                         {has_capsule && capsule_id ? (
                             <>
-                                <div className="section-header" style={{ marginBottom: '24px', marginTop: '40px', padding: '0 2px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-                                        <h2 className="section-title" style={{ margin: 0 }}>My Timeline Events</h2>
-                                        <span className="section-count" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>{stats.timeline_count || 0} events</span>
+                                <div className="timeline-section-header">
+                                    <h2 className="section-title">My Timeline Events</h2>
+                                    <div className="timeline-header-actions">
+                                        <span className="section-count">{stats.timeline_count || 0} events</span>
+                                        <button
+                                            className="btn-edit add-event-btn-header"
+                                            onClick={() => setShowAddModal(true)}
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19" />
+                                                <line x1="5" y1="12" x2="19" y2="12" />
+                                            </svg>
+                                            Add Event
+                                        </button>
                                     </div>
-                                    <button
-                                        className="btn-edit"
-                                        onClick={() => setShowAddModal(true)}
-                                        style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', gap: '8px', padding: '10px 16px', borderRadius: '10px', border: '1px solid var(--border-color)', fontWeight: '600', cursor: 'pointer', fontSize: '0.95rem', transition: 'all 0.5s ease' }}
-                                    >
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                            <line x1="12" y1="5" x2="12" y2="19" />
-                                            <line x1="5" y1="12" x2="19" y2="12" />
-                                        </svg>
-                                        Add Event
-                                    </button>
                                 </div>
 
                                 <div>

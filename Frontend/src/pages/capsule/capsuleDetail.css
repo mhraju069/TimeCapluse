@@ -64,6 +64,14 @@
     color: var(--primary-color);
 }
 
+.details-content {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    max-height: 750px;
+    width: 100%;
+}
+
 /* Main Card */
 .capsule-detail-card {
     background: rgba(0, 0, 0, 0.3);
@@ -800,6 +808,7 @@
 
     .details-content {
         flex-direction: column;
+        max-height: none;
     }
 
     .capsule-detail-header {

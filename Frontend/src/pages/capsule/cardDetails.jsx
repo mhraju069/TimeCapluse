@@ -93,8 +93,9 @@ const CapsuleDetailModal = ({ descriptor, onClose }) => {
                 {/* Card — stop propagation so clicks inside don't close */}
                 <div
                     style={{
-                        width: "100%",
+                        width: "calc(100% - 32px)",
                         maxWidth: "400px",
+                        margin: "0 16px",
                         borderRadius: "20px",
                         overflow: "hidden",
                         position: "relative",
@@ -375,6 +376,8 @@ const Card = React.memo(({
     x,
     y,
     onOpen,
+    width = 320,
+    height = 400,
 }) => {
     // Dark overlay opacity: 1 = fully dark, 0 = image revealed
     const [darkOpacity, setDarkOpacity] = useState(1);
@@ -449,10 +452,10 @@ const Card = React.memo(({
         style={{
             transform: `translate3d(${x}px, ${y}px, 0)`,
             willChange: 'transform',
-            width: CARD_WIDTH,
-            height: CARD_HEIGHT,
-            maxWidth: CARD_WIDTH,
-            maxHeight: CARD_HEIGHT,
+            width: width,
+            height: height,
+            maxWidth: width,
+            maxHeight: height,
             contain: 'layout style paint',
             cursor: 'pointer',
             backfaceVisibility: 'hidden',

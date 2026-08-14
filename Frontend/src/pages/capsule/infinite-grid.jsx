@@ -3,8 +3,6 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { CapsuleDetailModal, Card } from './cardDetails';
 import AdvancedSearchModal from './search';
 
-const CARD_WIDTH = 320;
-const CARD_HEIGHT = 400;
 const NEIGHBOURS = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, 1], [-1, 1], [-1, -1], [1, -1]];
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -93,6 +91,10 @@ export const InfiniteDraggableGrid = ({
   gallery
 }) => {
   const viewportSize = useViewportSize();
+  const isMobile = viewportSize.width < 768;
+  const CARD_WIDTH = isMobile ? 180 : 320;
+  const CARD_HEIGHT = isMobile ? 220 : 400;
+
   const [offset, setOffset] = useState({
     x: 0,
     y: 0
@@ -581,6 +583,8 @@ export const InfiniteDraggableGrid = ({
             x={card.x}
             y={card.y}
             onOpen={setSelectedCard}
+            width={CARD_WIDTH}
+            height={CARD_HEIGHT}
           />
         ))}
       </div>

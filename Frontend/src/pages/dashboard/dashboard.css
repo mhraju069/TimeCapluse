@@ -906,6 +906,24 @@
     .capsules-grid {
         grid-template-columns: 1fr;
     }
+
+    .capsule-detail-cover-wrap {
+        height: 200px !important;
+    }
+
+    .capsule-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0 16px !important;
+        margin-top: -40px !important;
+    }
+
+    .capsule-detail-avatar-wrap {
+        width: 80px !important;
+        height: 80px !important;
+        border-width: 3px !important;
+    }
 }
 
 /* Dashboard Capsule Detail Card */
@@ -1049,4 +1067,52 @@
     border-radius: 16px;
     padding: 24px;
     margin-top: 10px;
+}
+
+/* Timeline Section Header */
+.timeline-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+    margin-top: 40px;
+    padding: 0 2px;
+}
+
+.timeline-section-header .section-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.timeline-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.timeline-header-actions .section-count {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+}
+
+.add-event-btn-header {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.5s ease;
+}
+
+.add-event-btn-header:hover {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.05);
 }
