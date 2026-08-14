@@ -397,6 +397,7 @@
 }
 
 /* ── Team Section ── */
+/* ── Team Section ── */
 .about-team-section {
   margin-top: 6rem;
   text-transform: uppercase;
@@ -417,27 +418,25 @@
 }
 
 .about-team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  display: flex;
+  gap: 15px;
   width: 100%;
+  height: 720px;
+  overflow: hidden;
 }
 
 .about-team-card {
+  flex: 1;
   position: relative;
   overflow: hidden;
-  aspect-ratio: 3 / 4;
-  border-radius: 20px;
+  height: 100%;
+  border-radius: 16px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: flex 0.7s cubic-bezier(0.25, 1, 0.3, 1), border-color 0.3s;
   cursor: pointer;
-}
-
-.about-team-card:hover {
-  transform: translateY(-10px);
-  border-color: var(--accent);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.05);
+  max-width: 15%;
+  transition: all 1s cubic-bezier(0.25, 1, 0.3, 1);
 }
 
 .about-team-card .avatar {
@@ -455,57 +454,132 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
-  filter: grayscale(100%) brightness(0.65);
-}
-
-.about-team-card:hover .avatar img {
-  transform: scale(1.06);
-  filter: grayscale(0%) brightness(0.9);
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.3, 1), filter 0.5s ease;
+  /* Desaturated + dark base — text will punch through with full color */
+  filter: grayscale(90%) brightness(0.55) contrast(1.1);
 }
 
 .about-team-card .card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.85) 100%);
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0.55) 60%,
+      rgba(0, 0, 0, 0.85) 100%);
   z-index: 2;
   transition: opacity 0.5s ease;
 }
 
+/* Collapsed Info - Transparent text revealing colorful image (Photoshop cutout effect) */
+.about-team-card .collapsed-info {
+  position: absolute;
+  /* Span the FULL card — so background-size:cover matches avatar img exactly */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  /* writing-mode: sideways-lr
+     → chars natively 90°CCW (no transform needed, so background stays correct ✓)
+     → text flows BOTTOM → TOP  ✓
+     → read by tilting head RIGHT ✓
+     justify-content: flex-start → text starts from inline-start = BOTTOM ✓ */
+  writing-mode: sideways-lr;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: scaleX(1.5);
+
+  /* Background covers full card = same crop/scale as avatar img ✓ */
+  color: transparent;
+  background-image: var(--card-img, linear-gradient(135deg, #d4a024 0%, #e8c060 50%, #c9843a 100%));
+  background-size: cover;
+  background-position: center center;
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  font-size: clamp(2.4rem, 2.5vh, 3rem);
+  font-weight: 1000;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: opacity 0.4s ease;
+  z-index: 5;
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
+
+/* Hovered Info - Horizontal details */
 .about-team-card .hovered-info {
   position: absolute;
-  bottom: 24px;
-  left: 24px;
-  right: 24px;
+  bottom: 32px;
+  left: 32px;
+  right: 32px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.25, 1, 0.3, 1), transform 0.5s cubic-bezier(0.25, 1, 0.3, 1);
   z-index: 3;
+  pointer-events: none;
   text-align: left;
 }
 
 .about-team-card .hovered-info .card-number {
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.15em;
-  opacity: 0.7;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
 }
 
 .about-team-card .hovered-info .name {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: #ffffff;
   margin: 0;
 }
 
 .about-team-card .hovered-info .role {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
+
+/* Hover & Active States */
+.about-team-card:hover,
+.about-team-card.active {
+  flex: 3.5;
+  max-width: 100%;
+  border-color: var(--accent);
+}
+
+.about-team-card:hover .avatar img,
+.about-team-card.active .avatar img {
+  transform: scale(1.05);
+  filter: grayscale(0%) brightness(1) contrast(1);
+}
+
+.about-team-card:hover .card-overlay,
+.about-team-card.active .card-overlay {
+  opacity: 1;
+}
+
+.about-team-card:hover .collapsed-info,
+.about-team-card.active .collapsed-info {
+  opacity: 0;
+}
+
+.about-team-card:hover .hovered-info,
+.about-team-card.active .hovered-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
 /* ── Footer ── */
 .about-footer {

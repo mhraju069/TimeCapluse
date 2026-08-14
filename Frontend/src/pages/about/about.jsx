@@ -612,18 +612,33 @@ const About = () => {
           <h2>
             Meet the <span>curators</span>
           </h2>
-          <div className="about-team-grid">
+          <div
+            className="about-team-grid"
+            onMouseLeave={() => setActiveCuratorIndex(0)}
+          >
             {(dbCurators.length > 0 ? dbCurators : teamMembers).map((member, index) => {
               const name = member.name;
               const role = member.designation || member.role;
               const img = member.image || member.img || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face&auto=format';
               const numStr = String(index + 1).padStart(2, '0');
+              const isActive = activeCuratorIndex === index;
               return (
-                <div key={member.id || index} className="about-team-card">
+                <div
+                  key={member.id || index}
+                  className={`about-team-card ${isActive ? 'active' : ''}`}
+                  onMouseEnter={() => setActiveCuratorIndex(index)}
+                >
                   <div className="avatar">
                     <img src={img} alt={name} loading="lazy" />
                   </div>
                   <div className="card-overlay" />
+
+                  {/* Collapsed Info */}
+                  <div className="collapsed-info" style={{ '--card-img': `url(${img})` }}>
+                    {role}
+                  </div>
+
+                  {/* Hovered Info */}
                   <div className="hovered-info">
                     <div className="card-number">{numStr}</div>
                     <div className="name">{name}</div>
