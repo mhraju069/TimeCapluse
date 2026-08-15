@@ -18,7 +18,7 @@ class TimeLineImageSerializer(serializers.ModelSerializer):
 
 
 class TimeLineSerializer(serializers.ModelSerializer):
-    """Serializer for timeline entries"""
+    
     images = TimeLineImageSerializer(source='timeline_images', many=True, read_only=True)
     capsule_name = serializers.CharField(source='capsule.name', read_only=True)
     capsule_id = serializers.UUIDField(source='capsule.id', read_only=True)
@@ -52,8 +52,9 @@ class TimeLineCreateSerializer(serializers.ModelSerializer):
         images = validated_data.pop('images', [])
         timeline = TimeLine.objects.create(**validated_data)
 
-        # Create timeline images
-        for image in images:
-            TimeLineImage.objects.create(timeline=timeline, image=image)
+        if images:
+            TimeLineImage.objects.bulk_create([
+                TimeLineImage(timeline=timeline, image=image) for image in images
+            ])
 
         return timeline
