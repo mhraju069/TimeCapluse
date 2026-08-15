@@ -9,12 +9,6 @@ import firebase_admin
 from firebase_admin import credentials
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-cred_path = os.path.join(BASE_DIR, "firebase-key.json")
-if os.path.exists(cred_path):
-    cred = credentials.Certificate(cred_path)
-    firebase_admin.initialize_app(cred)
-else:
-    print(f"Warning: Firebase certificate not found at {cred_path}")
 
 #Django Settings
 CORS_ALLOW_CREDENTIALS = True
