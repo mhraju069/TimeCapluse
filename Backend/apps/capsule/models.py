@@ -10,9 +10,9 @@ class Capsule(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capsules')
-    name = models.CharField(max_length=50,default="")
-    bio = models.CharField(max_length=255,default="")
-    location = models.CharField(max_length=150,default="")
+    name = models.CharField(max_length=50, default="")
+    bio = models.CharField(max_length=255, default="")
+    location = models.CharField(max_length=150, default="")
     dob = models.DateField(default="2025-01-01")
 
     profile = models.ImageField(upload_to='capsule_profiles')
@@ -41,6 +41,8 @@ class Capsule(models.Model):
         indexes = [
             models.Index(fields=['grid_x', 'grid_y'], name='idx_grid_position'),
             models.Index(fields=['is_public', 'grid_x', 'grid_y'], name='idx_public_grid'),
+            models.Index(fields=['is_public', '-created_at'], name='idx_public_created'),
+            models.Index(fields=['location'], name='idx_location'),
         ]
         ordering = ['grid_y', 'grid_x']
 
@@ -48,26 +50,22 @@ class Capsule(models.Model):
         return self.name
 
 
-
 class Review(models.Model):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
-    capsule = models.ForeignKey(Capsule,on_delete=models.CASCADE)
+    capsule = models.ForeignKey(Capsule, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField(default=0)
     review = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['capsule', '-created_at'], name='idx_review_capsule_created'),
+        ]
+
     def __str__(self):
         return f"{self.capsule.name} - {self.rating}"
-
-    @property
-    def average_rating(self):
-        return self.review_set.aggregate(models.Avg('rating'))['rating__avg']
-
-    def total_rating(self):
-        return self.review_set.count()
-
 
 class Like(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -76,7 +74,9 @@ class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ['user', 'capsule']
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'capsule'], name='unique_user_capsule_like'),
+        ]
         ordering = ['-created_at']
 
     def __str__(self):
