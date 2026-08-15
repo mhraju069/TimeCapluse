@@ -119,6 +119,8 @@ export const InfiniteDraggableGrid = ({
   const [serverCapsules, setServerCapsules] = useState({});
   // True until the first backend load completes (prevents static-image flash)
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  // Track search loading state
+  const [isSearching, setIsSearching] = useState(false);
   // Search state
   const [searchTopic, setSearchTopic] = useState('');
   const [isSearchMode, setIsSearchMode] = useState(false);
@@ -132,6 +134,7 @@ export const InfiniteDraggableGrid = ({
 
   // Fetch search results from backend using viewport API
   const fetchSearchResults = async (searchFilters) => {
+    setIsSearching(true);
     // Save current server capsules before search (to restore later)
     if (!serverInitRef.current) {
       prevServerCapsulesRef.current = { ...serverCapsulesRef.current };
@@ -189,6 +192,8 @@ export const InfiniteDraggableGrid = ({
       setSearchTopic(topic);
     } catch (err) {
       console.error('Search error:', err);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -205,6 +210,8 @@ export const InfiniteDraggableGrid = ({
       setServerCapsules({});
     }
     serverInitRef.current = false;
+    // Reload backend data for the current viewport offset
+    handleViewportChange(offset);
   };
 
   // Update the onApply handler to fetch search results
@@ -591,6 +598,45 @@ export const InfiniteDraggableGrid = ({
         ))}
       </div>
 
+      {(isInitialLoading || isSearching) && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: isInitialLoading ? '#000000' : 'rgba(0, 0, 0, 0.45)',
+          backdropFilter: isInitialLoading ? 'none' : 'blur(4px)',
+          WebkitBackdropFilter: isInitialLoading ? 'none' : 'blur(4px)',
+          pointerEvents: 'auto',
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '16px'
+          }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              border: '4px solid rgba(255, 255, 255, 0.1)',
+              borderTopColor: '#ffffff',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.6)',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              letterSpacing: '0.05em'
+            }}>
+              {isSearching ? 'SEARCHING CAPSULES...' : 'LOADING CAPSULES...'}
+            </p>
+          </div>
+        </div>
+      )}
+
       <style>{`
         .premium-search-trigger-btn {
           z-index: 9;
@@ -626,6 +672,10 @@ export const InfiniteDraggableGrid = ({
         }
         .premium-search-trigger-btn:hover .search-icon-svg {
           transform: scale(1.1);
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
       `}</style>
 
