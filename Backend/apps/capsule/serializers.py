@@ -9,7 +9,7 @@ class CapsuleGridSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Capsule
-        fields = ['id', 'grid_x', 'grid_y', 'name', 'profile']
+        fields = ['id', 'grid_x', 'grid_y', 'name', 'profile','cover']
 
     def get_profile(self, obj):
         request = self.context.get('request')
