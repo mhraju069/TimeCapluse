@@ -441,7 +441,7 @@ class PublicStatsView(APIView):
         capsules_count = Capsule.objects.count()
         events_count = TimeLine.objects.count()
 
-        db_curators = Curator.objects.all().order_by('-created_at')
+        db_curators = Curator.objects.all().order_by('created_at')
         curators_count = db_curators.count()
 
         curator_list = [
