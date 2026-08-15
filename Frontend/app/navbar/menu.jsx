@@ -1,0 +1,593 @@
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { gsap } from 'gsap';
+import './StaggeredMenu.css';
+
+export const StaggeredMenu = ({
+    position = 'right',
+    colors = ['#B497CF', '#ffffff'],
+    items = [],
+    socialItems = [],
+    displaySocials = true,
+    displayItemNumbering = true,
+    className,
+    logoUrl = '/logo.svg',
+    menuButtonColor = '#fff',
+    openMenuButtonColor = '#fff',
+    accentColor = '#ffffff',
+    changeMenuColorOnOpen = true,
+    isFixed = false,
+    closeOnClickAway = true,
+    onMenuOpen,
+    onMenuClose,
+    isLoggedIn = false,
+    user = null,
+    onLoginClick,
+    onLogoutClick,
+    onAuthClick
+}) => {
+    const router = useRouter();
+    const [open, setOpen] = useState(false);
+    const openRef = useRef(false);
+    const panelRef = useRef(null);
+    const preLayersRef = useRef(null);
+    const preLayerElsRef = useRef([]);
+    const plusHRef = useRef(null);
+    const plusVRef = useRef(null);
+    const iconRef = useRef(null);
+    const textInnerRef = useRef(null);
+    const textWrapRef = useRef(null);
+    const [textLines, setTextLines] = useState(['Menu', 'Close']);
+
+    const openTlRef = useRef(null);
+    const closeTweenRef = useRef(null);
+    const spinTweenRef = useRef(null);
+    const textCycleAnimRef = useRef(null);
+    const colorTweenRef = useRef(null);
+    const toggleBtnRef = useRef(null);
+    const busyRef = useRef(false);
+    const itemEntranceTweenRef = useRef(null);
+
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            const panel = panelRef.current;
+            const preContainer = preLayersRef.current;
+            const plusH = plusHRef.current;
+            const plusV = plusVRef.current;
+            const icon = iconRef.current;
+            const textInner = textInnerRef.current;
+            if (!panel || !plusH || !plusV || !icon || !textInner) return;
+
+            let preLayers = [];
+            if (preContainer) {
+                preLayers = Array.from(preContainer.querySelectorAll('.sm-prelayer'));
+            }
+            preLayerElsRef.current = preLayers;
+
+            const offscreen = position === 'left' ? -100 : 100;
+            gsap.set([panel, ...preLayers], { xPercent: offscreen, opacity: 1 });
+            if (preContainer) {
+                gsap.set(preContainer, { xPercent: 0, opacity: 1 });
+            }
+            gsap.set(plusH, { transformOrigin: '50% 50%', rotate: 0 });
+            gsap.set(plusV, { transformOrigin: '50% 50%', rotate: 90 });
+            gsap.set(icon, { rotate: 0, transformOrigin: '50% 50%' });
+            gsap.set(textInner, { yPercent: 0 });
+            if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+        });
+        return () => ctx.revert();
+    }, [menuButtonColor, position]);
+
+    const buildOpenTimeline = useCallback(() => {
+        const panel = panelRef.current;
+        const layers = preLayerElsRef.current;
+        if (!panel) return null;
+
+        openTlRef.current?.kill();
+        if (closeTweenRef.current) {
+            closeTweenRef.current.kill();
+            closeTweenRef.current = null;
+        }
+        itemEntranceTweenRef.current?.kill();
+
+        const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
+        const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+        const socialTitle = panel.querySelector('.sm-socials-title');
+        const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
+
+        const offscreen = position === 'left' ? -100 : 100;
+        const layerStates = layers.map(el => ({ el, start: offscreen }));
+        const panelStart = offscreen;
+
+        if (itemEls.length) {
+            gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+        }
+        if (numberEls.length) {
+            gsap.set(numberEls, { '--sm-num-opacity': 0 });
+        }
+        if (socialTitle) {
+            gsap.set(socialTitle, { opacity: 0 });
+        }
+        if (socialLinks.length) {
+            gsap.set(socialLinks, { y: 25, opacity: 0 });
+        }
+
+        const tl = gsap.timeline({ paused: true });
+
+        layerStates.forEach((ls, i) => {
+            tl.fromTo(ls.el, { xPercent: ls.start }, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07);
+        });
+        const lastTime = layerStates.length ? (layerStates.length - 1) * 0.07 : 0;
+        const panelInsertTime = lastTime + (layerStates.length ? 0.08 : 0);
+        const panelDuration = 0.65;
+        tl.fromTo(
+            panel,
+            { xPercent: panelStart },
+            { xPercent: 0, duration: panelDuration, ease: 'power4.out' },
+            panelInsertTime
+        );
+
+        if (itemEls.length) {
+            const itemsStartRatio = 0.15;
+            const itemsStart = panelInsertTime + panelDuration * itemsStartRatio;
+            tl.to(
+                itemEls,
+                {
+                    yPercent: 0,
+                    rotate: 0,
+                    duration: 1,
+                    ease: 'power4.out',
+                    stagger: { each: 0.1, from: 'start' }
+                },
+                itemsStart
+            );
+            if (numberEls.length) {
+                tl.to(
+                    numberEls,
+                    {
+                        duration: 0.6,
+                        ease: 'power2.out',
+                        '--sm-num-opacity': 1,
+                        stagger: { each: 0.08, from: 'start' }
+                    },
+                    itemsStart + 0.1
+                );
+            }
+        }
+
+        if (socialTitle || socialLinks.length) {
+            const socialsStart = panelInsertTime + panelDuration * 0.4;
+            if (socialTitle) {
+                tl.to(
+                    socialTitle,
+                    {
+                        opacity: 1,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    },
+                    socialsStart
+                );
+            }
+            if (socialLinks.length) {
+                tl.to(
+                    socialLinks,
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.55,
+                        ease: 'power3.out',
+                        stagger: { each: 0.08, from: 'start' },
+                        onComplete: () => {
+                            gsap.set(socialLinks, { clearProps: 'opacity' });
+                        }
+                    },
+                    socialsStart + 0.04
+                );
+            }
+        }
+
+        openTlRef.current = tl;
+        return tl;
+    }, [position]);
+
+    const playOpen = useCallback(() => {
+        if (busyRef.current) return;
+        busyRef.current = true;
+        const tl = buildOpenTimeline();
+        if (tl) {
+            tl.eventCallback('onComplete', () => {
+                busyRef.current = false;
+            });
+            tl.play(0);
+        } else {
+            busyRef.current = false;
+        }
+    }, [buildOpenTimeline]);
+
+    const playClose = useCallback(() => {
+        openTlRef.current?.kill();
+        openTlRef.current = null;
+        itemEntranceTweenRef.current?.kill();
+
+        const panel = panelRef.current;
+        const layers = preLayerElsRef.current;
+        if (!panel) return;
+
+        const all = [...layers, panel];
+        closeTweenRef.current?.kill();
+        const offscreen = position === 'left' ? -100 : 100;
+        closeTweenRef.current = gsap.to(all, {
+            xPercent: offscreen,
+            duration: 0.32,
+            ease: 'power3.in',
+            overwrite: 'auto',
+            onComplete: () => {
+                const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
+                if (itemEls.length) {
+                    gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+                }
+                const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+                if (numberEls.length) {
+                    gsap.set(numberEls, { '--sm-num-opacity': 0 });
+                }
+                const socialTitle = panel.querySelector('.sm-socials-title');
+                const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
+                if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
+                if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
+                busyRef.current = false;
+            }
+        });
+    }, [position]);
+
+    const animateIcon = useCallback(opening => {
+        const icon = iconRef.current;
+        if (!icon) return;
+        spinTweenRef.current?.kill();
+        if (opening) {
+            spinTweenRef.current = gsap.to(icon, { rotate: 225, duration: 0.8, ease: 'power4.out', overwrite: 'auto' });
+        } else {
+            spinTweenRef.current = gsap.to(icon, { rotate: 0, duration: 0.35, ease: 'power3.inOut', overwrite: 'auto' });
+        }
+    }, []);
+
+    const animateColor = useCallback(
+        opening => {
+            const btn = toggleBtnRef.current;
+            if (!btn) return;
+            colorTweenRef.current?.kill();
+            if (changeMenuColorOnOpen) {
+                const targetColor = opening ? openMenuButtonColor : menuButtonColor;
+                colorTweenRef.current = gsap.to(btn, {
+                    color: targetColor,
+                    delay: 0.18,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            } else {
+                gsap.set(btn, { color: menuButtonColor });
+            }
+        },
+        [openMenuButtonColor, menuButtonColor, changeMenuColorOnOpen]
+    );
+
+    React.useEffect(() => {
+        if (toggleBtnRef.current) {
+            if (changeMenuColorOnOpen) {
+                const targetColor = openRef.current ? openMenuButtonColor : menuButtonColor;
+                gsap.set(toggleBtnRef.current, { color: targetColor });
+            } else {
+                gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+            }
+        }
+    }, [changeMenuColorOnOpen, menuButtonColor, openMenuButtonColor]);
+
+    const animateText = useCallback(opening => {
+        const inner = textInnerRef.current;
+        if (!inner) return;
+        textCycleAnimRef.current?.kill();
+
+        const currentLabel = opening ? 'Menu' : 'Close';
+        const targetLabel = opening ? 'Close' : 'Menu';
+        const cycles = 3;
+        const seq = [currentLabel];
+        let last = currentLabel;
+        for (let i = 0; i < cycles; i++) {
+            last = last === 'Menu' ? 'Close' : 'Menu';
+            seq.push(last);
+        }
+        if (last !== targetLabel) seq.push(targetLabel);
+        seq.push(targetLabel);
+        setTextLines(seq);
+
+        gsap.set(inner, { yPercent: 0 });
+        const lineCount = seq.length;
+        const finalShift = ((lineCount - 1) / lineCount) * 100;
+        textCycleAnimRef.current = gsap.to(inner, {
+            yPercent: -finalShift,
+            duration: 0.5 + lineCount * 0.07,
+            ease: 'power4.out'
+        });
+    }, []);
+
+    const toggleMenu = useCallback(() => {
+        const target = !openRef.current;
+        openRef.current = target;
+        setOpen(target);
+        if (target) {
+            onMenuOpen?.();
+            playOpen();
+        } else {
+            onMenuClose?.();
+            playClose();
+        }
+        animateIcon(target);
+        animateColor(target);
+        animateText(target);
+    }, [playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
+
+    const closeMenu = useCallback(() => {
+        if (openRef.current) {
+            openRef.current = false;
+            setOpen(false);
+            onMenuClose?.();
+            playClose();
+            animateIcon(false);
+            animateColor(false);
+            animateText(false);
+        }
+    }, [playClose, animateIcon, animateColor, animateText, onMenuClose]);
+
+    React.useEffect(() => {
+        if (!closeOnClickAway || !open) return;
+
+        const handleClickOutside = event => {
+            if (
+                panelRef.current &&
+                !panelRef.current.contains(event.target) &&
+                toggleBtnRef.current &&
+                !toggleBtnRef.current.contains(event.target)
+            ) {
+                closeMenu();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [closeOnClickAway, open, closeMenu]);
+
+    return (
+        <div
+            className={(className ? className + ' ' : '') + 'staggered-menu-wrapper' + (isFixed ? ' fixed-wrapper' : '')}
+            style={accentColor ? { ['--sm-accent']: accentColor } : undefined}
+            data-position={position}
+            data-open={open || undefined}
+        >
+            <div
+                className={`sm-backdrop ${open ? 'active' : ''}`}
+                style={{
+                    backgroundColor: open ? 'rgba(0, 0, 0, 0.45)' : 'rgba(0, 0, 0, 0)',
+                    backdropFilter: open ? 'blur(4px)' : 'blur(0px)',
+                    WebkitBackdropFilter: open ? 'blur(4px)' : 'blur(0px)',
+                    pointerEvents: open ? 'auto' : 'none',
+                    transition: 'background-color 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease',
+                }}
+                onClick={closeMenu}
+                aria-hidden="true"
+            />
+            <div ref={preLayersRef} className="sm-prelayers" aria-hidden="true">
+                {(() => {
+                    const raw = colors && colors.length ? colors.slice(0, 4) : ['#1e1e22', '#35353c'];
+                    let arr = [...raw];
+                    if (arr.length >= 3) {
+                        const mid = Math.floor(arr.length / 2);
+                        arr.splice(mid, 1);
+                    }
+                    return arr.map((c, i) => <div key={i} className="sm-prelayer" style={{ background: c }} />);
+                })()}
+            </div>
+            <header className="staggered-menu-header" aria-label="Main navigation header">
+                <div className="sm-logo" aria-label="Logo">
+                    <img
+                        src={logoUrl || '/logo.svg'}
+                        alt="Logo"
+                        className="sm-logo-img"
+                        draggable={false}
+                        width={110}
+                        height={34}
+                    />
+                </div>
+                <button
+                    ref={toggleBtnRef}
+                    className="sm-toggle"
+                    aria-label={open ? 'Close menu' : 'Open menu'}
+                    aria-expanded={open}
+                    aria-controls="staggered-menu-panel"
+                    onClick={toggleMenu}
+                    type="button"
+                >
+                    <span ref={textWrapRef} className="sm-toggle-textWrap" aria-hidden="true">
+                        <span ref={textInnerRef} className="sm-toggle-textInner">
+                            {textLines.map((l, i) => (
+                                <span className="sm-toggle-line" key={i}>
+                                    {l}
+                                </span>
+                            ))}
+                        </span>
+                    </span>
+                    <span ref={iconRef} className="sm-icon" aria-hidden="true">
+                        <span ref={plusHRef} className="sm-icon-line" />
+                        <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
+                    </span>
+                </button>
+            </header>
+
+            <aside
+                id="staggered-menu-panel"
+                ref={panelRef}
+                className="staggered-menu-panel"
+                aria-hidden={!open}
+                style={{
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.01)',
+                }}
+            >
+                <div className="sm-panel-inner">
+                    <ul className="sm-panel-list" role="list" data-numbering={displayItemNumbering || undefined}>
+                        {items && items.length ? (
+                            items.map((it, idx) => (
+                                <li className="sm-panel-itemWrap" key={it.label + idx}>
+                                    <Link className="sm-panel-item" href={it.link} aria-label={it.ariaLabel} data-index={idx + 1} onClick={() => closeMenu()}>
+                                        <span className="sm-panel-itemLabel">{it.label}</span>
+                                    </Link>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="sm-panel-itemWrap" aria-hidden="true">
+                                <span className="sm-panel-item">
+                                    <span className="sm-panel-itemLabel">No items</span>
+                                </span>
+                            </li>
+                        )}
+                    </ul>
+                    {displaySocials && socialItems && socialItems.length > 0 && (
+                        <div className="sm-socials" aria-label="Social links">
+                            <h3 className="sm-socials-title">Socials</h3>
+                            <ul className="sm-socials-list" role="list">
+                                {socialItems.map((s, i) => {
+                                    const getSocialIcon = (label) => {
+                                        const cleanLabel = label.toLowerCase();
+                                        if (cleanLabel.includes('twitter') || cleanLabel.includes('x')) {
+                                            return (
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                                                    <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                                                    <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+                                                </svg>
+                                            );
+                                        }
+                                        if (cleanLabel.includes('github')) {
+                                            return (
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                                                </svg>
+                                            );
+                                        }
+                                        if (cleanLabel.includes('linkedin')) {
+                                            return (
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                                                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                                    <rect x="2" y="9" width="4" height="12" />
+                                                    <circle cx="4" cy="4" r="2" />
+                                                </svg>
+                                            );
+                                        }
+                                        if (cleanLabel.includes('facebook') || cleanLabel.includes('fb')) {
+                                            return (
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                                                </svg>
+                                            );
+                                        }
+                                        if (cleanLabel.includes('instagram') || cleanLabel.includes('insta')) {
+                                            return (
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                                                </svg>
+                                            );
+                                        }
+                                        if (cleanLabel.includes('tiktok')) {
+                                            return (
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                                                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                                                </svg>
+                                            );
+                                        }
+                                        return label;
+                                    };
+                                    return (
+                                        <li key={s.label + i} className="sm-socials-item">
+                                            <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link" aria-label={s.label}>
+                                                {getSocialIcon(s.label)}
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    )}
+
+                    {/* Login/Logout Button */}
+                    <div className="sm-auth-section" aria-label="Authentication">
+                        {isLoggedIn && user && (
+                            <button
+                                className="sm-profile-button"
+                                onClick={() => {
+                                    onAuthClick?.();
+                                    setTimeout(() => closeMenu(), 100);
+                                    router.push('/dashboard');
+                                }}
+                                type="button"
+                                aria-label="Go to dashboard"
+                                title="View Dashboard"
+                            >
+                                <img
+                                    src={user.image}
+                                    alt={user.name || 'Profile'}
+                                    className="sm-profile-avatar"
+                                    draggable={false}
+                                    referrerPolicy="no-referrer"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                        const fallback = e.currentTarget.nextElementSibling;
+                                        if (fallback) fallback.style.display = 'flex';
+                                    }}
+                                />
+                            </button>
+                        )}
+                        <button
+                            className="sm-auth-button"
+                            onClick={() => {
+                                if (isLoggedIn) {
+                                    onLogoutClick?.();
+                                } else {
+                                    onLoginClick?.();
+                                }
+                                onAuthClick?.();
+                                // Close menu after clicking auth button
+                                setTimeout(() => closeMenu(), 100);
+                            }}
+                            type="button"
+                        >
+                            {isLoggedIn ? (
+                                <>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        <polyline points="16 17 21 12 16 7" />
+                                        <line x1="21" y1="12" x2="9" y2="12" />
+                                    </svg>
+                                    <span>Logout</span>
+                                </>
+                            ) : (
+                                <>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                        <polyline points="10 17 15 12 10 7" />
+                                        <line x1="15" y1="12" x2="3" y2="12" />
+                                    </svg>
+                                    <span>Login</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    );
+};
+
+export default StaggeredMenu;

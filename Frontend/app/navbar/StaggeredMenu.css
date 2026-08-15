@@ -1,0 +1,516 @@
+.staggered-menu-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    pointer-events: none;
+}
+
+.staggered-menu-wrapper.fixed-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 40;
+    overflow: hidden;
+}
+
+.staggered-menu-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2em;
+    background: transparent;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.staggered-menu-header>* {
+    pointer-events: auto;
+}
+
+.sm-logo {
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.sm-logo-img {
+    display: block;
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+}
+
+.sm-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    /* padding-right: 3rem; */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #e9e9ef;
+    font-weight: 500;
+    line-height: 1;
+    overflow: visible;
+}
+
+.sm-toggle:focus-visible {
+    outline: 2px solid #ffffffaa;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.sm-line:last-of-type {
+    margin-top: 6px;
+}
+
+.sm-toggle-textWrap {
+    position: relative;
+    display: inline-block;
+    height: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    width: var(--sm-toggle-width, auto);
+    min-width: var(--sm-toggle-width, auto);
+    font-size: 1.2rem;
+}
+
+.sm-toggle-textInner {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.sm-toggle-line {
+    display: block;
+    height: 1em;
+    line-height: 1;
+}
+
+.sm-icon {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+}
+
+.sm-panel-itemWrap {
+    position: relative;
+    overflow: hidden;
+    line-height: 1;
+}
+
+.sm-icon-line {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+}
+
+.sm-line {
+    display: none !important;
+}
+
+.staggered-menu-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: clamp(260px, 38vw, 420px);
+    height: 100%;
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    padding: 6em 2em 2em 2em;
+    overflow-y: auto;
+    z-index: 10;
+    pointer-events: auto;
+    opacity: 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+}
+
+[data-position='left'] .staggered-menu-panel {
+    right: auto;
+    left: 0;
+}
+
+.sm-prelayers {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    /* width: clamp(260px, 18.5vw, 420px); */
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+}
+
+[data-position='left'] .sm-prelayers {
+    right: auto;
+    left: 0;
+}
+
+.sm-prelayer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    transform: translateX(0);
+    opacity: 0;
+}
+
+.sm-panel-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-height: 100%;
+}
+
+.sm-socials {
+    margin-top: auto;
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.sm-socials-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--sm-accent, #ffffff);
+    font-family: 'Inter', sans-serif;
+}
+
+.sm-socials-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.sm-socials-list .sm-socials-link {
+    opacity: 1;
+}
+
+.sm-socials-list:hover .sm-socials-link {
+    opacity: 0.35;
+}
+
+.sm-socials-list:hover .sm-socials-link:hover {
+    opacity: 1;
+}
+
+.sm-socials-link:focus-visible {
+    outline: 2px solid var(--sm-accent, #ffffff);
+    outline-offset: 3px;
+}
+
+.sm-socials-list:focus-within .sm-socials-link {
+    opacity: 0.35;
+}
+
+.sm-socials-list:focus-within .sm-socials-link:focus-visible {
+    opacity: 1;
+}
+
+.sm-socials-link {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff;
+    text-decoration: none;
+    position: relative;
+    padding: 2px 0;
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    transition:
+        color 0.3s ease,
+        opacity 0.3s ease;
+}
+
+.sm-socials-link:hover {
+    color: var(--sm-accent, #ffffff);
+}
+
+.sm-panel-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.sm-panel-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sm-panel-item {
+    position: relative;
+    color: #ffffff;
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-weight: 600;
+    font-size: 3.2rem;
+    cursor: pointer;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    transition:
+        background 0.25s,
+        color 0.25s;
+    display: inline-block;
+    text-decoration: none;
+    padding-right: 1.4em;
+}
+
+.staggered-menu-panel .sm-socials-list .sm-socials-link {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.staggered-menu-panel .sm-socials-list:hover .sm-socials-link:not(:hover) {
+    opacity: 0.35;
+}
+
+.staggered-menu-panel .sm-socials-list:focus-within .sm-socials-link:not(:focus-visible) {
+    opacity: 0.35;
+}
+
+.staggered-menu-panel .sm-socials-list .sm-socials-link:hover,
+.staggered-menu-panel .sm-socials-list .sm-socials-link:focus-visible {
+    opacity: 1;
+}
+
+.sm-panel-itemLabel {
+    display: inline-block;
+    will-change: transform;
+    transform-origin: 50% 100%;
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.sm-panel-itemLabel::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--sm-accent, #ffffff);
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.3, 1);
+}
+
+.sm-panel-item:hover .sm-panel-itemLabel::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+}
+
+.sm-panel-item:hover {
+    color: var(--sm-accent, #ffffff);
+}
+
+.sm-panel-list[data-numbering] {
+    counter-reset: smItem;
+}
+
+.sm-panel-list[data-numbering] .sm-panel-item::after {
+    counter-increment: smItem;
+    content: counter(smItem, decimal-leading-zero);
+    position: absolute;
+    top: 0.1em;
+    right: 2.8em;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--sm-accent, #ffffff);
+    letter-spacing: 0;
+    pointer-events: none;
+    user-select: none;
+    opacity: var(--sm-num-opacity, 0);
+}
+
+@media (max-width: 1024px) {
+    .staggered-menu-panel {
+        width: 100%;
+        left: 0;
+        right: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .staggered-menu-panel {
+        width: 100%;
+        left: 0;
+        right: 0;
+    }
+}
+
+.sm-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    pointer-events: none;
+    z-index: 3;
+    transition: background 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease;
+}
+
+.sm-backdrop.active {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    pointer-events: auto;
+}
+
+/* Auth Section Styles */
+.sm-auth-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sm-auth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: #f5f0e8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sm-auth-button:hover {
+    border-color: var(--border-color);
+    color: var(--primary-color);
+}
+
+.sm-auth-button:active {
+    transform: translateY(0);
+}
+
+.sm-auth-button svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.sm-auth-button:hover svg {
+    transform: scale(1.1);
+}
+
+/* Profile Button Styles */
+.sm-profile-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 20%;
+    color: #f5f0e8;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.sm-profile-button:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.sm-profile-button:active {
+    transform: translateY(0);
+}
+
+.sm-profile-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--border-color);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.sm-profile-button:hover .sm-profile-avatar {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.sm-profile-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #ffffff;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+}
+
+.sm-profile-name {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #f5f0e8;
+    transition: color 0.3s ease;
+}
+
+.sm-profile-button:hover .sm-profile-name {
+    color: #ffffff;
+}
+
+.sm-profile-button .sm-profile-chevron {
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.sm-profile-button:hover .sm-profile-chevron {
+    opacity: 1;
+    transform: translateX(3px);
+}
