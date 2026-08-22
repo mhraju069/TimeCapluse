@@ -1,0 +1,27 @@
+name : Deploy to Server
+
+on : 
+  push :
+    branches :
+      - main
+
+jobs : 
+  deploy : 
+    runs-on : ubuntu-latest
+    steps :
+      - name : Deploy to ec2 Server
+        uses : appleboy/ssh-action@v1.0.0
+        with :
+          host : ${{ secrets.SERVER_IP }}
+          username : ${{ secrets.SERVER_USERNAME }}
+          key : ${{ secrets.SERVER_KEY }}
+          port : ${{ secrets.SERVER_PORT }}
+          script: |
+            cd ${{ secrets.SERVER_PROJECT_PATH }}
+            echo 'Pulling latest updates...'
+            git fetch origin main
+            git reset --hard origin/main
+            echo 'Restarting services...'
+            docker compose down
+            docker compose up --build -d
+            echo "Deployed successfully"
